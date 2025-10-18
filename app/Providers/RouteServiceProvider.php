@@ -27,7 +27,7 @@ public function boot(): void
             ->group(base_path('routes/web.php'));
 
         // Admin routes
-        Route::middleware(['web', 'auth']) // যদি admin middleware থাকে, সেটা দিতে হবে
+        Route::middleware(['web', 'auth']) 
             ->group(base_path('routes/admin.php'));
 
         // API routes
