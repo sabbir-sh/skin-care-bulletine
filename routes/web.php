@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Backend\BlogPostController;
+use App\Http\Controllers\Frontend\AboutUsController;
+use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -11,7 +13,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('frontend.home');
 });
-
+Route::get('/about-us', [AboutUsController::class, 'aboutUs'])->name('aboutUs');
+Route::get('/contact-us', [ContactController::class, 'contact'])->name('contactUs');
+Route::post('/contact-us', [ContactController::class, 'submit'])->name('contact.submit');
 
 
 
