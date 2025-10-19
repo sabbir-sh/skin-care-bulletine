@@ -23,7 +23,15 @@
 
             <div class="mb-3">
                 <label>Title</label>
-                <input type="text" name="title" class="form-control" value="{{ old('title', $blog->title ?? '') }}" required>
+                <input type="text" name="title" id="title" class="form-control" 
+                       value="{{ old('title', $blog->title ?? '') }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label>Slug</label>
+                <input type="text" name="slug" id="slug" class="form-control" 
+                       value="{{ old('slug', $blog->slug ?? '') }}" required>
+                <small class="text-muted">Unique URL identifier, e.g., my-blog-title</small>
             </div>
 
             <div class="mb-3">
@@ -66,12 +74,24 @@
         </form>
     </div>
 </div>
-@endsection
+
 <script src="https://cdn.ckeditor.com/ckeditor5/39.0.0/classic/ckeditor.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function() {
+    // CKEditor
     document.querySelectorAll('.aiz-text-editor').forEach((editorElement) => {
         ClassicEditor.create(editorElement).catch(error => { console.error(error); });
     });
+
+    // Auto-generate slug from title
+    const titleInput = document.getElementById('title');
+    const slugInput = document.getElementById('slug');
+
+    titleInput.addEventListener('input', function() {
+        slugInput.value = this.value.toLowerCase()
+            .replace(/ /g,'-')
+            .replace(/[^\w-]+/g,'');
+    });
 });
 </script>
+@endsection
