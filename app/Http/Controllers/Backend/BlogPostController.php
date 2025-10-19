@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\BlogPostRequest;
 use App\Http\Services\Blog\BlogPostService;
 use App\Models\BlogPost;
+use App\Models\Category;
 
 class BlogPostController extends Controller
 {
@@ -24,7 +25,8 @@ class BlogPostController extends Controller
 
     public function create()
     {
-        return view('backend.blog_post.create');
+        $categories = Category::where('status', 1)->get();
+        return view('backend.blog_post.create', compact('categories'));
     }
 
     public function store(BlogPostRequest $request)
@@ -35,12 +37,13 @@ class BlogPostController extends Controller
 
         return redirect()->route('blog.list')->with('success', 'Blog created successfully!');
     }
-    
+
 
     public function edit($id)
     {
-        $data['blog'] = BlogPost::findOrFail($id);
-        return view('backend.blog_post.create', $data);
+        $blog = BlogPost::findOrFail($id);
+        $categories = Category::where('status', 1)->get();
+        return view('backend.blog_post.create', compact('blog', 'categories'));
     }
 
     public function update(BlogPostRequest $request, $id)

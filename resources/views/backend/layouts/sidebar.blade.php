@@ -14,42 +14,56 @@
     <!-- Sidebar -->
     <div id="sidebar" class="d-flex flex-column position-fixed vh-100"
          style="width:250px; background: linear-gradient(180deg, #282836 0%, #12121b 100%); padding:1rem; z-index:1040;">
-        
-
 
         <!-- Navigation -->
-<ul class="nav nav-pills flex-column mb-auto">
-    <li class="nav-item">
-        <a href="{{ route('dashboard') }}" 
-           class="nav-link text-white d-flex align-items-center mb-2 {{ request()->routeIs('dashboard') ? 'active' : '' }}"
-           style="border-radius:6px; transition:0.3s;">
-            <i class="bi bi-house-door me-2"></i> Dashboard
-        </a>
-    </li>
-    <li class="nav-item">
-        <a href="{{ route('blog.list') }}" 
-           class="nav-link text-white d-flex align-items-center mb-2 {{ request()->routeIs('blog.list') ? 'active' : '' }}"
-           style="border-radius:6px; transition:0.3s;">
-            <i class="bi bi-journal-text me-2"></i> Blog Posts
-        </a>
-    </li>
-</ul>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <!-- Dashboard -->
+            <li class="nav-item">
+                <a href="{{ route('dashboard') }}" 
+                   class="nav-link text-white d-flex align-items-center mb-2 {{ request()->routeIs('dashboard') ? 'active' : '' }}"
+                   style="border-radius:6px; transition:0.3s;">
+                    <i class="bi bi-house-door me-2"></i> Dashboard
+                </a>
+            </li>
 
+            <!-- Blog Posts -->
+            <li class="nav-item">
+                <a href="{{ route('blog.list') }}" 
+                   class="nav-link text-white d-flex align-items-center mb-2 {{ request()->routeIs('blog.*') ? 'active' : '' }}"
+                   style="border-radius:6px; transition:0.3s;">
+                    <i class="bi bi-journal-text me-2"></i> Blog Posts
+                </a>
+            </li>
+
+            <!-- Categories (No active class) -->
+            <li class="nav-item">
+                <a href="{{ route('category.list') }}" 
+                   class="nav-link text-white d-flex align-items-center mb-2 {{ request()->routeIs('category.*') ? 'active' : '' }}"
+                   style="border-radius:6px; transition:0.3s;">
+                    <i class="bi bi-journal-text me-2"></i> Categories
+                </a>
+            </li>
+
+            
+            
+        </ul>
 
     </div>
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
         // Optional: Hide sidebar by default on small screens
+        const sidebar = document.getElementById('sidebar');
         if(window.innerWidth < 768){
-            document.getElementById('sidebar').classList.add('d-none');
+            sidebar.classList.add('d-none');
         }
         window.addEventListener('resize', function(){
             if(window.innerWidth >= 768){
-                document.getElementById('sidebar').classList.remove('d-none');
+                sidebar.classList.remove('d-none');
             } else {
-                document.getElementById('sidebar').classList.add('d-none');
+                sidebar.classList.add('d-none');
             }
         });
     </script>

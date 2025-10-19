@@ -2,21 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class BlogPost extends Model
 {
-    use HasFactory;
+    protected $fillable = ['category_id','title','slug','content','featured_image','status'];
 
-    protected $fillable = [
-        'title', 
-        'slug', 
-        'content',
-        'meta_title', 
-        'meta_description', 
-        'meta_keywords',
-        'featured_image', 
-        'status'
-    ];
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

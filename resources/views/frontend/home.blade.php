@@ -65,6 +65,62 @@
         </div>
     </section>
 
+{{-- Categories --}}
+    <section class="py-5 bg-light">
+        <div class="container text-center">
+            <h3 class="mb-5">Categories</h3>
+
+            {{-- Desktop / Tablet view --}}
+            <div class="row justify-content-center g-4 d-none d-md-flex">
+                @foreach($categories as $category)
+                    <div class="col-6 col-sm-4 col-md-3 text-center">
+                        <a href="{{ url('category/' . $category->slug) }}" class="text-decoration-none text-dark">
+                            <img src="{{ $category->icon ? asset('storage/' . $category->icon) : asset('images/no-image.png') }}"
+                                alt="{{ $category->name }}" class="img-fluid mb-2"
+                                style="height:300px; width:300px; object-fit:cover;">
+                            <h5 class="mb-0">{{ $category->name }}</h5>
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+
+            {{-- Mobile view slider --}}
+            <div id="categoryCarousel" class="carousel slide d-md-none" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @foreach($categories->chunk(2) as $index => $categoryChunk)
+                        <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                            <div class="row justify-content-center g-4">
+                                @foreach($categoryChunk as $category)
+                                    <div class="col-6 text-center">
+                                        <a href="{{ url('category/' . $category->slug) }}" class="text-decoration-none text-dark">
+                                            <img src="{{ $category->icon ? asset('storage/' . $category->icon) : asset('images/no-image.png') }}"
+                                                alt="{{ $category->name }}" class="img-fluid mb-2"
+                                                style="height:300px; width:300px; object-fit:cover;">
+                                            <h5 class="mb-0">{{ $category->name }}</h5>
+                                        </a>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#categoryCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#categoryCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+
+        </div>
+    </section>
+
+
+
+
+
     <!-- All Blogs Section -->
     <section class="py-5 bg-light">
         <div class="container"> <!-- Same container width -->

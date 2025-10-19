@@ -14,6 +14,7 @@ class BlogPostRequest extends FormRequest
     public function rules()
     {
         return [
+        'category_id' => 'required|exists:categories,id',
         'title' => 'required|string|max:255',
         'slug' => 'nullable|string|max:255|unique:blog_posts,slug,' . $this->route('id'),
         'content' => 'required|string',
