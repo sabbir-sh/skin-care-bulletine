@@ -1,37 +1,56 @@
-<!-- Sidebar -->
-<div class="d-flex flex-column flex-shrink-0 vh-100 position-fixed text-white"
-    style="width: 250px; background: linear-gradient(180deg, #ffffff 0%, #12121b 100%); padding: 20px;">
-    
-  
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    <hr style="border-color: rgba(255,255,255,0.1); margin: 0 0 20px;">
+<body style="margin:0; font-family: 'Segoe UI', sans-serif; background-color:#f8f9fa; color:#212529;">
 
-    <!-- Navigation -->
-    <ul class="nav nav-pills flex-column mb-auto">
-        <li class="nav-item">
-            <a href="{{ route('dashboard') }}"
-                class="nav-link d-flex align-items-center {{ request()->routeIs('dashboard') ? 'active bg-primary' : 'text-white' }}">
-                <i class="bi bi-house-door me-2"></i> Dashboard
-            </a>
-        </li>
+    <!-- Sidebar Toggle Button for small screens -->
+    <button class="btn btn-dark d-md-none position-fixed" 
+            style="top:10px; left:10px; z-index:1050;" 
+            onclick="document.getElementById('sidebar').classList.toggle('d-none')">
+        <i class="bi bi-list"></i>
+    </button>
 
-        <li class="nav-item">
-            <a href="{{ route('blogList') }}"
-                class="nav-link d-flex align-items-center {{ request()->routeIs('blogList') ? 'active bg-primary' : 'text-white' }}">
-                <i class="bi bi-journal-text me-2"></i> Blog Posts
-            </a>
-        </li>
-    </ul>
+    <!-- Sidebar -->
+    <div id="sidebar" class="d-flex flex-column position-fixed vh-100"
+         style="width:250px; background: linear-gradient(180deg, #282836 0%, #12121b 100%); padding:1rem; z-index:1040;">
+        
 
-    <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
 
-    <!-- Logout -->
-    <div class="mt-auto">
-        <form action="{{ route('logout') }}" method="POST">
-            @csrf
-            <button type="submit" class="btn btn-outline-light w-100">
-                <i class="bi bi-box-arrow-right me-2"></i> Logout
-            </button>
-        </form>
+        <!-- Navigation -->
+<ul class="nav nav-pills flex-column mb-auto">
+    <li class="nav-item">
+        <a href="{{ route('dashboard') }}" 
+           class="nav-link text-white d-flex align-items-center mb-2 {{ request()->routeIs('dashboard') ? 'active' : '' }}"
+           style="border-radius:6px; transition:0.3s;">
+            <i class="bi bi-house-door me-2"></i> Dashboard
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="{{ route('blog.list') }}" 
+           class="nav-link text-white d-flex align-items-center mb-2 {{ request()->routeIs('blog.list') ? 'active' : '' }}"
+           style="border-radius:6px; transition:0.3s;">
+            <i class="bi bi-journal-text me-2"></i> Blog Posts
+        </a>
+    </li>
+</ul>
+
+
     </div>
-</div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Optional: Hide sidebar by default on small screens
+        if(window.innerWidth < 768){
+            document.getElementById('sidebar').classList.add('d-none');
+        }
+        window.addEventListener('resize', function(){
+            if(window.innerWidth >= 768){
+                document.getElementById('sidebar').classList.remove('d-none');
+            } else {
+                document.getElementById('sidebar').classList.add('d-none');
+            }
+        });
+    </script>
+</body>

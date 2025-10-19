@@ -3,78 +3,60 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\BlogPostRequest;
+use App\Http\Services\Blog\BlogPostService;
 use App\Models\BlogPost;
-use Illuminate\Support\Str;
 
 class BlogPostController extends Controller
 {
+    protected $blogService;
+
+    public function __construct(BlogPostService $blogService)
+    {
+        $this->blogService = $blogService;
+    }
+
     public function index()
     {
-        $blogs = BlogPost::latest()->paginate(10);
+        $blogs = $this->blogService->getAll();
         return view('backend.blog_post.index', compact('blogs'));
     }
 
     public function create()
     {
-        return view('backend.blog.create');
+        return view('backend.blog_post.create');
     }
 
-    public function store(Request $request)
+    public function store(BlogPostRequest $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required',
-        ]);
+        $data = $request->validated();
 
-        $data = $request->all();
-        $data['slug'] = Str::slug($request->title);
+        $this->blogService->create($data);
 
-        if ($request->hasFile('featured_image')) {
-            $image = $request->file('featured_image');
-            $imageName = time().'_'.$image->getClientOriginalName();
-            $image->move(public_path('uploads/blog'), $imageName);
-            $data['featured_image'] = 'uploads/blog/' . $imageName;
-        }
-
-        BlogPost::create($data);
-
-        return redirect()->route('admin.blogList')->with('success', 'Blog created successfully!');
+        return redirect()->route('blog.list')->with('success', 'Blog created successfully!');
     }
+    
 
     public function edit($id)
     {
         $blog = BlogPost::findOrFail($id);
-        return view('backend.blog.edit', compact('blog'));
+        return view('backend.blog_post.create', compact('blog'));
     }
 
-    public function update(Request $request, $id)
+    public function update(BlogPostRequest $request, $id)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required',
-        ]);
-
         $blog = BlogPost::findOrFail($id);
-        $data = $request->all();
-        $data['slug'] = Str::slug($request->title);
+        $data = $request->validated();
 
-        if ($request->hasFile('featured_image')) {
-            $image = $request->file('featured_image');
-            $imageName = time().'_'.$image->getClientOriginalName();
-            $image->move(public_path('uploads/blog'), $imageName);
-            $data['featured_image'] = 'uploads/blog/' . $imageName;
-        }
+        $this->blogService->update($blog, $data);
 
-        $blog->update($data);
-
-        return redirect()->route('admin.blogList')->with('success', 'Blog updated successfully!');
+        return redirect()->route('blog.list')->with('success', 'Blog updated successfully!');
     }
 
     public function destroy($id)
     {
         $blog = BlogPost::findOrFail($id);
-        $blog->delete();
+        $this->blogService->delete($blog);
 
         return back()->with('success', 'Blog deleted successfully!');
     }

@@ -20,13 +20,13 @@ Route::post('/contact-us', [ContactController::class, 'submit'])->name('contact.
 
 
 // Backend
-Route::prefix('blog-post')->group(function() {
-    Route::get('/', [BlogPostController::class, 'index'])->name('blogList');
-    Route::get('create', [BlogPostController::class, 'create'])->name('blogCreate');
-    Route::post('store', [BlogPostController::class, 'store'])->name('blogStore');
-    Route::get('edit/{id}', [BlogPostController::class, 'edit'])->name('blogEdit');
-    Route::patch('update/{id}', [BlogPostController::class, 'update'])->name('blogUpdate');
-    Route::delete('delete/{id}', [BlogPostController::class, 'destroy'])->name('blogDestroy');
+Route::prefix('blog-post')->name('blog.')->group(function () {
+    Route::get('/', [BlogPostController::class, 'index'])->name('list');
+    Route::get('create', [BlogPostController::class, 'create'])->name('create');
+    Route::post('store', [BlogPostController::class, 'store'])->name('store');
+    Route::get('edit/{id}', [BlogPostController::class, 'edit'])->name('edit');
+    Route::patch('update/{id}', [BlogPostController::class, 'update'])->name('update');
+    Route::delete('delete/{id}', [BlogPostController::class, 'destroy'])->name('destroy');
 });
 
 
