@@ -28,7 +28,7 @@
 
             <div class="mb-3">
                 <label>Content</label>
-                <textarea name="content" rows="6" class="form-control" required>{{ old('content', $blog->content ?? '') }}</textarea>
+                <textarea name="content" rows="6" class="form-control aiz-text-editor" required>{{ old('content', $blog->content ?? '') }}</textarea>
             </div>
 
             <div class="mb-3">
@@ -67,3 +67,11 @@
     </div>
 </div>
 @endsection
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.0/classic/ckeditor.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll('.aiz-text-editor').forEach((editorElement) => {
+        ClassicEditor.create(editorElement).catch(error => { console.error(error); });
+    });
+});
+</script>

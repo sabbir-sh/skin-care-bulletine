@@ -18,8 +18,8 @@ class BlogPostController extends Controller
 
     public function index()
     {
-        $blogs = $this->blogService->getAll();
-        return view('backend.blog_post.index', compact('blogs'));
+        $data['blogs'] = $this->blogService->getAll();
+        return view('backend.blog_post.index', $data);
     }
 
     public function create()
@@ -39,8 +39,8 @@ class BlogPostController extends Controller
 
     public function edit($id)
     {
-        $blog = BlogPost::findOrFail($id);
-        return view('backend.blog_post.create', compact('blog'));
+        $data['blog'] = BlogPost::findOrFail($id);
+        return view('backend.blog_post.create', $data);
     }
 
     public function update(BlogPostRequest $request, $id)
