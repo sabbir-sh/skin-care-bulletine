@@ -20,16 +20,26 @@ class BlogController extends Controller
 
     // Single blog page
     public function show($slug)
-    {
-        $data['blog'] = BlogPost::where('slug', $slug)->firstOrFail();
+{
+    $data['blog'] = BlogPost::where('slug', $slug)->firstOrFail();
 
-        $data['recentBlogs'] = BlogPost::latest()
-            ->where('id', '!=', $data['blog']->id)
-            ->take(5)
-            ->get();
+    // Recent posts for sidebar
+    $data['recentBlogs'] = BlogPost::latest()
+                                   ->where('id', '!=', $data['blog']->id)
+                                   ->take(5)
+                                   ->get();
 
-        $data['categories'] = Category::where('status', 1)->get();
+    // Similar posts: same category, excluding current blog
+    $data['similarBlogs'] = BlogPost::where('category_id', $data['blog']->category_id)
+                                    ->where('id', '!=', $data['blog']->id)
+                                    ->latest()
+                                    ->take(5)
+                                    ->get();
 
-        return view('frontend.blog.show', $data);
-    }
+    // Categories for sidebar
+    $data['categories'] = Category::where('status', 1)->get();
+
+    return view('frontend.blog.show', $data);
+}
+
 }

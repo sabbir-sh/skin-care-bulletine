@@ -3,7 +3,7 @@
 @section('content')
 
     <!-- Slider + Recent Blogs Section -->
-    <section class="py-5 bg-white">
+    <section class="py-5 bg-light">
         <div class="container">
             <div class="row g-4">
 
@@ -38,7 +38,7 @@
                                     @endforeach
                                 </div>
 
-                                <button class="carousel-control-prev" type="button" data-bs-target="#featuredBlogCarousel"
+                                {{-- <button class="carousel-control-prev" type="button" data-bs-target="#featuredBlogCarousel"
                                     data-bs-slide="prev">
                                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                     <span class="visually-hidden">Previous</span>
@@ -47,7 +47,7 @@
                                     data-bs-slide="next">
                                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                     <span class="visually-hidden">Next</span>
-                                </button>
+                                </button> --}}
                             </div>
                         @else
                             <div class="p-5 text-center text-muted" style="height: 450px;">No featured blogs found.</div>
