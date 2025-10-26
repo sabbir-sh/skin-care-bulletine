@@ -7,7 +7,7 @@ use App\Models\BlogPost;
 
 class DashboardController extends Controller
 {
-    public function dashboard()
+    public function index()
     {
         $total = BlogPost::count();
         $published = BlogPost::where('status', 1)->count();

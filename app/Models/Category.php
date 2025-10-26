@@ -45,4 +45,9 @@ class Category extends Model
     {
         return $query->where('status', 1);
     }
+
+    public function blogs()
+    {
+        return $this->hasMany(BlogPost::class);
+    }
 }

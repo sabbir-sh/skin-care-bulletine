@@ -1,196 +1,105 @@
 @extends('backend.layouts.app')
 
 @section('content')
-<style>
-    /* Basic Reset and Variables */
-    :root {
-        --primary-color: #007bff;
-        --secondary-color: #6c757d;
-        --success-color: #28a745;
-        --danger-color: #dc3545;
-        --card-bg: #ffffff;
-        --body-bg: #f8f9fa;
-        --border-color: #e9ecef;
-    }
+    <div style="padding:30px; font-family:Arial,sans-serif; background:#f8f9fa; min-height:100vh;">
 
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: var(--body-bg);
-        margin: 0;
-        padding: 0;
-    }
+        {{-- Header --}}
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;">
+            <h1 style="margin:0; color:#343a40;">Dashboard Overview 👋</h1>
+        </div>
 
-    /* Main Container */
-    .dashboard-container {
-        padding: 20px;
-    }
+        {{-- Blog Stats Cards --}}
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:20px; margin-bottom:40px;">
+            <div
+                style="background:white; border-radius:12px; padding:25px; box-shadow:0 6px 15px rgba(0,0,0,0.08); position:relative; overflow:hidden;">
+                <div style="font-size:14px; color:#6c757d; text-transform:uppercase; margin-bottom:8px;">Total Posts</div>
+                <div style="font-size:32px; font-weight:bold; color:#343a40;">{{ $total }}</div>
+                <div
+                    style="position:absolute; top:0; right:0; background:#007bff; width:60px; height:60px; border-radius:50%; opacity:0.1;">
+                </div>
+            </div>
 
-    /* Header */
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-    }
+            <div
+                style="background:white; border-radius:12px; padding:25px; box-shadow:0 6px 15px rgba(0,0,0,0.08); position:relative; overflow:hidden;">
+                <div style="font-size:14px; color:#6c757d; text-transform:uppercase; margin-bottom:8px;">Published Posts
+                </div>
+                <div style="font-size:32px; font-weight:bold; color:#343a40;">{{ $published }}</div>
+                <div
+                    style="position:absolute; top:0; right:0; background:#28a745; width:60px; height:60px; border-radius:50%; opacity:0.1;">
+                </div>
+            </div>
 
-    .header h1 {
-        color: #343a40;
-        margin: 0;
-    }
+            <div
+                style="background:white; border-radius:12px; padding:25px; box-shadow:0 6px 15px rgba(0,0,0,0.08); position:relative; overflow:hidden;">
+                <div style="font-size:14px; color:#6c757d; text-transform:uppercase; margin-bottom:8px;">Draft Posts</div>
+                <div style="font-size:32px; font-weight:bold; color:#343a40;">{{ $draft }}</div>
+                <div
+                    style="position:absolute; top:0; right:0; background:#dc3545; width:60px; height:60px; border-radius:50%; opacity:0.1;">
+                </div>
+            </div>
+        </div>
 
-    .header .btn-primary {
-        background-color: var(--primary-color);
-        color: white;
-        padding: 10px 15px;
-        text-decoration: none;
-        border-radius: 5px;
-        font-weight: bold;
-    }
+        {{-- Recent Blogs Table --}}
+        <div style="background:white; border-radius:12px; padding:25px; box-shadow:0 6px 15px rgba(0,0,0,0.08);">
+            <h2
+                style="margin-top:0; margin-bottom:20px; font-size:22px; color:#007bff; border-bottom:1px solid #e9ecef; padding-bottom:10px;">
+                Recent Blog Posts</h2>
+            <table style="width:100%; border-collapse:collapse; font-size:14px;">
+                <thead>
+                    <tr style="background:#f1f1f1; color:#343a40; font-weight:600; text-align:left;">
+                        <th style="padding:12px 15px;">Title</th>
+                        <th style="padding:12px 15px;">Status</th>
+                        <th style="padding:12px 15px;">Created At</th>
+                        <th style="padding:12px 15px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(\App\Models\BlogPost::latest()->take(10)->get() as $blog)
+                        <tr style="border-bottom:1px solid #e9ecef; transition:background 0.3s;"
+                            onmouseover="this.style.background='#f9f9f9';" onmouseout="this.style.background='white';">
+                            <td style="padding:12px 15px;">{{ Str::limit($blog->title, 50) }}</td>
+                            <td style="padding:12px 15px;">
+                                @if($blog->status == 1)
+                                    <span
+                                        style="background:#28a745; color:white; font-size:12px; font-weight:bold; padding:3px 8px; border-radius:12px;">Published</span>
+                                @else
+                                    <span
+                                        style="background:#dc3545; color:white; font-size:12px; font-weight:bold; padding:3px 8px; border-radius:12px;">Draft</span>
+                                @endif
+                            </td>
+                            <td style="padding:12px 15px;">{{ $blog->created_at->format('M d, Y') }}</td>
+                            <td style="padding:12px 15px;">
+                                <a href="{{ route('blog.show', $blog->slug) }}" target="_blank" style="color:#6c757d;">View</a>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
 
-    /* Stats Grid */
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 20px;
-        margin-bottom: 30px;
-    }
+        {{-- Category-wise Blog Count --}}
+        <div
+            style="margin-top:40px; background:white; border-radius:12px; padding:25px; box-shadow:0 6px 15px rgba(0,0,0,0.08);">
+            <h2
+                style="margin-top:0; margin-bottom:20px; font-size:22px; color:#007bff; border-bottom:1px solid #e9ecef; padding-bottom:10px;">
+                Blog Posts by Category
+            </h2>
 
-    .stat-card {
-        background-color: var(--card-bg);
-        border-left: 5px solid var(--primary-color); /* Emphasize with border */
-        border-radius: 8px;
-        padding: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-        transition: transform 0.2s;
-    }
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:20px;">
+                @foreach(\App\Models\Category::withCount('blogs')->get() as $category)
+                    <div
+                        style="background:#f8f9fa; border-radius:10px; padding:20px; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.05);">
+                        <div style="font-size:16px; font-weight:bold; color:#343a40; margin-bottom:10px;">
+                            {{ $category->name }}
+                        </div>
+                        <div style="font-size:28px; font-weight:bold; color:#007bff;">
+                            {{ $category->blogs_count }}
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
 
-    .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    }
 
-    .stat-card.success { border-left-color: var(--success-color); }
-    .stat-card.danger { border-left-color: var(--danger-color); }
-    .stat-card.secondary { border-left-color: var(--secondary-color); }
-
-    .stat-card .title {
-        font-size: 14px;
-        color: var(--secondary-color);
-        margin-bottom: 5px;
-        text-transform: uppercase;
-    }
-
-    .stat-card .value {
-        font-size: 28px;
-        font-weight: bold;
-        color: #343a40;
-    }
-
-    /* Content Area (Recent Activity/Table) */
-    .content-card {
-        background-color: var(--card-bg);
-        border-radius: 8px;
-        padding: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-    }
-
-    .content-card h2 {
-        border-bottom: 1px solid var(--border-color);
-        padding-bottom: 10px;
-        margin-top: 0;
-        margin-bottom: 15px;
-        color: var(--primary-color);
-        font-size: 20px;
-    }
-
-    /* Table Styling (Simple) */
-    .data-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    .data-table th, .data-table td {
-        padding: 12px 15px;
-        text-align: left;
-        border-bottom: 1px solid var(--border-color);
-    }
-
-    .data-table th {
-        background-color: #f1f1f1;
-        color: #343a40;
-        font-weight: 600;
-    }
-
-    .data-table tbody tr:hover {
-        background-color: #f5f5f5;
-    }
-</style>
-
-<div class="dashboard-container">
-    <div class="header">
-        <h1>Dashboard Overview 👋</h1>
-        <a href="#" class="btn-primary">Add New Item</a>
     </div>
-
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="title">Total Users</div>
-            <div class="value">2,500</div>
-        </div>
-        <div class="stat-card success">
-            <div class="title">Revenue (This Month)</div>
-            <div class="value">$12,450</div>
-        </div>
-        <div class="stat-card danger">
-            <div class="title">Pending Orders</div>
-            <div class="value">15</div>
-        </div>
-        <div class="stat-card secondary">
-            <div class="title">Products Listed</div>
-            <div class="value">548</div>
-        </div>
-    </div>
-    
-    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0;">
-
-    <div class="content-card">
-        <h2>Recent Activity/Orders</h2>
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Order ID</th>
-                    <th>Customer Name</th>
-                    <th>Status</th>
-                    <th>Amount</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>#1001</td>
-                    <td>Mr. John Doe</td>
-                    <td><span style="color: var(--success-color);">Completed</span></td>
-                    <td>$450.00</td>
-                    <td>2025-10-25</td>
-                </tr>
-                <tr>
-                    <td>#1002</td>
-                    <td>Ms. Jane Smith</td>
-                    <td><span style="color: var(--primary-color);">Processing</span></td>
-                    <td>$120.50</td>
-                    <td>2025-10-24</td>
-                </tr>
-                <tr>
-                    <td>#1003</td>
-                    <td>Abeer Ahmed</td>
-                    <td><span style="color: var(--danger-color);">Cancelled</span></td>
-                    <td>$75.00</td>
-                    <td>2025-10-23</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-</div>
-
 @endsection

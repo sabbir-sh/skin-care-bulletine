@@ -150,27 +150,45 @@
     </div>
 </div>
 
-{{-- jQuery --}}
+<!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-{{-- Summernote --}}
-<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote.min.js"></script>
+<!-- Bootstrap 5 -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+<!-- Summernote Lite -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
+
+<!-- Editor Init -->
 <script>
-$(document).ready(function(){
+$(function () {
     $('.aiz-text-editor').summernote({
-        height: 300,
+        height: 350,
+        placeholder: 'Write your blog content here...',
         toolbar: [
-            ['style', ['bold', 'italic', 'underline', 'clear']],
-            ['font', ['strikethrough', 'superscript', 'subscript']],
+            ['style', ['style']], // <-- This enables the "Headings" dropdown
+            ['font', ['bold', 'italic', 'underline', 'clear']],
+            ['fontname', ['fontname']],
             ['fontsize', ['fontsize']],
             ['color', ['color']],
             ['para', ['ul', 'ol', 'paragraph']],
             ['insert', ['link', 'picture', 'video']],
             ['view', ['fullscreen', 'codeview', 'help']]
-        ]
+        ],
+        styleTags: [
+            'p', 'blockquote', 'pre',
+            { title: 'Heading 1', tag: 'h1', className: '', value: 'h1' },
+            { title: 'Heading 2', tag: 'h2', className: '', value: 'h2' },
+            { title: 'Heading 3', tag: 'h3', className: '', value: 'h3' },
+            { title: 'Heading 4', tag: 'h4', className: '', value: 'h4' },
+            { title: 'Heading 5', tag: 'h5', className: '', value: 'h5' },
+            { title: 'Heading 6', tag: 'h6', className: '', value: 'h6' }
+        ],
+        fontNames: ['Arial', 'Helvetica', 'Times New Roman', 'Courier New', 'Verdana']
     });
 });
 </script>
+
 @endsection

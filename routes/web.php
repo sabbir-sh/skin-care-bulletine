@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Backend\BlogPostController;
 use App\Http\Controllers\Backend\CategoryController;
+use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Frontend\AboutUsController;
 use App\Http\Controllers\Frontend\CategoryListController;
 use App\Http\Controllers\Frontend\BlogController;
@@ -56,13 +57,9 @@ Route::prefix('category')->name('category.')->group(function () {
 });
 
 
-Route::get('/dashboard', function () {
-    return view('backend.dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-
-
-
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 
 Route::middleware('auth')->group(function () {
