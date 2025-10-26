@@ -22,7 +22,7 @@
 
                 <div class="row">
 
-                    {{-- ================= LEFT SECTION ================= --}}
+                    {{-- LEFT SECTION --}}
                     <div class="col-md-8">
                         <div class="card border mb-4">
                             <div class="card-header bg-light">
@@ -33,7 +33,7 @@
                                 {{-- Title --}}
                                 <div class="mb-3">
                                     <label class="form-label">Title <span class="text-danger">*</span></label>
-                                    <input type="text" name="title" id="title"
+                                    <input type="text" name="title" 
                                            class="form-control @error('title') is-invalid @enderror"
                                            value="{{ old('title', $blog->title ?? '') }}" required>
                                     @error('title') <span class="invalid-feedback">{{ $message }}</span> @enderror
@@ -42,14 +42,14 @@
                                 {{-- Slug --}}
                                 <div class="mb-3">
                                     <label class="form-label">Slug</label>
-                                    <input type="text" name="slug" id="slug"
+                                    <input type="text" name="slug" 
                                            class="form-control @error('slug') is-invalid @enderror"
                                            value="{{ old('slug', $blog->slug ?? '') }}">
                                     <small class="text-muted">Leave empty to auto-generate from title.</small>
                                     @error('slug') <span class="invalid-feedback">{{ $message }}</span> @enderror
                                 </div>
 
-                                {{-- Content --}}
+                                {{-- Content with Summernote --}}
                                 <div class="mb-3">
                                     <label class="form-label">Content <span class="text-danger">*</span></label>
                                     <textarea name="content" rows="8" 
@@ -99,7 +99,7 @@
                         </div>
                     </div>
 
-                    {{-- ================= RIGHT SECTION ================= --}}
+                    {{-- RIGHT SECTION --}}
                     <div class="col-md-4">
                         <div class="card border mb-4">
                             <div class="card-header bg-light">
@@ -149,4 +149,28 @@
         </div>
     </div>
 </div>
+
+{{-- jQuery --}}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+{{-- Summernote --}}
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote.min.js"></script>
+
+<script>
+$(document).ready(function(){
+    $('.aiz-text-editor').summernote({
+        height: 300,
+        toolbar: [
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['font', ['strikethrough', 'superscript', 'subscript']],
+            ['fontsize', ['fontsize']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['insert', ['link', 'picture', 'video']],
+            ['view', ['fullscreen', 'codeview', 'help']]
+        ]
+    });
+});
+</script>
 @endsection
