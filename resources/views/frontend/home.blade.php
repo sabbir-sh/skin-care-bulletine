@@ -3,61 +3,81 @@
 @section('content')
 
     <!-- Slider + Recent Blogs Section -->
-    <section class="py-5 bg-light">
-        <div class="container"> <!-- Same width container -->
+    <section class="py-5 bg-white">
+        <div class="container">
             <div class="row g-4">
 
-                <!-- Left: Slider -->
+                {{-- Left side: Featured blog carousel --}}
                 <div class="col-lg-8">
-                    <div id="blogCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
-                        <div class="carousel-inner">
-                            @foreach($blogs as $index => $blog)
-                                <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
-                                    @if($blog->featured_image)
-                                        <a href="{{ route('blog.show', $blog->slug) }}" class="d-block position-relative">
-                                            <img src="{{ asset($blog->featured_image) }}" class="d-block w-100"
-                                                alt="{{ $blog->title }}" style="height:400px; object-fit:cover;">
-                                            <div class="position-absolute bottom-0 start-0 w-100 p-3"
-                                                style="background: rgba(0,0,0,0.5);">
-                                                <h4 class="text-white m-0">{{ $blog->title }}</h4>
-                                            </div>
-                                        </a>
-                                    @endif
-                                </div>
-                            @endforeach
-                        </div>
+                    <div class="card border-0 shadow-sm overflow-hidden">
 
-                        <!-- Controls -->
-                        <button class="carousel-control-prev" type="button" data-bs-target="#blogCarousel"
-                            data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#blogCarousel"
-                            data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
+                        @if(count($blogs) > 0)
+                            <div id="featuredBlogCarousel" class="carousel slide" data-bs-ride="carousel"
+                                data-bs-interval="4000">
+                                <div class="carousel-inner">
+                                    @foreach($blogs as $index => $blog)
+                                        <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                                            <a href="{{ route('blog.show', $blog->slug) }}" class="d-block position-relative">
+
+                                                <img src="{{ asset($blog->featured_image ?? 'path/to/default/image.jpg') }}"
+                                                    class="d-block w-100 object-fit-cover" alt="{{ $blog->title }}"
+                                                    style="height: 450px; border-radius: 10px;">
+
+                                                <div class="position-absolute bottom-0 start-0 w-100 p-4 pb-3 text-white"
+                                                    style="background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));">
+
+                                                    <small
+                                                        class="text-uppercase fw-bold text-warning">{{ $blog->category->name ?? 'Uncategorized' }}</small>
+                                                    <h3 class="fw-bold mb-1 mt-1">{{ Str::limit($blog->title, 70) }}</h3>
+                                                    <small class="text-white-50">
+                                                        <i class="bi bi-clock"></i> {{ $blog->created_at->format('M d, Y') }}
+                                                    </small>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    @endforeach
+                                </div>
+
+                                <button class="carousel-control-prev" type="button" data-bs-target="#featuredBlogCarousel"
+                                    data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#featuredBlogCarousel"
+                                    data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+                        @else
+                            <div class="p-5 text-center text-muted" style="height: 450px;">No featured blogs found.</div>
+                        @endif
                     </div>
                 </div>
 
-                <!-- Right: Recent Blogs List (2 per row) -->
+                {{-- Right side: Recent blogs (4 latest) --}}
                 <div class="col-lg-4">
                     <div class="row g-3">
-                        @foreach($blogs->take(4) as $blog)
-                            <div class="col-6">
+                        @forelse($blogs->take(4) as $blog)
+                            <div class="col-6 col-md-12">
                                 <a href="{{ route('blog.show', $blog->slug) }}"
-                                    class="d-block text-decoration-none text-dark border p-2 rounded">
-                                    @if($blog->featured_image)
-                                        <img src="{{ asset($blog->featured_image) }}" alt="{{ $blog->title }}"
-                                            class="img-fluid mb-2"
-                                            style="height:80px; object-fit:cover; width:100%; border-radius:5px;">
-                                    @endif
-                                    <h6 class="mb-1">{{ $blog->title }}</h6>
-                                    <small class="text-muted">{{ $blog->created_at->format('M d, Y') }}</small>
+                                    class="list-group-item list-group-item-action d-flex align-items-center p-3 border rounded shadow-sm text-decoration-none">
+
+                                    <img src="{{ asset($blog->featured_image ?? 'path/to/default/small.jpg') }}"
+                                        alt="{{ $blog->title }}" class="flex-shrink-0 me-3 rounded object-fit-cover"
+                                        style="width: 60px; height: 60px;">
+
+                                    <div>
+                                        <h6 class="mb-1 text-dark fw-bold">{{ Str::limit($blog->title, 40) }}</h6>
+                                        <small class="text-muted">
+                                            <i class="bi bi-calendar"></i> {{ $blog->created_at->format('M d, Y') }}
+                                        </small>
+                                    </div>
                                 </a>
                             </div>
-                        @endforeach
+                        @empty
+                            <div class="col-12 text-center text-muted">No recent posts available.</div>
+                        @endforelse
                     </div>
                 </div>
 
@@ -65,27 +85,28 @@
         </div>
     </section>
 
-{{-- Categories --}}
+
+    {{-- Categories --}}
     <section class="py-5 bg-light">
         <div class="container text-center">
             <h3 class="mb-5">Categories</h3>
 
-            {{-- Desktop / Tablet view --}}
+            {{-- Desktop / Tablet view (5 per row, no slider) --}}
             <div class="row justify-content-center g-4 d-none d-md-flex">
                 @foreach($categories as $category)
-                    <div class="col-6 col-sm-4 col-md-3 text-center">
+                    <div class="col-6 col-sm-4 col-md-2 text-center">
                         <a href="{{ url('category/' . $category->slug) }}" class="text-decoration-none text-dark">
                             <img src="{{ $category->icon ? asset('storage/' . $category->icon) : asset('images/no-image.png') }}"
-                                alt="{{ $category->name }}" class="img-fluid mb-2"
-                                style="height:300px; width:300px; object-fit:cover;">
+                                alt="{{ $category->name }}" class="img-fluid mb-2 rounded">
                             <h5 class="mb-0">{{ $category->name }}</h5>
                         </a>
                     </div>
                 @endforeach
             </div>
 
-            {{-- Mobile view slider --}}
-            <div id="categoryCarousel" class="carousel slide d-md-none" data-bs-ride="carousel">
+            {{-- Mobile carousel (2 per slide) --}}
+            <div id="mobileCategoryCarousel" class="carousel slide d-md-none" data-bs-ride="carousel"
+                data-bs-interval="4000">
                 <div class="carousel-inner">
                     @foreach($categories->chunk(2) as $index => $categoryChunk)
                         <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
@@ -94,8 +115,7 @@
                                     <div class="col-6 text-center">
                                         <a href="{{ url('category/' . $category->slug) }}" class="text-decoration-none text-dark">
                                             <img src="{{ $category->icon ? asset('storage/' . $category->icon) : asset('images/no-image.png') }}"
-                                                alt="{{ $category->name }}" class="img-fluid mb-2"
-                                                style="height:300px; width:300px; object-fit:cover;">
+                                                alt="{{ $category->name }}" class="img-fluid mb-2 rounded">
                                             <h5 class="mb-0">{{ $category->name }}</h5>
                                         </a>
                                     </div>
@@ -104,16 +124,18 @@
                         </div>
                     @endforeach
                 </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#categoryCarousel" data-bs-slide="prev">
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#mobileCategoryCarousel"
+                    data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Previous</span>
                 </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#categoryCarousel" data-bs-slide="next">
+                <button class="carousel-control-next" type="button" data-bs-target="#mobileCategoryCarousel"
+                    data-bs-slide="next">
                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Next</span>
                 </button>
             </div>
-
         </div>
     </section>
 
