@@ -3,87 +3,87 @@
 @section('content')
 
     <!-- Slider + Recent Blogs Section -->
-    <section class="py-5 bg-light">
-        <div class="container">
-            <div class="row g-4">
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row g-4">
+            {{-- Setting the base height for the layout on large screens --}}
+            @php $base_height = '400px'; @endphp
 
-                {{-- Left side: Featured blog carousel --}}
-                <div class="col-lg-8">
-                    <div class="card border-0 shadow-sm overflow-hidden">
+            {{-- Left side: Large Dominant Featured Post (8 Columns) --}}
+            <div class="col-lg-8">
+                @php $dominantBlog = $blogs->get(0); @endphp
 
-                        @if(count($blogs) > 0)
-                            <div id="featuredBlogCarousel" class="carousel slide" data-bs-ride="carousel"
-                                data-bs-interval="4000">
-                                <div class="carousel-inner">
-                                    @foreach($blogs as $index => $blog)
-                                        <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
-                                            <a href="{{ route('blog.show', $blog->slug) }}" class="d-block position-relative">
+                @if($dominantBlog)
+                    <div class="card border-0 shadow-lg h-100 overflow-hidden rounded-3">
+                        <a href="{{ route('blog.show', $dominantBlog->slug) }}" class="d-block position-relative h-100">
 
-                                                <img src="{{ asset($blog->featured_image ?? 'path/to/default/image.jpg') }}"
-                                                    class="d-block w-100 object-fit-cover" alt="{{ $blog->title }}"
-                                                    style="height: 450px; border-radius: 10px;">
+                            {{-- Image: Takes up most of the space --}}
+                            <img src="{{ asset($dominantBlog->featured_image ?? 'path/to/default/image.jpg') }}"
+                                 class="d-block w-100 object-fit-cover" alt="{{ $dominantBlog->title }}"
+                                 style="height: {{ $base_height }}; max-height: 100%; object-position: center;">
 
-                                                <div class="position-absolute bottom-0 start-0 w-100 p-4 pb-3 text-white"
-                                                    style="background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));">
+                            {{-- Text Overlay --}}
+                            <div class="position-absolute bottom-0 start-0 w-100 p-4 pb-3 text-white"
+                                 style="background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0));">
 
-                                                    <small
-                                                        class="text-uppercase fw-bold text-warning">{{ $blog->category->name ?? 'Uncategorized' }}</small>
-                                                    <h3 class="fw-bold mb-1 mt-1">{{ Str::limit($blog->title, 70) }}</h3>
-                                                    <small class="text-white-50">
-                                                        <i class="bi bi-clock"></i> {{ $blog->created_at->format('M d, Y') }}
-                                                    </small>
-                                                </div>
-                                            </a>
-                                        </div>
-                                    @endforeach
-                                </div>
-
-                                {{-- <button class="carousel-control-prev" type="button" data-bs-target="#featuredBlogCarousel"
-                                    data-bs-slide="prev">
-                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                    <span class="visually-hidden">Previous</span>
-                                </button>
-                                <button class="carousel-control-next" type="button" data-bs-target="#featuredBlogCarousel"
-                                    data-bs-slide="next">
-                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                    <span class="visually-hidden">Next</span>
-                                </button> --}}
+                                <small class="text-uppercase fw-bold text-warning d-block mb-1">
+                                    {{ $dominantBlog->category->name ?? 'Category' }}
+                                </small>
+                                <h3 class="fw-bolder mb-2">{{ Str::limit($dominantBlog->title, 100) }}</h3>
+                                <small class="text-white-50">
+                                    <i class="bi bi-calendar"></i> {{ $dominantBlog->created_at->format('M d, Y') }}
+                                </small>
                             </div>
-                        @else
-                            <div class="p-5 text-center text-muted" style="height: 450px;">No featured blogs found.</div>
-                        @endif
+                        </a>
                     </div>
-                </div>
+                @else
+                    <div class="p-5 text-center text-muted border rounded-3 d-flex align-items-center justify-content-center" style="height: {{ $base_height }};">
+                        No dominant featured blog found.
+                    </div>
+                @endif
+            </div>
 
-                {{-- Right side: Recent blogs (4 latest) --}}
-                <div class="col-lg-4">
-                    <div class="row g-3">
-                        @forelse($blogs->take(4) as $blog)
-                            <div class="col-6 col-md-12">
-                                <a href="{{ route('blog.show', $blog->slug) }}"
-                                    class="list-group-item list-group-item-action d-flex align-items-center p-3 border rounded shadow-sm text-decoration-none">
+            {{-- Right side: Two Stacked Featured Posts (4 Columns) --}}
+            {{-- d-flex and flex-column are essential for vertical stacking/filling --}}
+            <div class="col-lg-4 d-flex flex-column" style="height: {{ $base_height }}; gap: 1rem;">
+                
+                @php $stacked_blogs = $blogs->slice(1, 2); @endphp
 
-                                    <img src="{{ asset($blog->featured_image ?? 'path/to/default/small.jpg') }}"
-                                        alt="{{ $blog->title }}" class="flex-shrink-0 me-3 rounded object-fit-cover"
-                                        style="width: 60px; height: 60px;">
+                @forelse($stacked_blogs as $blog) 
+                    
+                    {{-- The fixed height for each stacked card is (BASE_HEIGHT - GAP) / 2 --}}
+                    @php $card_height = 'calc(50% - 0.5rem)'; @endphp 
 
-                                    <div>
-                                        <h6 class="mb-1 text-dark fw-bold">{{ Str::limit($blog->title, 40) }}</h6>
-                                        <small class="text-muted">
-                                            <i class="bi bi-calendar"></i> {{ $blog->created_at->format('M d, Y') }}
-                                        </small>
-                                    </div>
-                                </a>
+                    <div class="card border-0 shadow-lg overflow-hidden rounded-3 flex-fill mb-0" style="height: {{ $card_height }};">
+                        <a href="{{ route('blog.show', $blog->slug) }}" class="d-block position-relative h-100">
+                            
+                            {{-- Image --}}
+                            <img src="{{ asset($blog->featured_image ?? 'path/to/default/small.jpg') }}"
+                                 class="d-block w-100 h-100 object-fit-cover" alt="{{ $blog->title }}"
+                                 style="object-position: center;">
+
+                            {{-- Text Overlay --}}
+                            <div class="position-absolute bottom-0 start-0 w-100 p-3 text-white"
+                                 style="background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0));">
+
+                                <small class="text-uppercase fw-bold text-info d-block mb-1">
+                                    {{ $blog->category->name ?? 'Topic' }}
+                                </small>
+                                <h5 class="fw-bolder m-0">{{ Str::limit($blog->title, 50) }}</h5>
                             </div>
-                        @empty
-                            <div class="col-12 text-center text-muted">No recent posts available.</div>
-                        @endforelse
+                        </a>
                     </div>
-                </div>
+                @empty
+                    <div class="p-4 text-center text-muted border rounded-3 flex-fill d-flex align-items-center justify-content-center">
+                        Not enough blogs for the stacked layout.
+                    </div>
+                @endforelse
 
             </div>
+
         </div>
-    </section>
+    </div>
+</section>
 
 
     {{-- Categories --}}
