@@ -21,6 +21,8 @@ Route::get('/', [HomeController::class, 'index'])->name('frontend.home');
 Route::get('/blog', [BlogController::class, 'index'])->name('home');
 // Single blog view by slug
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
+Route::get('/blog/search', [BlogController::class, 'search'])->name('blog.search');
+
 // category wise blog listing
 Route::get('/category/{slug}', [CategoryListController::class, 'show'])->name('category.show');
 

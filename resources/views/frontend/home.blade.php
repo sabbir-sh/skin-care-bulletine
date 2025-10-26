@@ -139,17 +139,13 @@
         </div>
     </section>
 
-
-
-
-
     <!-- All Blogs Section -->
     <section class="py-5 bg-light">
-        <div class="container"> <!-- Same container width -->
+        <div class="container">
             <h2 class="mb-4">All Blogs</h2>
             <div class="row g-4">
                 @forelse($blogs as $blog)
-                    <div class="col-md-6 col-lg-4">
+                    <div class="col-6 col-lg-4"> {{-- 2 per row on mobile, 3 per row on desktop --}}
                         <div class="card h-100 shadow-sm border-0 overflow-hidden">
                             @if($blog->featured_image)
                                 <a href="{{ route('blog.show', $blog->slug) }}">
@@ -182,5 +178,6 @@
             </div>
         </div>
     </section>
+
 
 @endsection
