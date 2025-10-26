@@ -1,14 +1,13 @@
 @extends('backend.layouts.app')
 
 @section('content')
-    <div class="card">
-        <div class="card-header">
-            <h5>{{ isset($blog) ? 'Edit Blog Post' : 'Create Blog Post' }}</h5>
+<div class="container-fluid">
+    <div class="card shadow">
+        <div class="card-header bg-success text-white">
+            <h5 class="m-0">{{ isset($blog) ? 'Edit Blog Post' : 'Create Blog Post' }}</h5>
         </div>
 
         <div class="card-body">
-
-            {{-- Success Message --}}
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     {{ session('success') }}
@@ -16,98 +15,138 @@
                 </div>
             @endif
 
-            <form action="{{ isset($blog) ? route('blog.update', $blog->id) : route('blog.store') }}" method="POST"
-                enctype="multipart/form-data">
+            <form action="{{ isset($blog) ? route('blog.update', $blog->id) : route('blog.store') }}" 
+                  method="POST" enctype="multipart/form-data">
                 @csrf
                 @if(isset($blog)) @method('PATCH') @endif
 
-                <div class="mb-3">
-                    <label>Title</label>
-                    <input type="text" name="title" id="title" class="form-control"
-                        value="{{ old('title', $blog->title ?? '') }}" required>
-                </div>
+                <div class="row">
 
-                <div class="mb-3">
-                    <label>Slug</label>
-                    <input type="text" name="slug" id="slug" class="form-control"
-                        value="{{ old('slug', $blog->slug ?? '') }}" required>
-                    <small class="text-muted">Unique URL identifier, e.g., my-blog-title</small>
-                </div>
+                    {{-- ================= LEFT SECTION ================= --}}
+                    <div class="col-md-8">
+                        <div class="card border mb-4">
+                            <div class="card-header bg-light">
+                                <h6 class="m-0 fw-bold text-primary">📰 Main Blog Information</h6>
+                            </div>
+                            <div class="card-body">
 
-                <div class="mb-3">
-                    <label>Content</label>
-                    <textarea name="content" rows="6" class="form-control aiz-text-editor"
-                        required>{{ old('content', $blog->content ?? '') }}</textarea>
-                </div>
+                                {{-- Title --}}
+                                <div class="mb-3">
+                                    <label class="form-label">Title <span class="text-danger">*</span></label>
+                                    <input type="text" name="title" id="title"
+                                           class="form-control @error('title') is-invalid @enderror"
+                                           value="{{ old('title', $blog->title ?? '') }}" required>
+                                    @error('title') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                </div>
 
-                <div class="mb-3">
-                    <label>Meta Title</label>
-                    <input type="text" name="meta_title" class="form-control"
-                        value="{{ old('meta_title', $blog->meta_title ?? '') }}">
-                </div>
+                                {{-- Slug --}}
+                                <div class="mb-3">
+                                    <label class="form-label">Slug</label>
+                                    <input type="text" name="slug" id="slug"
+                                           class="form-control @error('slug') is-invalid @enderror"
+                                           value="{{ old('slug', $blog->slug ?? '') }}">
+                                    <small class="text-muted">Leave empty to auto-generate from title.</small>
+                                    @error('slug') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                </div>
 
-                <div class="mb-3">
-                    <label>Meta Description</label>
-                    <textarea name="meta_description" class="form-control"
-                        rows="3">{{ old('meta_description', $blog->meta_description ?? '') }}</textarea>
-                </div>
+                                {{-- Content --}}
+                                <div class="mb-3">
+                                    <label class="form-label">Content <span class="text-danger">*</span></label>
+                                    <textarea name="content" rows="8" 
+                                              class="form-control aiz-text-editor @error('content') is-invalid @enderror"
+                                              required>{{ old('content', $blog->content ?? '') }}</textarea>
+                                    @error('content') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                </div>
 
-                <div class="mb-3">
-                    <label>Meta Keywords</label>
-                    <input type="text" name="meta_keywords" class="form-control"
-                        value="{{ old('meta_keywords', $blog->meta_keywords ?? '') }}">
-                </div>
+                                {{-- Category --}}
+                                <div class="mb-3">
+                                    <label class="form-label">Category <span class="text-danger">*</span></label>
+                                    <select name="category_id" class="form-select @error('category_id') is-invalid @enderror" required>
+                                        <option value="">-- Select Category --</option>
+                                        @foreach($categories as $category)
+                                            <option value="{{ $category->id }}" 
+                                                {{ old('category_id', $blog->category_id ?? '') == $category->id ? 'selected' : '' }}>
+                                                {{ $category->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('category_id') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                </div>
 
-                <div class="mb-3">
-                    <label>Featured Image</label>
-                    <input type="file" name="featured_image" class="form-control">
-                    @if(isset($blog) && $blog->featured_image)
-                        <img src="{{ asset($blog->featured_image) }}" width="100" class="mt-2">
-                    @endif
-                </div>
+                                {{-- Featured Image --}}
+                                <div class="mb-3">
+                                    <label class="form-label">Featured Image @if(!isset($blog))<span class="text-danger">*</span>@endif</label>
+                                    <input type="file" name="featured_image" 
+                                           class="form-control @error('featured_image') is-invalid @enderror">
+                                    @error('featured_image') <span class="invalid-feedback">{{ $message }}</span> @enderror
 
-                <div class="mb-3">
-                    <label>Category</label>
-                    <select name="category_id" class="form-control" required>
-                        <option value="">-- Select Category --</option>
-                        @foreach($categories as $category)
-                            <option value="{{ $category->id }}" {{ old('category_id', $blog->category_id ?? '') == $category->id ? 'selected' : '' }}>
-                                {{ $category->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
+                                    @if(isset($blog) && $blog->featured_image)
+                                        <img src="{{ asset($blog->featured_image) }}" width="120" class="mt-2 rounded shadow-sm border">
+                                    @endif
+                                </div>
 
-                <div class="mb-3">
-                    <label>Status</label>
-                    <select name="status" class="form-control">
-                        <option value="0" {{ (old('status', $blog->status ?? 0) == 0) ? 'selected' : '' }}>Draft</option>
-                        <option value="1" {{ (old('status', $blog->status ?? 0) == 1) ? 'selected' : '' }}>Published</option>
-                    </select>
-                </div>
+                                {{-- Status --}}
+                                <div class="mb-3">
+                                    <label class="form-label">Status</label>
+                                    <select name="status" class="form-select @error('status') is-invalid @enderror">
+                                        <option value="0" {{ (old('status', $blog->status ?? 0) == 0) ? 'selected' : '' }}>Draft</option>
+                                        <option value="1" {{ (old('status', $blog->status ?? 0) == 1) ? 'selected' : '' }}>Published</option>
+                                    </select>
+                                    @error('status') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                </div>
 
-                <button type="submit" class="btn btn-primary">{{ isset($blog) ? 'Update' : 'Create' }}</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- ================= RIGHT SECTION ================= --}}
+                    <div class="col-md-4">
+                        <div class="card border mb-4">
+                            <div class="card-header bg-light">
+                                <h6 class="m-0 fw-bold text-primary">🔍 SEO Information</h6>
+                            </div>
+                            <div class="card-body">
+
+                                {{-- Meta Title --}}
+                                <div class="mb-3">
+                                    <label class="form-label">Meta Title</label>
+                                    <input type="text" name="meta_title" 
+                                           class="form-control @error('meta_title') is-invalid @enderror"
+                                           value="{{ old('meta_title', $blog->meta_title ?? '') }}">
+                                    @error('meta_title') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                </div>
+
+                                {{-- Meta Description --}}
+                                <div class="mb-3">
+                                    <label class="form-label">Meta Description</label>
+                                    <textarea name="meta_description" rows="4"
+                                              class="form-control @error('meta_description') is-invalid @enderror">{{ old('meta_description', $blog->meta_description ?? '') }}</textarea>
+                                    @error('meta_description') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                </div>
+
+                                {{-- Meta Keywords --}}
+                                <div class="mb-3">
+                                    <label class="form-label">Meta Keywords</label>
+                                    <input type="text" name="meta_keywords" 
+                                           class="form-control @error('meta_keywords') is-invalid @enderror"
+                                           value="{{ old('meta_keywords', $blog->meta_keywords ?? '') }}">
+                                    @error('meta_keywords') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                </div>
+
+                                {{-- Submit Button --}}
+                                <div class="d-grid mt-4">
+                                    <button type="submit" class="btn btn-success">
+                                        {{ isset($blog) ? 'Update Post' : 'Create Post' }}
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div> {{-- row end --}}
             </form>
         </div>
     </div>
-
-    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.0/classic/ckeditor.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // CKEditor
-            document.querySelectorAll('.aiz-text-editor').forEach((editorElement) => {
-                ClassicEditor.create(editorElement).catch(error => { console.error(error); });
-            });
-
-            // Auto-generate slug from title
-            const titleInput = document.getElementById('title');
-            const slugInput = document.getElementById('slug');
-
-            titleInput.addEventListener('input', function () {
-                slugInput.value = this.value.toLowerCase()
-                    .replace(/ /g, '-')
-                    .replace(/[^\w-]+/g, '');
-            });
-        });
-    </script>
+</div>
 @endsection

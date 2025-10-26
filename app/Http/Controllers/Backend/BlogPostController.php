@@ -1,5 +1,7 @@
 <?php
 
+// app/Http/Controllers/Backend/BlogPostController.php
+
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
@@ -25,6 +27,7 @@ class BlogPostController extends Controller
 
     public function create()
     {
+        // Eager load categories for efficiency
         $categories = Category::where('status', 1)->get();
         return view('backend.blog_post.create', compact('categories'));
     }
@@ -32,12 +35,10 @@ class BlogPostController extends Controller
     public function store(BlogPostRequest $request)
     {
         $data = $request->validated();
-
         $this->blogService->create($data);
 
-        return redirect()->route('blog.list')->with('success', 'Blog created successfully!');
+        return redirect()->route('blog.list')->with('success', 'Blog created successfully! 🎉');
     }
-
 
     public function edit($id)
     {
@@ -53,7 +54,7 @@ class BlogPostController extends Controller
 
         $this->blogService->update($blog, $data);
 
-        return redirect()->route('blog.list')->with('success', 'Blog updated successfully!');
+        return redirect()->route('blog.list')->with('success', 'Blog updated successfully! ✏️');
     }
 
     public function destroy($id)
@@ -61,6 +62,6 @@ class BlogPostController extends Controller
         $blog = BlogPost::findOrFail($id);
         $this->blogService->delete($blog);
 
-        return back()->with('success', 'Blog deleted successfully!');
+        return back()->with('success', 'Blog deleted successfully! 🗑️');
     }
 }

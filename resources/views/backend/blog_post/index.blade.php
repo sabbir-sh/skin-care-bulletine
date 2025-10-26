@@ -20,6 +20,7 @@
                     <th>#</th>
                     <th>Image</th>
                     <th>Title</th>
+                    <th>Category</th> {{-- Added Category Column --}}
                     <th>Status</th>
                     <th>Created At</th>
                     <th>Actions</th>
@@ -37,6 +38,7 @@
                             @endif
                         </td>
                         <td>{{ $blog->title }}</td>
+                        <td>{{ $blog->category->name ?? 'N/A' }}</td> {{-- Display category name --}}
                         <td>
                             @if($blog->status)
                                 <span class="badge bg-success">Published</span>
@@ -47,16 +49,18 @@
                         <td>{{ $blog->created_at->format('d M, Y') }}</td>
                         <td>
                             <a href="{{ route('blog.edit', $blog->id) }}" class="btn btn-sm btn-info"><i class="bi bi-pencil"></i></a>
-                            <form action="{{ route('blog.destroy', $blog->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
+                            
+                            {{-- Delete Form using the correct route and {id} parameter --}}
+                            <form action="{{ route('blog.destroy', $blog->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this blog post?')">
                                 @csrf
                                 @method('DELETE')
-                                <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                                <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
                             </form>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="text-center text-muted">No blog posts found.</td>
+                        <td colspan="7" class="text-center text-muted">No blog posts found.</td>
                     </tr>
                 @endforelse
             </tbody>
