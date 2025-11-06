@@ -3,84 +3,109 @@
 @section('content')
 
     <!-- Slider + Recent Blogs Section -->
-<section class="py-5 bg-light">
+
+
+<section class="blog-section" style="background-color: #f8f9fa; padding: 5rem 0;">
     <div class="container">
+        {{-- Section Title (Optional but Recommended) --}}
+      
+        
         <div class="row g-4">
-            {{-- Setting the base height for the layout on large screens --}}
-            @php $base_height = '400px'; @endphp
 
             {{-- Left side: Large Dominant Featured Post (8 Columns) --}}
             <div class="col-lg-8">
-                @php $dominantBlog = $blogs->get(0); @endphp
-
                 @if($dominantBlog)
-                    <div class="card border-0 shadow-lg h-100 overflow-hidden rounded-3">
-                        <a href="{{ route('blog.show', $dominantBlog->slug) }}" class="d-block position-relative h-100">
+                    <div class="blog-card dominant-card overflow-hidden"
+                        style="border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.15); transition: transform 0.4s ease; height: 100%; background: white;"
+                        onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 25px 50px rgba(0,0,0,0.25)'"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 15px 35px rgba(0,0,0,0.15)'">
+                        
+                        <a href="{{ route('blog.show', $dominantBlog->slug) }}" class="d-block position-relative h-100 text-decoration-none">
 
-                            {{-- Image: Takes up most of the space --}}
+                            {{-- Image --}}
                             <img src="{{ asset($dominantBlog->featured_image ?? 'path/to/default/image.jpg') }}"
-                                 class="d-block w-100 object-fit-cover" alt="{{ $dominantBlog->title }}"
-                                 style="height: {{ $base_height }}; max-height: 100%; object-position: center;">
+                                class="d-block w-100 object-fit-cover" alt="{{ $dominantBlog->title }}"
+                                style="height: {{ $base_height }}; max-height: 100%; object-position: center; transition: all 0.6s ease-in-out;"
+                                onmouseover="this.style.transform='scale(1.05)'; this.style.filter='brightness(1)'"
+                                onmouseout="this.style.transform='scale(1)'; this.style.filter='brightness(0.9)'">
 
                             {{-- Text Overlay --}}
-                            <div class="position-absolute bottom-0 start-0 w-100 p-4 pb-3 text-white"
-                                 style="background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0));">
+                            <div class="image-overlay"
+                                style="position: absolute; bottom: 0; left: 0; width: 100%; padding: 2.5rem 2rem 1.5rem; background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.5), transparent); color: white; transition: all 0.3s ease;">
 
-                                <small class="text-uppercase fw-bold text-warning d-block mb-1">
+                                <span class="category-tag"
+                                    style="display: inline-block; padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 0.8rem; text-transform: uppercase; box-shadow: 0 4px 15px rgba(0,0,0,0.3); line-height: 1; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
                                     {{ $dominantBlog->category->name ?? 'Category' }}
-                                </small>
-                                <h3 class="fw-bolder mb-2">{{ Str::limit($dominantBlog->title, 100) }}</h3>
-                                <small class="text-white-50">
-                                    <i class="bi bi-calendar"></i> {{ $dominantBlog->created_at->format('M d, Y') }}
-                                </small>
+                                </span>
+                                <h3 class="blog-title" style="font-weight: 900; line-height: 1.3; margin-bottom: 0.75rem; text-shadow: 0 2px 5px rgba(0,0,0,0.4); font-size: 2rem;">
+                                    {{ Str::limit($dominantBlog->title, 100) }}
+                                </h3>
+                                <div class="blog-meta text-white-50" style="font-size: 0.85rem; opacity: 0.8; display: flex; align-items: center; gap: 1rem;">
+                                    <i class="bi bi-calendar"></i>
+                                    <span>{{ $dominantBlog->created_at->format('M d, Y') }}</span>
+                                    <i class="bi bi-clock"></i>
+                                    <span>5 min read</span>
+                                </div>
                             </div>
                         </a>
                     </div>
                 @else
-                    <div class="p-5 text-center text-muted border rounded-3 d-flex align-items-center justify-content-center" style="height: {{ $base_height }};">
-                        No dominant featured blog found.
+                    {{-- Empty State for Dominant Post --}}
+                    <div class="empty-state d-flex flex-column align-items-center justify-content-center text-center"
+                        style="height: {{ $base_height }}; border: 3px dashed #a0aec0; background: rgba(255, 255, 255, 0.7); color: #4a5568; border-radius: 16px;">
+                        <i class="bi bi-file-earmark-text display-4"></i>
+                        <h5 class="mt-3">No Featured Blog</h5>
+                        <p>Start publishing amazing content!</p>
                     </div>
                 @endif
             </div>
 
             {{-- Right side: Two Stacked Featured Posts (4 Columns) --}}
-            {{-- d-flex and flex-column are essential for vertical stacking/filling --}}
-            <div class="col-lg-4 d-flex flex-column" style="height: {{ $base_height }}; gap: 1rem;">
+            <div class="col-lg-4 d-flex flex-column stacked-container" style="height: {{ $base_height }}; gap: 1rem;">
                 
-                @php $stacked_blogs = $blogs->slice(1, 2); @endphp
-
                 @forelse($stacked_blogs as $blog) 
                     
-                    {{-- The fixed height for each stacked card is (BASE_HEIGHT - GAP) / 2 --}}
                     @php $card_height = 'calc(50% - 0.5rem)'; @endphp 
 
-                    <div class="card border-0 shadow-lg overflow-hidden rounded-3 flex-fill mb-0" style="height: {{ $card_height }};">
-                        <a href="{{ route('blog.show', $blog->slug) }}" class="d-block position-relative h-100">
+                    <div class="blog-card stacked-card overflow-hidden flex-fill"
+                        style="height: {{ $card_height }}; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); transition: transform 0.4s ease; background: white;"
+                        onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(0,0,0,0.2)'"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.1)'">
+                        
+                        <a href="{{ route('blog.show', $blog->slug) }}" class="d-block position-relative h-100 text-decoration-none">
                             
                             {{-- Image --}}
                             <img src="{{ asset($blog->featured_image ?? 'path/to/default/small.jpg') }}"
-                                 class="d-block w-100 h-100 object-fit-cover" alt="{{ $blog->title }}"
-                                 style="object-position: center;">
+                                class="d-block w-100 h-100 object-fit-cover" alt="{{ $blog->title }}"
+                                style="object-position: center; transition: all 0.6s ease-in-out;"
+                                onmouseover="this.style.transform='scale(1.05)'; this.style.filter='brightness(1)'"
+                                onmouseout="this.style.transform='scale(1)'; this.style.filter='brightness(0.9)'">
 
                             {{-- Text Overlay --}}
-                            <div class="position-absolute bottom-0 start-0 w-100 p-3 text-white"
-                                 style="background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0));">
+                            <div class="image-overlay p-3 text-white"
+                                style="position: absolute; bottom: 0; left: 0; width: 100%; padding: 1.5rem 1rem; background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.5), transparent); color: white; transition: all 0.3s ease;">
 
-                                <small class="text-uppercase fw-bold text-info d-block mb-1">
+                                <span class="category-tag text-uppercase fw-bold d-block mb-1"
+                                    style="display: inline-block; padding: 0.3rem 0.8rem; border-radius: 50px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; box-shadow: 0 2px 8px rgba(0,0,0,0.2); background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
                                     {{ $blog->category->name ?? 'Topic' }}
-                                </small>
-                                <h5 class="fw-bolder m-0">{{ Str::limit($blog->title, 50) }}</h5>
+                                </span>
+                                <h5 class="blog-title m-0" style="font-weight: 700; line-height: 1.4; font-size: 1.25rem; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">
+                                    {{ Str::limit($blog->title, 50) }}
+                                </h5>
                             </div>
                         </a>
                     </div>
                 @empty
-                    <div class="p-4 text-center text-muted border rounded-3 flex-fill d-flex align-items-center justify-content-center">
-                        Not enough blogs for the stacked layout.
+                    {{-- Empty State for Stacked Posts --}}
+                    <div class="empty-state flex-fill d-flex flex-column align-items-center justify-content-center text-center"
+                        style="border: 3px dashed #a0aec0; background: rgba(255, 255, 255, 0.7); color: #4a5568; border-radius: 16px;">
+                        <i class="bi bi-collection display-4"></i>
+                        <h5 class="mt-3">More Content Coming</h5>
+                        <p>Preparing more exciting articles.</p>
                     </div>
                 @endforelse
 
             </div>
-
         </div>
     </div>
 </section>
