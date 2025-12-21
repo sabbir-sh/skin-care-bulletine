@@ -60,7 +60,6 @@ Route::prefix('category')->name('category.')->group(function () {
     Route::delete('delete/{id}', [CategoryController::class, 'destroy'])->name('destroy');
 });
 
-<<<<<<< HEAD
 Route::prefix('contact')->name('contact.')->group(function () {
     Route::get('/', [ContactMessageController::class, 'index'])->name('list');
     Route::get('show/{id}', [ContactMessageController::class, 'show'])->name('show');
@@ -83,12 +82,11 @@ Route::prefix('author')->name('author.')->group(function () {
     Route::get('edit/{id}', [AuthorController::class, 'edit'])->name('edit');
     Route::patch('update/{id}', [AuthorController::class, 'update'])->name('update');
     Route::delete('delete/{id}', [AuthorController::class, 'destroy'])->name('destroy');
-=======
+  });  
 Route::prefix('setting')->name('setting.')->group(function () {
     Route::get('/', [SettingController::class, 'index'])->name('list');
     Route::get('edit', [SettingController::class, 'index'])->name('edit');
     Route::patch('update', [SettingController::class, 'update'])->name('update');
->>>>>>> 3a2dcd1a1d9ea089c1f4d95779b7e37c9b5f3cdc
 });
 
 

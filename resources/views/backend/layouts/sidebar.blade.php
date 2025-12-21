@@ -53,7 +53,6 @@
                 </a>
             </li>
 
-<<<<<<< HEAD
             <!-- FAQ -->
             <li class="nav-item">
                 <a href="{{ route('faq.list') }}" 
@@ -69,14 +68,14 @@
                    class="nav-link text-white d-flex align-items-center mb-2 {{ request()->routeIs('author.*') ? 'active' : '' }}"
                    style="border-radius:6px; transition:0.3s;">
                     <i class="bi bi-journal-text me-2"></i> Author List
-=======
+                    </a>
+            </li>
             <!-- setting -->
             <li class="nav-item">
                 <a href="{{ route('setting.list') }}"
                    class="nav-link text-white d-flex align-items-center mb-2 {{ request()->routeIs('setting.*') ? 'active' : '' }}"
                    style="border-radius:6px; transition:0.3s;">
                     <i class="bi bi-journal-text me-2"></i>  Site Setting
->>>>>>> 3a2dcd1a1d9ea089c1f4d95779b7e37c9b5f3cdc
                 </a>
             </li>
 
