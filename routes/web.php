@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Backend\AuthorController;
 use App\Http\Controllers\Backend\BlogPostController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\ContactMessageController;
@@ -71,6 +72,15 @@ Route::prefix('faq')->name('faq.')->group(function () {
     Route::get('edit/{id}', [FaqController::class, 'edit'])->name('edit');
     Route::patch('update/{id}', [FaqController::class, 'update'])->name('update');
     Route::delete('delete/{id}', [FaqController::class, 'destroy'])->name('destroy');
+});
+
+Route::prefix('author')->name('author.')->group(function () {
+    Route::get('/', [AuthorController::class, 'index'])->name('list');
+    Route::get('create', [AuthorController::class, 'create'])->name('create');
+    Route::post('store', [AuthorController::class, 'store'])->name('store');
+    Route::get('edit/{id}', [AuthorController::class, 'edit'])->name('edit');
+    Route::patch('update/{id}', [AuthorController::class, 'update'])->name('update');
+    Route::delete('delete/{id}', [AuthorController::class, 'destroy'])->name('destroy');
 });
 
 

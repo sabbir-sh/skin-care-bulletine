@@ -132,6 +132,24 @@
                                            value="{{ old('meta_keywords', $blog->meta_keywords ?? '') }}">
                                     @error('meta_keywords') <span class="invalid-feedback">{{ $message }}</span> @enderror
                                 </div>
+                                {{-- Author --}}
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Author</label>
+                                    <select name="author_id"
+                                            class="form-select @error('author_id') is-invalid @enderror"
+                                            required>
+                                        <option value="">-- Select Author --</option>
+                                        @foreach($authors as $author)
+                                            <option value="{{ $author->id }}"
+                                                {{ old('author_id', $blog->author_id ?? '') == $author->id ? 'selected' : '' }}>
+                                                {{ $author->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('author_id')
+                                        <span class="invalid-feedback">{{ $message }}</span>
+                                    @enderror
+                                </div>
 
                                 {{-- Submit Button --}}
                                 <div class="d-grid mt-4">

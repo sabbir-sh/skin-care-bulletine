@@ -26,6 +26,7 @@ class BlogPostRequest extends FormRequest
             'meta_title'       => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
             'meta_keywords'    => 'nullable|string|max:255',
+            'author_id'        => 'required|exists:authors,id',
             // Image is required on POST (create), but nullable on PATCH (update)
             'featured_image'   => ($this->isMethod('POST') ? 'required' : 'nullable') . '|image|mimes:jpg,jpeg,png,webp|max:2048', 
             'status'           => 'required|in:0,1',
