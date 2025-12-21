@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\BlogPost;
 use App\Models\Category;
+use App\Models\Faq;
 
 class HomeController extends Controller
 {
@@ -38,6 +39,12 @@ class HomeController extends Controller
 
         // Categories
         $data['categories'] = Category::where('status', 1)->get();
+
+        // **Fetch FAQs**
+        $data['faqs'] = Faq::where('status', 1)
+            ->latest()
+            ->take(6) // Limit to 6 for homepage
+            ->get();
 
         return view('frontend.home', $data );
     }

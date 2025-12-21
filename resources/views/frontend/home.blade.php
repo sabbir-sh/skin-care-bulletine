@@ -303,6 +303,115 @@
         </div>
     </section>
 
+{{-- ================= FAQ Accordion ================= --}}
+<section class="py-5 faq-section">
+    <style>
+        /* Section Title */
+        .faq-section .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: #0d6efd; /* Primary color */
+        }
+
+        /* Accordion Card */
+        .faq-section .accordion-item {
+            background: #fff;
+            border: none;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .faq-section .accordion-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        }
+
+        /* Accordion Button */
+        .faq-section .accordion-button {
+            background: #f8f9fa;
+            color: #333;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 1rem 1.25rem;
+            border-radius: 0;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .faq-section .accordion-button:not(.collapsed) {
+            background: #838588;
+            color: #fff;
+        }
+
+        /* Accordion Body */
+        .faq-section .accordion-body {
+            background: #fff;
+            padding: 1rem 1.25rem 1.5rem 1.25rem;
+            color: #555;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* FAQ Image inside Accordion */
+        .faq-section .accordion-body img {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-section .accordion-body img:hover {
+            transform: scale(1.05);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 575px) {
+            .faq-section .section-title {
+                font-size: 1.6rem;
+                text-align: center;
+            }
+
+            .faq-section .accordion-button {
+                font-size: 0.95rem;
+                padding: 0.8rem 1rem;
+            }
+
+            .faq-section .accordion-body {
+                font-size: 0.9rem;
+                padding: 0.8rem 1rem;
+            }
+        }
+    </style>
+
+    <div class="container">
+        <h2 class="section-title text-start">FAQs</h2>
+
+        <div class="accordion" id="faqAccordion">
+            @foreach($faqs as $key => $faq)
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading{{ $key }}">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ $key }}" aria-expanded="false" aria-controls="collapse{{ $key }}">
+                            {{ $faq->question }}
+                        </button>
+                    </h2>
+                    <div id="collapse{{ $key }}" class="accordion-collapse collapse" aria-labelledby="heading{{ $key }}" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            <p>{{ $faq->answer }}</p>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+
+
     {{-- ================= JS ================= --}}
     <script>
         document.addEventListener('DOMContentLoaded', () => {

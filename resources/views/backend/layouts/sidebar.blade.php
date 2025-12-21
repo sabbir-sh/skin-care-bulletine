@@ -53,6 +53,15 @@
                 </a>
             </li>
 
+            <!-- FAQ -->
+            <li class="nav-item">
+                <a href="{{ route('faq.list') }}" 
+                   class="nav-link text-white d-flex align-items-center mb-2 {{ request()->routeIs('faq.*') ? 'active' : '' }}"
+                   style="border-radius:6px; transition:0.3s;">
+                    <i class="bi bi-journal-text me-2"></i> FAQ
+                </a>
+            </li>
+
             
             
         </ul>
