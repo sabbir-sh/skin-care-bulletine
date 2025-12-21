@@ -10,6 +10,7 @@ use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Backend\SettingController;
 
 
 
@@ -54,6 +55,12 @@ Route::prefix('category')->name('category.')->group(function () {
     Route::get('edit/{id}', [CategoryController::class, 'edit'])->name('edit');
     Route::patch('update/{id}', [CategoryController::class, 'update'])->name('update');
     Route::delete('delete/{id}', [CategoryController::class, 'destroy'])->name('destroy');
+});
+
+Route::prefix('setting')->name('setting.')->group(function () {
+    Route::get('/', [SettingController::class, 'index'])->name('list');
+    Route::get('edit', [SettingController::class, 'index'])->name('edit');
+    Route::patch('update', [SettingController::class, 'update'])->name('update');
 });
 
 
