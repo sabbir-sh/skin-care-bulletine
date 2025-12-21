@@ -13,6 +13,7 @@ use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Backend\SettingController;
 
 
 
@@ -57,30 +58,6 @@ Route::prefix('category')->name('category.')->group(function () {
     Route::get('edit/{id}', [CategoryController::class, 'edit'])->name('edit');
     Route::patch('update/{id}', [CategoryController::class, 'update'])->name('update');
     Route::delete('delete/{id}', [CategoryController::class, 'destroy'])->name('destroy');
-});
-
-Route::prefix('contact')->name('contact.')->group(function () {
-    Route::get('/', [ContactMessageController::class, 'index'])->name('list');
-    Route::get('show/{id}', [ContactMessageController::class, 'show'])->name('show');
-    Route::delete('delete/{id}', [ContactMessageController::class, 'destroy'])->name('destroy');
-});
-
-Route::prefix('faq')->name('faq.')->group(function () {
-    Route::get('/', [FaqController::class, 'index'])->name('list');
-    Route::get('create', [FaqController::class, 'create'])->name('create');
-    Route::post('store', [FaqController::class, 'store'])->name('store');
-    Route::get('edit/{id}', [FaqController::class, 'edit'])->name('edit');
-    Route::patch('update/{id}', [FaqController::class, 'update'])->name('update');
-    Route::delete('delete/{id}', [FaqController::class, 'destroy'])->name('destroy');
-});
-
-Route::prefix('author')->name('author.')->group(function () {
-    Route::get('/', [AuthorController::class, 'index'])->name('list');
-    Route::get('create', [AuthorController::class, 'create'])->name('create');
-    Route::post('store', [AuthorController::class, 'store'])->name('store');
-    Route::get('edit/{id}', [AuthorController::class, 'edit'])->name('edit');
-    Route::patch('update/{id}', [AuthorController::class, 'update'])->name('update');
-    Route::delete('delete/{id}', [AuthorController::class, 'destroy'])->name('destroy');
 });
 
 
