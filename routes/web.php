@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Backend\BlogPostController;
 use App\Http\Controllers\Backend\CategoryController;
+use App\Http\Controllers\Backend\ContactMessageController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Frontend\AboutUsController;
 use App\Http\Controllers\Frontend\CategoryListController;
@@ -54,6 +55,12 @@ Route::prefix('category')->name('category.')->group(function () {
     Route::get('edit/{id}', [CategoryController::class, 'edit'])->name('edit');
     Route::patch('update/{id}', [CategoryController::class, 'update'])->name('update');
     Route::delete('delete/{id}', [CategoryController::class, 'destroy'])->name('destroy');
+});
+
+Route::prefix('contact')->name('contact.')->group(function () {
+    Route::get('/', [ContactMessageController::class, 'index'])->name('list');
+    Route::get('show/{id}', [ContactMessageController::class, 'show'])->name('show');
+    Route::delete('delete/{id}', [ContactMessageController::class, 'destroy'])->name('destroy');
 });
 
 
