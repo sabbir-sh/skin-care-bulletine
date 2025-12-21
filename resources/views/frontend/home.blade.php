@@ -1,300 +1,328 @@
 @extends('frontend.layouts.app')
 
 @section('content')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-<section class="py-5" style="background-color:#f8f9fa;">
-    <div class="container">
-        <div class="row g-4">
+    {{-- ================= HERO SECTION ================= --}}
+    <section class="hero-modern">
+        <style>
+            .hero-modern {
+                padding: 90px 0;
+            }
 
-            {{-- Left: Featured (Dominant) Post (col-lg-8, takes 2/3 space on large screens) --}}
-            <div class="col-12 col-lg-8">
-                @if($dominantBlog)
-                    <div class="blog-card-dominant card border-0 shadow-lg overflow-hidden rounded-4 position-relative"
-                         style="min-height: 480px; max-height: 550px;">
-                        <a href="{{ route('blog.show', $dominantBlog->slug) }}" style="text-decoration: none; color: white; display: block; height: 100%;">
-                            <div style="position: relative; height: 100%;">
-                                <img src="{{ asset($dominantBlog->featured_image ?? 'path/to/default/image.jpg') }}"
-                                     alt="{{ $dominantBlog->title }}"
-                                     class="w-100 object-fit-cover blog-img"
-                                     style="height: 100%; object-position: center;">
-                                <div class="position-absolute top-0 start-0 w-100 h-100 blog-overlay"
-                                     style="background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, transparent 100%);"></div>
+            .hero-title {
+                font-size: 2.8rem;
+                font-weight: 800;
+            }
 
-                                <div class="position-absolute bottom-0 start-0 p-4 p-md-5 w-100">
-                                    <span class="badge rounded-pill mb-3 px-3 py-2 text-uppercase fw-bold blog-category-badge"
-                                          style="background: linear-gradient(135deg, #ff6b6b, #f06595); font-size: 0.75rem; letter-spacing: 1px;">
-                                        {{ $dominantBlog->category->name ?? 'Featured' }}
+            .hero-desc {
+                color: #555;
+                margin: 20px 0;
+            }
+
+            .hero-img-box {
+                border-radius: 18px;
+                overflow: hidden;
+            }
+
+            .hero-img-box img {
+                width: 100%;
+                height: 420px;
+                object-fit: cover;
+                transition: transform .6s ease;
+            }
+
+            /* 📱 Mobile */
+            @media (max-width: 767px) {
+                .hero-modern {
+                    padding: 50px 0;
+                }
+
+                .hero-title {
+                    font-size: 1.9rem;
+                }
+
+                .hero-img-box img {
+                    height: 260px;
+                }
+            }
+        </style>
+
+        <div class="container">
+            <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+                <div class="carousel-inner">
+
+                    @foreach($heroBlogs as $index => $blog)
+                        <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                            <div class="row align-items-center g-4">
+                                <div class="col-lg-6 order-2 order-lg-1">
+                                    <span class="badge bg-primary mb-3">
+                                        {{ $blog->category->name }}
                                     </span>
-                                    <h1 class="fw-bolder mb-3"
-                                        style="font-size: 2.2rem; line-height: 1.2; text-shadow: 0 5px 10px rgba(0,0,0,0.6);">
-                                        {{ Str::limit($dominantBlog->title, 80) }}
+
+                                    <h1 class="hero-title">
+                                        {{ $blog->title }}
                                     </h1>
-                                    <div class="d-flex align-items-center small text-white-75 gap-3">
-                                        <span style="opacity: 0.75;"><i class="bi bi-calendar me-1"></i> {{ $dominantBlog->created_at->format('M d, Y') }}</span>
-                                        <span style="opacity: 0.75;"><i class="bi bi-clock me-1"></i> 5 min read</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                @else
-                    <div class="d-flex align-items-center justify-content-center text-center border border-2 border-secondary-subtle rounded-4 h-100 py-5 bg-white shadow-sm"
-                         style="min-height: 480px;">
-                        <div>
-                            <i class="bi bi-file-earmark-text display-4 text-muted"></i>
-                            <h5 class="mt-3 text-secondary fw-semibold">No Featured Blog</h5>
-                            <p class="text-secondary small">Publish your first featured article!</p>
-                        </div>
-                    </div>
-                @endif
-            </div>
 
-            {{-- Right: Stacked Posts (col-lg-4, takes 1/3 space on large screens) --}}
-            <div class="col-12 col-lg-4 d-flex flex-column" style="gap: 1.5rem;">
-                @forelse($stacked_blogs as $blog)
-                    <div class="blog-card-stacked card border-0 shadow-sm overflow-hidden rounded-4 flex-fill position-relative"
-                         style="min-height: 225px;">
-                        <a href="{{ route('blog.show', $blog->slug) }}" style="text-decoration: none; color: white; display: block; height: 100%;">
-                            <div style="position: relative; height: 100%;">
-                                <img src="{{ asset($blog->featured_image ?? 'path/to/default/image.jpg') }}"
-                                     alt="{{ $blog->title }}"
-                                     class="w-100 h-100 object-fit-cover blog-img"
-                                     style="object-position: center;">
-                                <div class="position-absolute top-0 start-0 w-100 h-100 blog-overlay"
-                                     style="background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);"></div>
+                                    <p class="hero-desc">
+                                        {{ Str::limit(strip_tags($blog->content), 160) }}
+                                    </p>
 
-                                <div class="position-absolute bottom-0 start-0 p-3 w-100">
-                                    <span class="badge rounded-pill mb-2 px-3 py-2 text-uppercase fw-bold blog-category-badge"
-                                          style="background: linear-gradient(135deg, #56ccf2, #2f80ed); font-size: 0.65rem; letter-spacing: 0.5px;">
-                                        {{ $blog->category->name ?? 'Topic' }}
-                                    </span>
-                                    <h5 class="fw-bolder mb-0" style="line-height: 1.4; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">
-                                        {{ Str::limit($blog->title, 55) }}
-                                    </h5>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                @empty
-                    <div class="d-flex align-items-center justify-content-center flex-fill border border-2 border-secondary-subtle rounded-4 bg-white text-center py-4 shadow-sm"
-                         style="min-height: 225px;">
-                        <div>
-                            <i class="bi bi-collection display-5 text-muted"></i>
-                            <h6 class="mt-2 text-secondary fw-semibold">No Recent Blogs</h6>
-                            <small class="text-secondary">More posts coming soon...</small>
-                        </div>
-                    </div>
-                @endforelse
-            </div>
-
-        </div>
-    </div>
-</section>
-
-<hr class="my-5">
-
-<section class="py-5 bg-white">
-    <div class="container text-center">
-        <h2 class="mb-5 fw-bolder text-dark">Explore Topics</h2>
-
-        {{-- Desktop / Tablet view (5 per row, no slider) --}}
-        <div class="row justify-content-center g-4 d-none d-md-flex">
-            @forelse($categories->take(5) as $category) {{-- Limiting to 5 for the desktop row --}}
-                <div class="col-6 col-sm-4 col-md-2 text-center category-item">
-                    <a href="{{ url('category/' . $category->slug) }}" style="text-decoration: none; color: #212529; display: block;">
-                        <div class="category-icon-box mx-auto mb-3 p-3 rounded-circle shadow-sm bg-light">
-                             {{-- Placeholder Icon --}}
-                             @if($category->icon)
-                                 <img src="{{ asset('storage/' . $category->icon) }}"
-                                      alt="{{ $category->name }}" class="img-fluid category-icon">
-                             @else
-                                 <i class="bi bi-folder text-primary" style="font-size: 2.25rem;"></i>
-                             @endif
-                        </div>
-                        <h6 class="mb-0 fw-semibold">{{ $category->name }}</h6>
-                    </a>
-                </div>
-            @empty
-                <p class="text-muted">No categories available.</p>
-            @endforelse
-        </div>
-
-        {{-- Mobile carousel (2 per slide) --}}
-        <div id="mobileCategoryCarousel" class="carousel slide d-md-none" data-bs-ride="carousel"
-             data-bs-interval="4000">
-            <div class="carousel-inner pb-4">
-                @foreach($categories->chunk(2) as $index => $categoryChunk)
-                    <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
-                        <div class="row justify-content-center g-4">
-                            @foreach($categoryChunk as $category)
-                                <div class="col-6 text-center category-item">
-                                    <a href="{{ url('category/' . $category->slug) }}" style="text-decoration: none; color: #212529; display: block;">
-                                        <div class="category-icon-box mx-auto mb-3 p-3 rounded-circle shadow-sm bg-light">
-                                            @if($category->icon)
-                                                <img src="{{ asset('storage/' . $category->icon) }}"
-                                                     alt="{{ $category->name }}" class="img-fluid category-icon">
-                                            @else
-                                                <i class="bi bi-folder text-primary" style="font-size: 2.25rem;"></i>
-                                            @endif
-                                        </div>
-                                        <h6 class="mb-0 fw-semibold">{{ $category->name }}</h6>
+                                    <a href="{{ route('blog.show', $blog->slug) }}" class="btn btn-dark px-4">
+                                        Read Article →
                                     </a>
                                 </div>
-                            @endforeach
+
+                                <div class="col-lg-6 order-1 order-lg-2">
+                                    <a href="{{ route('blog.show', $blog->slug) }}" class="hero-img-link">
+                                        <div class="hero-img-box">
+                                            <img src="{{ asset($blog->featured_image) }}" alt="{{ $blog->title }}">
+                                        </div>
+                                    </a>
+                                </div>
+
+                            </div>
                         </div>
+                    @endforeach
+
+                </div>
+
+                {{-- Controls --}}
+                {{-- <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button> --}}
+            </div>
+        </div>
+    </section>
+
+
+    {{-- ================= TRENDING ================= --}}
+    <section class="py-5 trending-section">
+        <style>
+            .trend-card {
+                position: relative;
+                border-radius: 14px;
+                overflow: hidden;
+                display: block;
+            }
+
+            .trend-card img {
+                width: 100%;
+                height: 260px;
+                object-fit: cover;
+                transition: transform .6s ease;
+            }
+
+            .trend-card:hover img {
+                transform: scale(1.08);
+            }
+
+            .trend-overlay {
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(to top, rgba(0, 0, 0, .85), transparent);
+                color: #fff;
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-end;
+            }
+
+            /* 📱 Mobile trending */
+            @media (max-width: 767px) {
+                .trend-card img {
+                    height: 200px;
+                }
+            }
+        </style>
+
+        <div class="container">
+            <h2 class="section-title text-start">Trending</h2>
+
+            <div class="row g-4">
+                @foreach($trending as $blog)
+                    <div class="col-12 col-md-4">
+                        <a href="{{ route('blog.show', $blog->slug) }}" class="trend-card">
+                            <img src="{{ asset($blog->featured_image) }}">
+                            <div class="trend-overlay">
+                                <span class="small">{{ $blog->category->name }}</span>
+                                <h5>{{ Str::limit($blog->title, 55) }}</h5>
+                            </div>
+                        </a>
                     </div>
                 @endforeach
             </div>
-
-            <button class="carousel-control-prev" type="button" data-bs-target="#mobileCategoryCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon bg-dark rounded-circle p-3 opacity-75" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#mobileCategoryCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon bg-dark rounded-circle p-3 opacity-75" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
         </div>
-    </div>
-</section>
+    </section>
 
-<hr class="my-5">
+    {{-- ================= LATEST ================= --}}
+    <section class="py-5 latest-section">
+        <style>
+            /* ===== Blog Cards ===== */
+            .editorial-card {
+                border-radius: 14px;
+                overflow: hidden;
+                background: #fff;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
+                transition: transform .3s ease, box-shadow .3s ease;
+                height: 100%;
+                display: block;
+                color: inherit;
+                text-decoration: none;
+            }
 
-<section class="py-5" style="background-color:#f8f9fa;">
-    <div class="container">
-        <h2 class="mb-5 fw-bolder text-dark">Latest Articles</h2>
-        <div class="row g-4">
-            @forelse($blogs as $blog)
-                <div class="col-6 col-lg-4"> {{-- 2 per row on mobile (col-6), 3 per row on desktop (col-lg-4) --}}
-                    <div class="blog-card-standard card h-100 shadow-sm border-0 overflow-hidden rounded-3">
-                        @if($blog->featured_image)
-                            <a href="{{ route('blog.show', $blog->slug) }}" style="display: block; overflow: hidden;">
-                                <img src="{{ asset($blog->featured_image) }}" class="card-img-top blog-img" alt="{{ $blog->title }}"
-                                     style="height: 200px; object-fit: cover;">
-                            </a>
-                        @endif
-                        <div class="card-body d-flex flex-column">
-                            <a href="{{ route('blog.show', $blog->slug) }}" style="text-decoration: none; color: #212529;">
-                                <h5 class="card-title fw-bold mb-3">{{ $blog->title }}</h5>
-                            </a>
-                            <p class="card-text text-muted small flex-grow-1" style="max-height: 60px; overflow: hidden;">
-                                {!! Str::limit(strip_tags($blog->content), 100) !!}
-                            </p>
-                            <a href="{{ route('blog.show', $blog->slug) }}"
-                               class="btn mt-3 align-self-start read-more-btn"
-                               style="background-color: #343a40; border-color: #343a40; color: white;">
-                                Read More <i class="bi bi-arrow-right ms-1"></i>
-                            </a>
+            .editorial-card:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 16px 40px rgba(0, 0, 0, .12);
+            }
+
+            .editorial-card img {
+                width: 100%;
+                height: 220px;
+                object-fit: cover;
+            }
+
+            /* ===== Sidebar ===== */
+            .sidebar-box {
+                background: #fff;
+                border-radius: 14px;
+                padding: 20px;
+                box-shadow: 0 8px 25px rgba(0, 0, 0, .06);
+            }
+
+            .sidebar-box h5 {
+                font-weight: 700;
+                margin-bottom: 15px;
+            }
+
+            .category-list a {
+                display: block;
+                padding: 8px 0;
+                color: #333;
+                text-decoration: none;
+                font-weight: 500;
+            }
+
+            .category-list a:hover {
+                color: #0d6efd;
+            }
+
+            .social-icons a {
+                width: 42px;
+                height: 42px;
+                border-radius: 50%;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                background: #f1f3f5;
+                color: #333;
+                margin-right: 10px;
+                transition: .3s;
+            }
+
+            .social-icons a:hover {
+                background: #0d6efd;
+                color: #fff;
+            }
+
+            /* 📱 Mobile */
+            @media (max-width: 575px) {
+                .editorial-card img {
+                    height: 160px;
+                }
+            }
+        </style>
+
+        <div class="container">
+            <div class="row g-4">
+
+                {{-- ================= LEFT: LATEST BLOGS ================= --}}
+                <div class="col-lg-8">
+                    <h2 class="section-title text-start mb-4">Latest Articles</h2>
+
+                    <div class="row g-3 g-md-4">
+                        @foreach($blogs as $blog)
+                            <div class="col-6 col-md-4">
+                                {{-- Mobile: 2 per row | Desktop: 3 per row --}}
+                                <a href="{{ route('blog.show', $blog->slug) }}" class="editorial-card">
+                                    <img src="{{ asset($blog->featured_image) }}" alt="{{ $blog->title }}">
+
+                                    <div class="p-2 p-md-3 d-flex flex-column h-100">
+                                        <small class="text-muted mb-1">
+                                            {{ $blog->created_at->format('M d, Y') }}
+                                        </small>
+
+                                        <h5 class="mb-1">{{ $blog->title }}</h5>
+
+                                        <p class="flex-grow-1 mb-2">
+                                            {{ Str::limit(strip_tags($blog->content), 90) }}
+                                        </p>
+
+                                        <span class="fw-semibold text-primary">
+                                            Read more →
+                                        </span>
+                                    </div>
+                                </a>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                {{-- ================= RIGHT: SIDEBAR ================= --}}
+                <div class="col-lg-4">
+
+                    {{-- Categories --}}
+                    <div class="sidebar-box mb-4">
+                        <h5>Categories</h5>
+                        <div class="category-list">
+                            @foreach($categories as $category)
+                                <a href="{{ url('category/' . $category->slug) }}">
+                                    {{ $category->name }}
+                                </a>
+                            @endforeach
                         </div>
-                        <div class="card-footer bg-white border-0 pt-0">
-                            <small class="text-muted"><i class="bi bi-calendar me-1"></i> {{ $blog->created_at->format('M d, Y') }}</small>
-                            <span class="ms-3 small text-muted"><i class="bi bi-tag me-1"></i> {{ $blog->category->name ?? 'Uncategorized' }}</span>
+                    </div>
+
+                    {{-- Social Icons --}}
+                    <div class="sidebar-box">
+                        <h5>Follow Us</h5>
+                        <div class="social-icons">
+                            <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                            <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                            <a href="#" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+                            <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
                         </div>
                     </div>
                 </div>
-            @empty
-                <div class="col-12 text-center py-5">
-                    <i class="bi bi-x-octagon display-4 text-secondary"></i>
-                    <p class="text-muted mt-3">No articles published yet.</p>
-                </div>
-            @endforelse
-        </div>
-        {{-- Pagination (only if $blogs is a paginator instance) --}}
-        @if(method_exists($blogs, 'links'))
-            <div class="d-flex justify-content-center mt-5">
-                {{ $blogs->links() }}
+
             </div>
-        @endif
-    </div>
-</section>
+        </div>
+    </section>
+
+    {{-- ================= JS ================= --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.editorial-card, .trend-card');
+
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            cards.forEach(card => {
+                card.style.opacity = 0;
+                card.style.transform = 'translateY(20px)';
+                observer.observe(card);
+            });
+        });
+    </script>
 
 @endsection
-
-@push('styles')
-<style>
-    /* 🎨 Hover Effects (Must be in a <style> block as they cannot be inline) */
-    
-    /* Global Card Hover Effect */
-    .blog-card-dominant, .blog-card-stacked, .blog-card-standard {
-        /* CSS Transition for smooth effect */
-        transition: transform 0.4s ease, box-shadow 0.4s ease;
-    }
-
-    .blog-card-dominant:hover, .blog-card-stacked:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3) !important;
-    }
-
-    .blog-card-standard:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
-    }
-
-    /* Image Hover Zoom */
-    .blog-card-dominant:hover .blog-img,
-    .blog-card-stacked:hover .blog-img,
-    .blog-card-standard:hover .blog-img {
-        transform: scale(1.05);
-    }
-    .blog-img {
-        transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smooth transition */
-    }
-
-    /* Overlay adjustments */
-    .blog-overlay {
-        transition: opacity 0.4s ease;
-    }
-    .blog-card-dominant:hover .blog-overlay {
-        opacity: 0.8; /* Make background slightly darker on hover */
-    }
-
-    /* Category Icons Styling */
-    .category-icon-box {
-        width: 80px;
-        height: 80px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
-    }
-    .category-icon-box:hover {
-        background-color: #e9ecef !important;
-        border-color: var(--bs-primary);
-        transform: translateY(-5px);
-    }
-
-    .category-icon {
-        width: 100%; /* For actual images */
-        height: 100%;
-        object-fit: contain;
-    }
-
-    .category-item a:hover h6 {
-        color: var(--bs-primary) !important;
-    }
-
-    /* Custom Read More Button Hover */
-    .read-more-btn:hover {
-        background-color: var(--bs-primary) !important;
-        border-color: var(--bs-primary) !important;
-        transform: translateX(3px);
-    }
-
-</style>
-@endpush
-
-@push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Initialize the Bootstrap Carousel for mobile categories (if not done automatically)
-        var mobileCarousel = document.getElementById('mobileCategoryCarousel');
-        if (mobileCarousel) {
-            new bootstrap.Carousel(mobileCarousel, {
-                interval: 4000,
-                wrap: true // Carousel loops
-            });
-        }
-    });
-</script>
-@endpush
