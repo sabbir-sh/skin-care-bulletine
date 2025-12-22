@@ -27,8 +27,7 @@ class SettingController extends Controller
     {
         $this->settingService->update($request->validated());
 
-        return redirect()
-            ->back()
-            ->with('success', 'Settings updated successfully');
+        return redirect()->back()->with('success', 'Settings updated successfully');
     }
+
 }
