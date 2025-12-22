@@ -15,19 +15,17 @@ class SettingController extends Controller
         $this->settingService = $settingService;
     }
 
-    // Index + edit form
+    // Show form
     public function index()
     {
-        $data['setting'] = $this->settingService->get();
-        return view('backend.settings.index', $data);
+        $setting = $this->settingService->get();
+        return view('backend.settings.index', compact('setting'));
     }
 
-    // Create or update
+    // Update settings
     public function update(SettingRequest $request)
     {
         $this->settingService->update($request->validated());
-
         return redirect()->back()->with('success', 'Settings updated successfully');
     }
-
 }

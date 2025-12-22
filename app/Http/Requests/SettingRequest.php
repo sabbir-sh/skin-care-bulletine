@@ -12,23 +12,27 @@ class SettingRequest extends FormRequest
     }
 
     public function rules(): array
-    {
-        return [
-            'site_name'        => 'required|string|max:255',
+{
+    return [
+        'site_name'        => 'required|string|max:255',
 
-            'logo'             => 'nullable|image',
-            'favicon'          => 'nullable|image',
+        'logo'             => 'nullable|image',
+        'favicon'          => 'nullable|image',
 
-            'meta_title'       => 'nullable|string|max:255',
-            'meta_description' => 'nullable|string|max:500',
+        'logo_remove'      => 'nullable|boolean',
+        'favicon_remove'   => 'nullable|boolean',
 
-            'facebook'         => 'nullable|url',
-            'twitter'          => 'nullable|url',
-            'youtube'          => 'nullable|url',
+        'meta_title'       => 'nullable|string|max:255',
+        'meta_description' => 'nullable|string|max:500',
 
-            'homepage_layout'  => 'required|in:default,blog',
-        ];
-    }
+        'facebook'         => 'nullable|url',
+        'twitter'          => 'nullable|url',
+        'youtube'          => 'nullable|url',
+
+        'homepage_layout'  => 'required|in:default,blog',
+    ];
+}
+
 
     public function messages(): array
     {

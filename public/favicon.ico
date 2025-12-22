@@ -1,0 +1,1 @@
+<link rel="icon" href="{{ $setting->favicon_url ?? asset('favicon.ico') }}?v={{ time() }}">
