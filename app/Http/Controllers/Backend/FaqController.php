@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FaqRequest;
 use App\Http\Services\Faq\FaqService;
+use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class FaqController extends Controller
 {
@@ -15,34 +17,70 @@ class FaqController extends Controller
         $this->service = $service;
     }
 
-    // List FAQs
+    /**
+     * Show FAQ list page
+     */
     public function index()
     {
-        $data['faqs'] = $this->service->getAllPaginated(10); // Service handles fetching
-        return view('backend.faq.index',$data);
+        return view('backend.faq.index');
     }
 
-    // Show create form
+    /**
+     * Return DataTable JSON for FAQs
+     */
+    public function getDataTable(Request $request)
+    {
+        return DataTables::of($this->service->getAllQuery())
+            ->addIndexColumn() // Auto SL
+            ->addColumn('image', function ($faq) {
+                if ($faq->image) {
+                    return '<img src="' . $faq->image_url . '" width="60" height="40" style="object-fit:cover;" class="rounded">';
+                }
+                return '<span class="text-muted">—</span>';
+            })
+            ->addColumn('status', function ($faq) {
+                if ($faq->status) {
+                    return '<span class="badge bg-success-subtle text-success px-3">Active</span>';
+                }
+                return '<span class="badge bg-secondary-subtle text-secondary px-3">Inactive</span>';
+            })
+            ->addColumn('actions', fn($item) => action_buttons([
+                edit_column(route('faq.edit', $item->id)),
+                delete_column(route('faq.delete', $item->id)),
+            ]))
+            ->rawColumns(['image', 'status', 'actions'])
+            ->make(true);
+    }
+
+    /**
+     * Show create form
+     */
     public function create()
     {
-        return view('backend.faq.create'); // Separate blade for create/edit
+        return view('backend.faq.create');
     }
 
-    // Store new FAQ
+    /**
+     * Store new FAQ
+     */
     public function store(FaqRequest $request)
     {
         $this->service->create($request->validated());
         return redirect()->route('faq.list')->with('success', 'FAQ created successfully.');
     }
 
-    // Show edit form
+    /**
+     * Show edit form
+     */
     public function edit($id)
     {
         $data['faq'] = $this->service->getById($id);
         return view('backend.faq.create', $data);
     }
 
-    // Update FAQ
+    /**
+     * Update FAQ
+     */
     public function update(FaqRequest $request, $id)
     {
         $faq = $this->service->getById($id);
@@ -50,7 +88,9 @@ class FaqController extends Controller
         return redirect()->route('faq.list')->with('success', 'FAQ updated successfully.');
     }
 
-    // Delete FAQ
+    /**
+     * Delete FAQ
+     */
     public function destroy($id)
     {
         $faq = $this->service->getById($id);

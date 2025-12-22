@@ -18,8 +18,8 @@ class SettingController extends Controller
     // Index + edit form
     public function index()
     {
-        $setting = $this->settingService->get();
-        return view('backend.settings.index', compact('setting'));
+        $data['setting'] = $this->settingService->get();
+        return view('backend.settings.index', $data);
     }
 
     // Create or update

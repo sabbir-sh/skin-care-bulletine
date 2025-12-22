@@ -66,14 +66,16 @@ Route::prefix('contact')->name('contact.')->group(function () {
     Route::delete('delete/{id}', [ContactMessageController::class, 'destroy'])->name('destroy');
 });
 
-Route::prefix('faq')->name('faq.')->group(function () {
+Route::prefix('admin/faq')->name('faq.')->group(function () {
     Route::get('/', [FaqController::class, 'index'])->name('list');
+    Route::get('datatable', [FaqController::class, 'getDataTable'])->name('datatable');
     Route::get('create', [FaqController::class, 'create'])->name('create');
     Route::post('store', [FaqController::class, 'store'])->name('store');
-    Route::get('edit/{id}', [FaqController::class, 'edit'])->name('edit');
+    Route::get('{id}/edit', [FaqController::class, 'edit'])->name('edit');
     Route::patch('update/{id}', [FaqController::class, 'update'])->name('update');
-    Route::delete('delete/{id}', [FaqController::class, 'destroy'])->name('destroy');
+    Route::delete('delete/{id}', [FaqController::class, 'destroy'])->name('delete');
 });
+
 
 Route::prefix('author')->name('author.')->group(function () {
     Route::get('/', [AuthorController::class, 'index'])->name('list');

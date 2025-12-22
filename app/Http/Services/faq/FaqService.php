@@ -7,7 +7,11 @@ use Illuminate\Support\Facades\Storage;
 
 class FaqService
 {
-    // Create FAQ
+
+    public function getAllQuery()
+    {
+        return Faq::query()->latest();
+    }
     public function create(array $data)
     {
         if (!empty($data['image'])) {

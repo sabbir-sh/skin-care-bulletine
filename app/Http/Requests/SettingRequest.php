@@ -16,8 +16,8 @@ class SettingRequest extends FormRequest
         return [
             'site_name'        => 'required|string|max:255',
 
-            'logo'             => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'favicon'          => 'nullable|image|mimes:jpg,jpeg,png,ico|max:1024',
+            'logo'             => 'nullable|image',
+            'favicon'          => 'nullable|image',
 
             'meta_title'       => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',

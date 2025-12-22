@@ -3,69 +3,76 @@
 @section('title', 'Authors')
 
 @section('content')
-<div class="container-fluid py-4">
+    <div class="container-fluid py-4">
 
-    <div class="d-flex justify-content-between mb-3">
-        <h3>Author List</h3>
-        <a href="{{ route('author.create') }}" class="btn btn-primary">
-            + Add Author
-        </a>
-    </div>
+        {{-- Header --}}
+        <div class="row mb-4 align-items-center">
+            <div class="col-md-6">
+                <h2 class="fw-bold mb-1">Authors List</h2>
+                <p class="text-muted mb-0">Manage blog authors & profiles</p>
+            </div>
+            <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                <a href="{{ route('author.create') }}" class="btn btn-success px-4 rounded-pill shadow-sm">
+                    <i class="bi bi-plus-circle me-1"></i> Add Author
+                </a>
+            </div>
+        </div>
 
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+        {{-- Author Grid --}}
+        <div class="row g-3">
 
-    <div class="card shadow-sm">
-        <div class="card-body table-responsive">
-            <table class="table table-hover align-middle">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Avatar</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th width="150">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($authors as $key => $author)
-                        <tr>
-                            <td>{{ $authors->firstItem() + $key }}</td>
-                            <td>
-                                <img src="{{ $author->avatar_url }}" width="50" class="rounded-circle">
-                            </td>
-                            <td>{{ $author->name }}</td>
-                            <td>{{ $author->email }}</td>
-                            <td>
-                                <a href="{{ route('author.edit', $author->id) }}" class="btn btn-sm btn-primary">
-                                    Edit
+            @forelse($authors as $author)
+
+                {{-- 6 per row on large screens --}}
+                <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-12">
+
+                    <div class="card h-100 border-0 shadow-sm text-center">
+
+                        <div class="card-body p-3">
+
+                            {{-- Avatar --}}
+                            <img src="{{ $author->avatar_url }}" class="rounded-circle border mb-2" width="60" height="60"
+                                style="object-fit:cover">
+
+                            {{-- Name --}}
+                            <h6 class="fw-semibold mb-0 text-truncate">
+                                {{ $author->name }}
+                            </h6>
+
+                            {{-- Email --}}
+                            <small class="text-muted d-block mb-2 text-truncate">
+                                {{ $author->email }}
+                            </small>
+
+                            {{-- Actions --}}
+                            <div class="d-flex justify-content-center gap-1">
+                                <a href="{{ route('author.edit', $author->id) }}" class="btn btn-outline-primary btn-sm px-2">
+                                    <i class="bi bi-pencil"></i>
                                 </a>
 
-                                <form action="{{ route('author.destroy', $author->id) }}"
-                                      method="POST"
-                                      class="d-inline"
-                                      onsubmit="return confirm('Delete this author?')">
+                                <form action="{{ route('author.destroy', $author->id) }}" method="POST"
+                                    onsubmit="return confirm('Delete this author?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-sm btn-danger">
-                                        Delete
+                                    <button class="btn btn-outline-danger btn-sm px-2">
+                                        <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="text-center text-muted">
-                                No authors found
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                            </div>
 
-            {{ $authors->links() }}
+                        </div>
+                    </div>
+                </div>
+
+            @empty
+                <div class="col-12">
+                    <div class="text-center py-5 text-muted">
+                        <i class="bi bi-person-x fs-2 d-block mb-2"></i>
+                        No authors found
+                    </div>
+                </div>
+            @endforelse
+
         </div>
-    </div>
-</div>
+
 @endsection
