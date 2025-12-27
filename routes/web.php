@@ -42,14 +42,15 @@ Route::post('/contact-us', [ContactController::class, 'submit'])->name('contact.
 // Blog Post 
 Route::prefix('blog-post')->name('blog.')->group(function () {
     Route::get('/', [BlogPostController::class, 'index'])->name('list');
+    Route::get('/data', [BlogPostController::class, 'getDataTable'])
+    ->name('data');
     Route::get('create', [BlogPostController::class, 'create'])->name('create');
     Route::post('store', [BlogPostController::class, 'store'])->name('store');
-    // Using {id} as requested
     Route::get('edit/{id}', [BlogPostController::class, 'edit'])->name('edit');
     Route::patch('update/{id}', [BlogPostController::class, 'update'])->name('update');
     Route::delete('delete/{id}', [BlogPostController::class, 'destroy'])->name('destroy');
-    
 });
+
 
 Route::prefix('category')->name('category.')->group(function () {
     Route::get('/', [CategoryController::class, 'index'])->name('list');
