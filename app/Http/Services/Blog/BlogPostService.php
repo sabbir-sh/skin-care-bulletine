@@ -8,23 +8,11 @@ use Illuminate\Support\Str;
 
 class BlogPostService
 {
-    /**
-     * =========================
-     * DataTable base query
-     * =========================
-     */
     public function getAllQuery()
     {
-        return BlogPost::with('category')
-            ->select('blog_posts.*')
-            ->latest();
+        return BlogPost::with(['category','author'])->latest();
     }
 
-    /**
-     * =========================
-     * Create
-     * =========================
-     */
     public function create(array $data)
     {
         $this->prepareSlug($data);
@@ -36,11 +24,6 @@ class BlogPostService
         return BlogPost::create($data);
     }
 
-    /**
-     * =========================
-     * Update
-     * =========================
-     */
     public function update(BlogPost $blog, array $data)
     {
         $this->prepareSlug($data);
@@ -60,11 +43,6 @@ class BlogPostService
         return $blog;
     }
 
-    /**
-     * =========================
-     * Delete
-     * =========================
-     */
     public function delete(BlogPost $blog)
     {
         if ($blog->featured_image && File::exists(public_path($blog->featured_image))) {
@@ -74,18 +52,11 @@ class BlogPostService
         return $blog->delete();
     }
 
-    /**
-     * =========================
-     * Helpers
-     * =========================
-     */
-    protected function prepareSlug(array &$data): void
+    protected function prepareSlug(array &$data)
     {
-        if (!empty($data['slug'])) {
-            $data['slug'] = Str::slug($data['slug']);
-        } elseif (!empty($data['title'])) {
-            $data['slug'] = Str::slug($data['title']);
-        }
+        $data['slug'] = !empty($data['slug'])
+            ? Str::slug($data['slug'])
+            : Str::slug($data['title']);
     }
 
     protected function uploadImage($image): string
@@ -96,9 +67,9 @@ class BlogPostService
             File::makeDirectory($path, 0755, true);
         }
 
-        $name = time() . '_' . $image->getClientOriginalName();
-        $image->move($path, $name);
+        $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+        $image->move($path, $filename);
 
-        return 'uploads/blog/' . $name;
+        return 'uploads/blog/' . $filename;
     }
 }

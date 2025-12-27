@@ -8,13 +8,6 @@
         </div>
 
         <div class="card-body">
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-
             <form action="{{ isset($blog) ? route('blog.update', $blog->id) : route('blog.store') }}" 
                   method="POST" enctype="multipart/form-data">
                 @csrf
@@ -30,69 +23,58 @@
                             </div>
                             <div class="card-body">
 
-                                {{-- Title --}}
                                 <div class="mb-3">
                                     <label class="form-label">Title <span class="text-danger">*</span></label>
-                                    <input type="text" name="title" 
+                                    <input type="text" name="title" id="title"
                                            class="form-control @error('title') is-invalid @enderror"
                                            value="{{ old('title', $blog->title ?? '') }}" required>
-                                    @error('title') <span class="invalid-feedback">{{ $message }}</span> @enderror
                                 </div>
 
-                                {{-- Slug --}}
                                 <div class="mb-3">
                                     <label class="form-label">Slug</label>
-                                    <input type="text" name="slug" 
+                                    <input type="text" name="slug" id="slug"
                                            class="form-control @error('slug') is-invalid @enderror"
                                            value="{{ old('slug', $blog->slug ?? '') }}">
-                                    <small class="text-muted">Leave empty to auto-generate from title.</small>
-                                    @error('slug') <span class="invalid-feedback">{{ $message }}</span> @enderror
                                 </div>
 
-                                {{-- Content with Summernote --}}
+                                {{-- Professional CKEditor Field --}}
                                 <div class="mb-3">
                                     <label class="form-label">Content <span class="text-danger">*</span></label>
-                                    <textarea name="content" rows="8" 
-                                              class="form-control aiz-text-editor @error('content') is-invalid @enderror"
-                                              required>{{ old('content', $blog->content ?? '') }}</textarea>
-                                    @error('content') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                    <div id="editor-container">
+                                        <textarea name="content" id="blog_content" class="form-control">{{ old('content', $blog->content ?? '') }}</textarea>
+                                    </div>
+                                    <style>
+                                        /* এডিটরের উচ্চতা ফিক্স করার জন্য */
+                                        .ck-editor__editable_inline {
+                                            min-height: 400px;
+                                        }
+                                    </style>
                                 </div>
 
-                                {{-- Category --}}
                                 <div class="mb-3">
                                     <label class="form-label">Category <span class="text-danger">*</span></label>
-                                    <select name="category_id" class="form-select @error('category_id') is-invalid @enderror" required>
+                                    <select name="category_id" class="form-select" required>
                                         <option value="">-- Select Category --</option>
                                         @foreach($categories as $category)
-                                            <option value="{{ $category->id }}" 
-                                                {{ old('category_id', $blog->category_id ?? '') == $category->id ? 'selected' : '' }}>
-                                                {{ $category->name }}
-                                            </option>
+                                            <option value="{{ $category->id }}" {{ old('category_id', $blog->category_id ?? '') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                                         @endforeach
                                     </select>
-                                    @error('category_id') <span class="invalid-feedback">{{ $message }}</span> @enderror
                                 </div>
 
-                                {{-- Featured Image --}}
                                 <div class="mb-3">
-                                    <label class="form-label">Featured Image @if(!isset($blog))<span class="text-danger">*</span>@endif</label>
-                                    <input type="file" name="featured_image" 
-                                           class="form-control @error('featured_image') is-invalid @enderror">
-                                    @error('featured_image') <span class="invalid-feedback">{{ $message }}</span> @enderror
-
+                                    <label class="form-label">Featured Image</label>
+                                    <input type="file" name="featured_image" class="form-control">
                                     @if(isset($blog) && $blog->featured_image)
-                                        <img src="{{ asset($blog->featured_image) }}" width="120" class="mt-2 rounded shadow-sm border">
+                                        <img src="{{ asset($blog->featured_image) }}" width="120" class="mt-2 rounded shadow border">
                                     @endif
                                 </div>
 
-                                {{-- Status --}}
                                 <div class="mb-3">
                                     <label class="form-label">Status</label>
-                                    <select name="status" class="form-select @error('status') is-invalid @enderror">
+                                    <select name="status" class="form-select">
                                         <option value="0" {{ (old('status', $blog->status ?? 0) == 0) ? 'selected' : '' }}>Draft</option>
-                                        <option value="1" {{ (old('status', $blog->status ?? 0) == 1) ? 'selected' : '' }}>Published</option>
+                                        <option value="1" {{ (old('status', $blog->status ?? 1) == 1) ? 'selected' : '' }}>Published</option>
                                     </select>
-                                    @error('status') <span class="invalid-feedback">{{ $message }}</span> @enderror
                                 </div>
 
                             </div>
@@ -103,110 +85,60 @@
                     <div class="col-md-4">
                         <div class="card border mb-4">
                             <div class="card-header bg-light">
-                                <h6 class="m-0 fw-bold text-primary">🔍 SEO Information</h6>
+                                <h6 class="m-0 fw-bold text-primary">🔍 SEO & Author</h6>
                             </div>
                             <div class="card-body">
-
-                                {{-- Meta Title --}}
                                 <div class="mb-3">
                                     <label class="form-label">Meta Title</label>
-                                    <input type="text" name="meta_title" 
-                                           class="form-control @error('meta_title') is-invalid @enderror"
-                                           value="{{ old('meta_title', $blog->meta_title ?? '') }}">
-                                    @error('meta_title') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                    <input type="text" name="meta_title" class="form-control" value="{{ old('meta_title', $blog->meta_title ?? '') }}">
                                 </div>
-
-                                {{-- Meta Description --}}
                                 <div class="mb-3">
                                     <label class="form-label">Meta Description</label>
-                                    <textarea name="meta_description" rows="4"
-                                              class="form-control @error('meta_description') is-invalid @enderror">{{ old('meta_description', $blog->meta_description ?? '') }}</textarea>
-                                    @error('meta_description') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                    <textarea name="meta_description" rows="4" class="form-control">{{ old('meta_description', $blog->meta_description ?? '') }}</textarea>
                                 </div>
-
-                                {{-- Meta Keywords --}}
                                 <div class="mb-3">
-                                    <label class="form-label">Meta Keywords</label>
-                                    <input type="text" name="meta_keywords" 
-                                           class="form-control @error('meta_keywords') is-invalid @enderror"
-                                           value="{{ old('meta_keywords', $blog->meta_keywords ?? '') }}">
-                                    @error('meta_keywords') <span class="invalid-feedback">{{ $message }}</span> @enderror
-                                </div>
-                                {{-- Author --}}
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Author</label>
-                                    <select name="author_id"
-                                            class="form-select @error('author_id') is-invalid @enderror"
-                                            required>
+                                    <label class="form-label">Author</label>
+                                    <select name="author_id" class="form-select" required>
                                         <option value="">-- Select Author --</option>
                                         @foreach($authors as $author)
-                                            <option value="{{ $author->id }}"
-                                                {{ old('author_id', $blog->author_id ?? '') == $author->id ? 'selected' : '' }}>
-                                                {{ $author->name }}
-                                            </option>
+                                            <option value="{{ $author->id }}" {{ old('author_id', $blog->author_id ?? '') == $author->id ? 'selected' : '' }}>{{ $author->name }}</option>
                                         @endforeach
                                     </select>
-                                    @error('author_id')
-                                        <span class="invalid-feedback">{{ $message }}</span>
-                                    @enderror
                                 </div>
-
-                                {{-- Submit Button --}}
                                 <div class="d-grid mt-4">
-                                    <button type="submit" class="btn btn-success">
-                                        {{ isset($blog) ? 'Update Post' : 'Create Post' }}
-                                    </button>
+                                    <button type="submit" class="btn btn-success btn-lg">{{ isset($blog) ? 'Update Post' : 'Create Post' }}</button>
                                 </div>
-
                             </div>
                         </div>
                     </div>
-
-                </div> {{-- row end --}}
+                </div>
             </form>
         </div>
     </div>
 </div>
 
-<!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- Bootstrap 5 -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 
-<!-- Summernote Lite -->
-<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
-
-<!-- Editor Init -->
 <script>
-$(function () {
-    $('.aiz-text-editor').summernote({
-        height: 350,
-        placeholder: 'Write your blog content here...',
-        toolbar: [
-            ['style', ['style']], // <-- This enables the "Headings" dropdown
-            ['font', ['bold', 'italic', 'underline', 'clear']],
-            ['fontname', ['fontname']],
-            ['fontsize', ['fontsize']],
-            ['color', ['color']],
-            ['para', ['ul', 'ol', 'paragraph']],
-            ['insert', ['link', 'picture', 'video']],
-            ['view', ['fullscreen', 'codeview', 'help']]
-        ],
-        styleTags: [
-            'p', 'blockquote', 'pre',
-            { title: 'Heading 1', tag: 'h1', className: '', value: 'h1' },
-            { title: 'Heading 2', tag: 'h2', className: '', value: 'h2' },
-            { title: 'Heading 3', tag: 'h3', className: '', value: 'h3' },
-            { title: 'Heading 4', tag: 'h4', className: '', value: 'h4' },
-            { title: 'Heading 5', tag: 'h5', className: '', value: 'h5' },
-            { title: 'Heading 6', tag: 'h6', className: '', value: 'h6' }
-        ],
-        fontNames: ['Arial', 'Helvetica', 'Times New Roman', 'Courier New', 'Verdana']
+    ClassicEditor
+        .create(document.querySelector('#blog_content'), {
+            toolbar: [
+                'heading', '|', 
+                'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|',
+                'insertTable', 'undo', 'redo', 'imageUpload', 'mediaEmbed'
+            ],
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    // Auto Slug Generator (Optional)
+    $('#title').keyup(function() {
+        let text = $(this).val().toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
+        $('#slug').val(text);
     });
-});
 </script>
 
 @endsection

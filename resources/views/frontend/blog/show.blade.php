@@ -11,11 +11,9 @@
             <h2 class="mb-3 fw-bold">{{ $blog->title }}</h2>
 
             {{-- Featured Image --}}
-            @if($blog->featured_image)
-                <img src="{{ asset($blog->featured_image) }}"
-                     class="img-fluid mb-4 rounded shadow-sm"
-                     alt="{{ $blog->title }}">
-            @endif
+            <img src="{{ $blog->featured_image_url }}"
+                 class="img-fluid mb-4 rounded shadow-sm"
+                 alt="{{ $blog->title }}">
 
             {{-- Blog Content --}}
             <div class="blog-content mb-5"
@@ -26,18 +24,16 @@
             {{-- ================= Author Box ================= --}}
             @if($blog->author)
                 <div class="author-box d-flex gap-3 p-4 border rounded shadow-sm bg-light mb-5">
-                    
+
                     {{-- Avatar --}}
-                    <img src="{{ $blog->author->avatar_url }}"
+                    <img src="{{ $blog->author->avatar_url ?? asset('images/default-avatar.png') }}"
                          alt="{{ $blog->author->name }}"
                          class="rounded-circle border"
                          style="width:80px;height:80px;object-fit:cover;">
 
                     {{-- Info --}}
                     <div>
-                        <h5 class="mb-1 fw-bold">
-                            {{ $blog->author->name }}
-                        </h5>
+                        <h5 class="mb-1 fw-bold">{{ $blog->author->name }}</h5>
 
                         <p class="text-muted mb-2">
                             {{ $blog->author->bio ?? 'This author has not added a bio yet.' }}
@@ -46,19 +42,17 @@
                         {{-- Social links --}}
                         <div class="d-flex gap-2">
                             @if($blog->author->facebook)
-                                <a href="{{ $blog->author->facebook }}" target="_blank" class="text-decoration-none">
+                                <a href="{{ $blog->author->facebook }}" target="_blank">
                                     <i class="bi bi-facebook"></i>
                                 </a>
                             @endif
-
                             @if($blog->author->twitter)
-                                <a href="{{ $blog->author->twitter }}" target="_blank" class="text-decoration-none">
+                                <a href="{{ $blog->author->twitter }}" target="_blank">
                                     <i class="bi bi-twitter-x"></i>
                                 </a>
                             @endif
-
                             @if($blog->author->linkedin)
-                                <a href="{{ $blog->author->linkedin }}" target="_blank" class="text-decoration-none">
+                                <a href="{{ $blog->author->linkedin }}" target="_blank">
                                     <i class="bi bi-linkedin"></i>
                                 </a>
                             @endif
@@ -77,7 +71,7 @@
                             <a href="{{ route('blog.show', $similar->slug) }}"
                                class="text-decoration-none">
                                 <div class="card h-100 shadow-sm">
-                                    <img src="{{ asset($similar->featured_image ?? 'images/default-blog.jpg') }}"
+                                    <img src="{{ $similar->featured_image_url }}"
                                          class="card-img-top"
                                          style="height:160px;object-fit:cover;">
                                     <div class="card-body">
@@ -125,7 +119,7 @@
                     @forelse($recentBlogs as $recent)
                         <a href="{{ route('blog.show', $recent->slug) }}"
                            class="list-group-item list-group-item-action d-flex gap-3">
-                            <img src="{{ asset($recent->featured_image ?? 'images/default-blog.jpg') }}"
+                            <img src="{{ $recent->featured_image_url }}"
                                  class="rounded"
                                  style="width:60px;height:60px;object-fit:cover;">
                             <div>

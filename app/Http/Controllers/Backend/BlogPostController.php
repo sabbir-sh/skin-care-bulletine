@@ -8,7 +8,7 @@ use App\Http\Services\Blog\BlogPostService;
 use App\Models\BlogPost;
 use App\Models\Category;
 use App\Models\Author;
-use Illuminate\Http\Request; // ✅ MISSING IMPORT FIX
+use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
 class BlogPostController extends Controller
@@ -20,58 +20,49 @@ class BlogPostController extends Controller
         $this->blogService = $blogService;
     }
 
-    /**
-     * List page
-     */
     public function index()
     {
         return view('backend.blog_post.index');
     }
 
     /**
-     * DataTable data
+     * DataTable
      */
     public function getDataTable(Request $request)
     {
-        return DataTables::of($this->blogService->getAllQuery()) // ✅ FIXED
+        return DataTables::of($this->blogService->getAllQuery())
             ->addIndexColumn()
 
             ->addColumn('featured_image', function ($blog) {
-                if ($blog->featured_image) {
-                    return '<img src="' . asset($blog->featured_image) . '" 
-                                width="60" height="40"
-                                style="object-fit:cover;"
-                                class="rounded">';
-                }
-                return '<span class="text-muted">—</span>';
+                return '<img src="'.$blog->featured_image_url.'" 
+                        width="60" height="40"
+                        class="rounded"
+                        style="object-fit:cover;">';
             })
 
-            ->addColumn('category', function ($blog) {
-                return $blog->category->name ?? 'N/A';
-            })
+            ->addColumn('category', fn ($blog) =>
+                $blog->category->name ?? 'N/A'
+            )
 
-            ->addColumn('status', function ($blog) {
-                return $blog->status
-                    ? '<span class="badge bg-success-subtle text-success px-3">Published</span>'
-                    : '<span class="badge bg-secondary-subtle text-secondary px-3">Draft</span>';
-            })
+            ->addColumn('status', fn ($blog) =>
+                $blog->status
+                    ? '<span class="badge bg-success-subtle text-success">Published</span>'
+                    : '<span class="badge bg-secondary-subtle text-secondary">Draft</span>'
+            )
 
-            ->addColumn('actions', fn($blog) => action_buttons([
+            ->addColumn('actions', fn ($blog) => action_buttons([
                 edit_column(route('blog.edit', $blog->id)),
                 delete_column(route('blog.destroy', $blog->id)),
             ]))
 
-            ->editColumn('created_at', function ($blog) {
-                return $blog->created_at->format('d M, Y');
-            })
+            ->editColumn('created_at', fn ($blog) =>
+                $blog->created_at->format('d M, Y')
+            )
 
             ->rawColumns(['featured_image', 'status', 'actions'])
             ->make(true);
     }
 
-    /**
-     * Create form
-     */
     public function create()
     {
         return view('backend.blog_post.create', [
@@ -80,9 +71,6 @@ class BlogPostController extends Controller
         ]);
     }
 
-    /**
-     * Store
-     */
     public function store(BlogPostRequest $request)
     {
         $this->blogService->create($request->validated());
@@ -92,9 +80,6 @@ class BlogPostController extends Controller
             ->with('success', 'Blog created successfully!');
     }
 
-    /**
-     * Edit
-     */
     public function edit($id)
     {
         return view('backend.blog_post.create', [
@@ -104,13 +89,9 @@ class BlogPostController extends Controller
         ]);
     }
 
-    /**
-     * Update
-     */
     public function update(BlogPostRequest $request, $id)
     {
         $blog = BlogPost::findOrFail($id);
-
         $this->blogService->update($blog, $request->validated());
 
         return redirect()
@@ -118,13 +99,9 @@ class BlogPostController extends Controller
             ->with('success', 'Blog updated successfully!');
     }
 
-    /**
-     * Delete
-     */
     public function destroy($id)
     {
         $blog = BlogPost::findOrFail($id);
-
         $this->blogService->delete($blog);
 
         return back()->with('success', 'Blog deleted successfully!');
