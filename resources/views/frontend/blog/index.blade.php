@@ -1,26 +1,56 @@
 @extends('frontend.layouts.app')
 
+@section('title', 'Our Blogs')
+
 @section('content')
-    <!-- Hero Banner -->
-    <section
-        style="position: relative; width: 100%; height: 400px; background: url('{{ asset('uploads/blog/1.jpg') }}') center/cover no-repeat;">
-        <!-- Overlay -->
-        <div style="position: absolute; top:0; left:0; right:0; bottom:0; background-color: rgba(0,0,0,0.5);"></div>
 
-        <!-- Content -->
-        <div class="container h-100 d-flex flex-column justify-content-center align-items-center text-center position-relative"
-            style="z-index: 1;">
-            <h1 class="text-white fw-bold mb-3">Our Latest Blogs</h1>
-            <p class="text-white lead">Stay updated with our tips, news, and insights on skincare</p>
-        </div>
-    </section>
+{{-- Blog Hero Section --}}
+<section class="about-hero">
+    <style>
+        .about-hero {
+            background: linear-gradient(135deg, #f8f9fa, #eef1f5);
+            padding: 80px 0;
+            text-align: center;
+        }
+        .about-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+        }
+        .about-subtitle {
+            color: #6c757d;
+            max-width: 800px;
+            margin: 20px auto 0;
+        }
 
-    <!-- Latest Blogs Section -->
- <section class="py-5 bg-light">
+        .about-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 12px 35px rgba(0,0,0,.08);
+            height: 100%;
+        }
+
+        @media (max-width: 575px) {
+            .about-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+
+    <div class="container">
+        <h1 class="about-title">Our Blogs</h1>
+        <p class="about-subtitle lead">
+            Stay updated with our tips, news, and insights across multiple topics.
+        </p>
+    </div>
+</section>
+
+{{-- Latest Blogs Section --}}
+<section class="py-5">
     <div class="container">
         <div class="row g-4">
             @forelse($blogs as $blog)
-                <div class="col-6 col-lg-4"> <!-- Mobile: 2 per row, Desktop: 3 per row -->
+                <div class="col-6 col-lg-4">
                     <div class="card h-100 shadow-sm border-0 overflow-hidden">
                         @if($blog->featured_image)
                             <a href="{{ route('blog.show', $blog->slug) }}">
@@ -52,6 +82,5 @@
         </div>
     </div>
 </section>
-
 
 @endsection
