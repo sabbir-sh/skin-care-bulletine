@@ -23,6 +23,8 @@ use App\Http\Controllers\Backend\SettingController;
 // Frontend
 
 Route::get('/', [HomeController::class, 'index'])->name('frontend.home');
+Route::get('/blood/{slug}', [HomeController::class, 'bloodGroup'])
+    ->name('blood.group');
 
 // Home page showing all blogs
 Route::get('/blog', [BlogController::class, 'index'])->name('home');

@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('blood_groups', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->string('title')->nullable();
             $table->text('description')->nullable();
             $table->tinyInteger('status')->default(1);
+            $table->string('slug')->unique();
             $table->timestamps();
         });
     }

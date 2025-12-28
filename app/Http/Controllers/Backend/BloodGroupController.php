@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BloodGroupRequest;
 use App\Models\BloodGroup;
+use Illuminate\Support\Str;
 
 class BloodGroupController extends Controller
 {
@@ -18,9 +19,11 @@ class BloodGroupController extends Controller
 
     public function store(BloodGroupRequest $request)
     {
-        BloodGroup::create($request->validated());
+        $data = $request->validated();
+        $data['slug'] = $request->slug ? Str::slug($request->slug) : Str::slug($request->name);
+        BloodGroup::create($data);
 
-        return redirect()->back()->with('success', 'Blood group added successfully');
+        return redirect()->back()->with('success', 'Added successfully');
     }
 
     public function edit($id)
@@ -33,11 +36,12 @@ class BloodGroupController extends Controller
 
     public function update(BloodGroupRequest $request, $id)
     {
-        BloodGroup::findOrFail($id)->update($request->validated());
+        $data = $request->validated();
+        $data['slug'] = $request->slug ? Str::slug($request->slug) : Str::slug($data['name']);
 
-        return redirect()
-            ->route('blood-group.list')
-            ->with('success', 'Blood group updated successfully');
+        BloodGroup::findOrFail($id)->update($data);
+
+        return redirect()->route('blood-group.list')->with('success', 'Updated successfully');
     }
 
     public function destroy($id)

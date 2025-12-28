@@ -11,5 +11,11 @@ class BloodGroup extends Model
         'title',
         'description',
         'status',
+        'slug',
     ];
+
+    public function donors()
+{
+    return $this->hasMany(Donor::class);
+}
 }

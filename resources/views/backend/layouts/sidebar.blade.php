@@ -29,7 +29,6 @@
             display: flex;
             flex-direction: column;
             z-index: 1040;
-            overflow-y: auto;
         }
 
         /* Search bar */
@@ -59,7 +58,6 @@
             border-radius: 10px;
             padding: 10px 15px;
             transition: all 0.3s ease;
-            color: #fff;
         }
 
         .nav-link:hover {
@@ -69,12 +67,6 @@
         .nav-link.active {
             background-color: #344274 !important;
             color: #ffffff !important;
-        }
-
-        /* Submenu */
-        .submenu .nav-link {
-            padding-left: 45px;
-            font-size: 14px;
         }
 
         /* Mobile toggle */
@@ -89,6 +81,7 @@
             #sidebar {
                 width: 100%;
                 max-width: 260px;
+                overflow-y: auto;
             }
         }
     </style>
@@ -128,81 +121,83 @@
 
         <li class="nav-item mb-1">
             <a href="{{ route('dashboard') }}"
-               class="nav-link d-flex align-items-center {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+               class="nav-link d-flex align-items-center {{ request()->routeIs('dashboard') ? 'active' : 'text-white' }}">
                 <i class="bi bi-house-door me-3 fs-5"></i>Dashboard
             </a>
         </li>
 
-        <!-- Blood Function Parent -->
-        <li class="nav-item mb-1">
-            <a class="nav-link d-flex justify-content-between align-items-center collapsed"
-               data-bs-toggle="collapse"
-               href="#bloodFunctionMenu"
-               role="button"
-               aria-expanded="{{ request()->routeIs('blood-group.*') || request()->routeIs('donor.*') ? 'true' : 'false' }}"
-               aria-controls="bloodFunctionMenu">
-                <div class="d-flex align-items-center">
-                    <i class="bi bi-droplet me-3 fs-5"></i> Blood Function
-                </div>
-                <i class="bi bi-chevron-down small"></i>
-            </a>
-            <div class="collapse {{ request()->routeIs('blood-group.*') || request()->routeIs('donor.*') ? 'show' : '' }} submenu" id="bloodFunctionMenu">
-                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li>
-                        <a href="{{ route('blood-group.list') }}"
-                           class="nav-link {{ request()->routeIs('blood-group.*') ? 'active' : '' }}">
-                           Blood Groups
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('donor.list') }}"
-                           class="nav-link {{ request()->routeIs('donor.*') ? 'active' : '' }}">
-                           Donors
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </li>
+<li class="nav-item mb-1">
+    {{-- Parent --}}
+    <a class="nav-link d-flex justify-content-between align-items-center {{ request()->routeIs('blood-group.*') || request()->routeIs('donor.*') ? '' : 'collapsed' }}"
+       data-bs-toggle="collapse"
+       href="#bloodFunctionMenu"
+       role="button"
+       aria-expanded="{{ request()->routeIs('blood-group.*') || request()->routeIs('donor.*') ? 'true' : 'false' }}"
+       aria-controls="bloodFunctionMenu">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-droplet me-3 fs-5"></i> Blood Function
+        </div>
+        <i class="bi bi-chevron-down small"></i>
+    </a>
 
-        <!-- Other menus -->
+    {{-- Sub-items --}}
+    <div class="collapse {{ request()->routeIs('blood-group.*') || request()->routeIs('donor.*') ? 'show' : '' }}" id="bloodFunctionMenu">
+        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+            <li>
+                <a href="{{ route('blood-group.list') }}" class="nav-link {{ request()->routeIs('blood-group.*') ? 'active' : 'text-white' }}">
+                   Blood Groups
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('donor.list') }}" class="nav-link {{ request()->routeIs('donor.*') ? 'active' : 'text-white' }}">
+                   Donors
+                </a>
+            </li>
+        </ul>
+    </div>
+</li>
+
+
+
+
         <li class="nav-item mb-1">
             <a href="{{ route('contact.list') }}"
-               class="nav-link d-flex align-items-center {{ request()->routeIs('contact.*') ? 'active' : '' }}">
+               class="nav-link d-flex align-items-center {{ request()->routeIs('contact.*') ? 'active' : 'text-white' }}">
                 <i class="bi bi-chat-left-text me-3 fs-5"></i>Contact Messages
             </a>
         </li>
 
         <li class="nav-item mb-1">
             <a href="{{ route('blog.list') }}"
-               class="nav-link d-flex align-items-center {{ request()->routeIs('blog.*') ? 'active' : '' }}">
+               class="nav-link d-flex align-items-center {{ request()->routeIs('blog.*') ? 'active' : 'text-white' }}">
                 <i class="bi bi-journal-text me-3 fs-5"></i>Blog Posts
             </a>
         </li>
 
         <li class="nav-item mb-1">
             <a href="{{ route('category.list') }}"
-               class="nav-link d-flex align-items-center {{ request()->routeIs('category.*') ? 'active' : '' }}">
+               class="nav-link d-flex align-items-center {{ request()->routeIs('category.*') ? 'active' : 'text-white' }}">
                 <i class="bi bi-tags me-3 fs-5"></i>Categories
             </a>
         </li>
 
         <li class="nav-item mb-1">
             <a href="{{ route('faq.list') }}"
-               class="nav-link d-flex align-items-center {{ request()->routeIs('faq.*') ? 'active' : '' }}">
+               class="nav-link d-flex align-items-center {{ request()->routeIs('faq.*') ? 'active' : 'text-white' }}">
                 <i class="bi bi-question-circle me-3 fs-5"></i>FAQ
             </a>
         </li>
 
         <li class="nav-item mb-1">
             <a href="{{ route('author.list') }}"
-               class="nav-link d-flex align-items-center {{ request()->routeIs('author.*') ? 'active' : '' }}">
+               class="nav-link d-flex align-items-center {{ request()->routeIs('author.*') ? 'active' : 'text-white' }}">
                 <i class="bi bi-person-lines-fill me-3 fs-5"></i>Author List
             </a>
         </li>
 
         <li class="nav-item mb-1">
             <a href="{{ route('setting.list') }}"
-               class="nav-link d-flex align-items-center {{ request()->routeIs('setting.*') ? 'active' : '' }}">
+               class="nav-link d-flex align-items-center {{ request()->routeIs('setting.*') ? 'active' : 'text-white' }}">
                 <i class="bi bi-gear me-3 fs-5"></i>Site Setting
             </a>
         </li>
@@ -222,9 +217,12 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    // Sidebar toggle for mobile
     const sidebar = document.getElementById('sidebar');
-    if (window.innerWidth < 768) sidebar.classList.add('d-none');
+
+    if (window.innerWidth < 768) {
+        sidebar.classList.add('d-none');
+    }
+
     window.addEventListener('resize', () => {
         window.innerWidth >= 768
             ? sidebar.classList.remove('d-none')
