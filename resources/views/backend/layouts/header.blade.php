@@ -93,7 +93,7 @@
 
         <a href="{{ route('dashboard') }}" class="admin-brand d-flex align-items-center">
             <i class="bi bi-speedometer2 me-2"></i>
-            <span>SkinCare Bulletin</span>
+            <span>রক্তদানই জীবনের সেরা উপহার</span>
 
             @if(Auth::check())
                 <span class="ms-2 admin-user">({{ Auth::user()->name }})</span>

@@ -1,83 +1,150 @@
-<nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top py-3" style="background-color: #b42701;">
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top py-2">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="/">
             @if($setting?->logo)
-                <img src="{{ $setting->logo_url }}" alt="Logo" height="50" class="d-inline-block align-text-top">
+                <img src="{{ $setting->logo_url }}" alt="Logo" height="50" class="d-inline-block">
             @else
-                <span class="fw-bold fs-3" style="color: #030303;">{{ $setting->site_name ?? 'রক্তদান' }}</span>
+                <div class="brand-container">
+                    <span class="brand-main">BLOOD</span><span class="brand-sub">FIGHTER</span>
+                </div>
             @endif
         </a>
 
-        <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
-            data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
+        <button class="navbar-toggler collapsed d-flex d-lg-none flex-column justify-content-around" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="toggler-icon top-bar"></span>
+            <span class="toggler-icon middle-bar"></span>
+            <span class="toggler-icon bottom-bar"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto text-center text-lg-start align-items-center">
+            <ul class="navbar-nav ms-auto align-items-center">
                 <li class="nav-item">
-                    <a class="nav-link fw-bold mx-2 px-3 text-dark" style="color: #000000 !important;" href="/">হোম</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-bold mx-2 px-3 text-dark" style="color: #000000 !important;"
-                        href="/blog">ব্লগ</a>
+                    <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="/">হোম</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fw-bold mx-2 px-3 text-dark" style="color: #000000 !important;"
-                        href="/about-us">আমাদের সম্পর্কে</a>
+                    <a class="nav-link {{ request()->is('blog*') ? 'active' : '' }}" href="/blog">ব্লগ</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fw-bold mx-2 px-3 text-dark" style="color: #000000 !important;"
-                        href="/contact-us">যোগাযোগ</a>
+                    <a class="nav-link {{ request()->is('about-us') ? 'active' : '' }}" href="/about-us">আমাদের সম্পর্কে</a>
                 </li>
-
-                {{-- দাতা হন বাটনটি প্রয়োজন হলে নিচের কোডটি আনকমেন্ট করুন --}}
-                {{--
-                <li class="nav-item ms-lg-3 mt-3 mt-lg-0">
-                    <a class="btn shadow-sm text-white px-4 rounded-pill fw-bold" style="background-color: #e63f11;"
-                        href="/register">দাতা হন</a>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('contact-us') ? 'active' : '' }}" href="/contact-us">যোগাযোগ</a>
                 </li>
-                --}}
+                
+                <li class="nav-item ms-lg-4 mt-3 mt-lg-0">
+                    <a class="btn-fighter" href="/be-a-fighter-register">
+                        <i class="bi bi-droplet-fill me-2"></i>দাতা হন
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
 </nav>
 
 <style>
+/* --- ব্র্যান্ড ডিজাইন --- */
+.brand-main {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #dc3545; /* Blood Red */
+    letter-spacing: -1px;
+}
+.brand-sub {
+    font-size: 1.8rem;
+    font-weight: 400;
+    color: #212529;
+    letter-spacing: -1px;
+}
+
+/* --- নেভিগেশন লিংকস --- */
+.navbar-nav .nav-link {
+    color: #444 !important;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 10px 18px !important;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover, 
+.navbar-nav .nav-link.active {
+    color: #dc3545 !important;
+}
+
+/* হোভার আন্ডারলাইন এনিমেশন */
+.navbar-nav .nav-link::before {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: 18px;
+    width: 0;
+    height: 3px;
+    background: #dc3545;
+    transition: width 0.3s ease;
+    border-radius: 10px;
+}
+
+.navbar-nav .nav-link:hover::before,
+.navbar-nav .nav-link.active::before {
+    width: 30px;
+}
+
+/* --- দাতা হন বাটন (Premium Fighter Button) --- */
+.btn-fighter {
+    background: linear-gradient(45deg, #dc3545, #ff4d4d);
+    color: white !important;
+    padding: 12px 28px;
+    border-radius: 50px;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-fighter:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(220, 53, 69, 0.4);
+    color: white !important;
+}
+
+/* --- মোবাইল মেনু টগলার এনিমেশন --- */
+.toggler-icon {
+    width: 25px;
+    height: 3px;
+    background-color: #dc3545;
+    display: block;
+    transition: all 0.3s ease-in-out;
+}
+.navbar-toggler {
+    height: 20px;
+    padding: 0;
+}
+.navbar-toggler:not(.collapsed) .top-bar { transform: rotate(45deg) translate(5px, 5px); }
+.navbar-toggler:not(.collapsed) .middle-bar { opacity: 0; }
+.navbar-toggler:not(.collapsed) .bottom-bar { transform: rotate(-45deg) translate(7px, -7px); }
+
+/* --- রেসপন্সিভ মোবাইল ভিউ --- */
+@media (max-width: 991px) {
+    .navbar-collapse {
+        background: #fff;
+        margin-top: 15px;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .navbar-nav .nav-link::before { display: none; }
     .navbar-nav .nav-link {
-        color: #333 !important;
-        font-size: 1.1rem;
-        position: relative;
-        transition: 0.3s;
+        padding: 12px 0 !important;
+        border-bottom: 1px solid #f8f9fa;
+        width: 100%;
     }
-
-    .navbar-nav .nav-link:hover {
-        color: #e63f11 !important;
+    .btn-fighter {
+        width: 100%;
+        justify-content: center;
+        margin-top: 10px;
     }
-
-    .navbar-nav .nav-link::after {
-        content: '';
-        position: absolute;
-        width: 0;
-        height: 3px;
-        background: #e63f11;
-        bottom: 0;
-        left: 15%;
-        transition: 0.4s;
-        border-radius: 5px;
-    }
-
-    .navbar-nav .nav-link:hover::after {
-        width: 70%;
-    }
-
-    @media (max-width: 991px) {
-        .navbar-nav {
-            margin-top: 1.5rem;
-        }
-
-        .nav-link::after {
-            display: none;
-        }
-    }
+}
 </style>
