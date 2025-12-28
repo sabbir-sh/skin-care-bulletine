@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\BlogPost;
 use App\Models\Category;
+use App\Models\Faq;
 use Illuminate\Http\Request;
 
 class BlogController extends Controller
@@ -12,12 +13,56 @@ class BlogController extends Controller
     // Home page list
     public function index()
     {
-        $data['blogs'] = BlogPost::where('status', 1) // Only published
-            ->orderBy('created_at', 'desc')
+        // Hero slider blogs (featured)
+        $data['heroBlogs'] = BlogPost::where('status', 1)
+            ->with('category')
+            ->latest()
+            ->take(5)
             ->get();
 
-        return view('frontend.blog.index', $data);
+        // Single featured blog (fallback / other section)
+        $data['featured'] = BlogPost::where('status', 1)
+            ->with('category')
+            ->latest()
+            ->first();
+
+        // Trending blogs
+        $data['trending'] = BlogPost::where('status', 1)
+            ->when($data['featured'], fn ($q) => $q->where('id', '!=', $data['featured']->id))
+            ->latest()
+            ->take(3)
+            ->get();
+
+        // Latest blogs (6 only)
+        $data['blogs'] = BlogPost::where('status', 1)
+            ->latest()
+            ->take(6)
+            ->get();
+
+        // Categories
+        $data['categories'] = Category::where('status', 1)->get();
+
+        // **Fetch FAQs**
+        $data['faqs'] = Faq::where('status', 1)
+            ->latest()
+            ->take(6) // Limit to 6 for homepage
+            ->get();
+
+        $data['allBlogs'] = BlogPost::where('status', 1)
+        ->with('category')
+        ->latest()
+        ->get();
+
+        return view('frontend.blog_home', $data );
     }
+    // public function index()
+    // {
+    //     $data['blogs'] = BlogPost::where('status', 1) // Only published
+    //         ->orderBy('created_at', 'desc')
+    //         ->get();
+
+    //     return view('frontend.blog.index', $data);
+    // }
 
     // Single blog page
     public function show($slug)

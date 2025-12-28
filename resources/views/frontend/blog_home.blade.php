@@ -303,112 +303,186 @@
         </div>
     </section>
 
-{{-- ================= FAQ Accordion ================= --}}
-<section class="py-5 faq-section">
-    <style>
-        /* Section Title */
-        .faq-section .section-title {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 2rem;
-            color: #0d6efd; /* Primary color */
-        }
+    {{-- ================= ALL BLOGS ================= --}}
+    <section class="py-5 all-blog-section">
+        <style>
+            .all-blog-card {
+                position: relative;
+                border-radius: 16px;
+                overflow: hidden;
+                display: block;
+            }
 
-        /* Accordion Card */
-        .faq-section .accordion-item {
-            background: #fff;
-            border: none;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
+            .all-blog-card img {
+                width: 100%;
+                height: 240px;
+                object-fit: cover;
+                transition: transform .6s ease;
+            }
 
-        .faq-section .accordion-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
-        }
+            .all-blog-card:hover img {
+                transform: scale(1.08);
+            }
 
-        /* Accordion Button */
-        .faq-section .accordion-button {
-            background: #f8f9fa;
-            color: #333;
-            font-weight: 600;
-            font-size: 1rem;
-            padding: 1rem 1.25rem;
-            border-radius: 0;
-            transition: background 0.3s ease, color 0.3s ease;
-        }
+            .all-blog-overlay {
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(to top, rgba(0, 0, 0, .85), rgba(0, 0, 0, .2));
+                color: #fff;
+                padding: 18px;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-end;
+            }
 
-        .faq-section .accordion-button:not(.collapsed) {
-            background: #838588;
-            color: #fff;
-        }
+            .all-blog-overlay span {
+                font-size: 12px;
+                opacity: .85;
+            }
 
-        /* Accordion Body */
-        .faq-section .accordion-body {
-            background: #fff;
-            padding: 1rem 1.25rem 1.5rem 1.25rem;
-            color: #555;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
+            .all-blog-overlay h5 {
+                font-size: 1rem;
+                margin-bottom: 0;
+            }
 
-        /* FAQ Image inside Accordion */
-        .faq-section .accordion-body img {
-            width: 100%;
-            max-height: 200px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-top: 15px;
-            transition: transform 0.3s ease;
-        }
+            /* 📱 Mobile */
+            @media (max-width: 767px) {
+                .all-blog-card img {
+                    height: 180px;
+                }
+            }
+        </style>
 
-        .faq-section .accordion-body img:hover {
-            transform: scale(1.05);
-        }
+        <div class="container">
+            <h2 class="section-title text-start mb-4">All Articles</h2>
 
-        /* Mobile Responsive */
-        @media (max-width: 575px) {
+            <div class="row g-4">
+                @foreach($allBlogs as $blog)
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <a href="{{ route('blog.show', $blog->slug) }}" class="all-blog-card">
+                            <img src="{{ asset($blog->featured_image) }}" alt="{{ $blog->title }}">
+
+                            <div class="all-blog-overlay">
+                                <span>{{ $blog->category->name ?? 'Blog' }}</span>
+                                <h5>{{ Str::limit($blog->title, 60) }}</h5>
+                            </div>
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+
+    {{-- ================= FAQ Accordion ================= --}}
+    <section class="py-5 faq-section">
+        <style>
+            /* Section Title */
             .faq-section .section-title {
-                font-size: 1.6rem;
-                text-align: center;
+                font-size: 2rem;
+                font-weight: 700;
+                margin-bottom: 2rem;
+                color: #0d6efd;
+                /* Primary color */
             }
 
+            /* Accordion Card */
+            .faq-section .accordion-item {
+                background: #fff;
+                border: none;
+                border-radius: 12px;
+                margin-bottom: 15px;
+                box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+                overflow: hidden;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            .faq-section .accordion-item:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+            }
+
+            /* Accordion Button */
             .faq-section .accordion-button {
-                font-size: 0.95rem;
-                padding: 0.8rem 1rem;
+                background: #f8f9fa;
+                color: #333;
+                font-weight: 600;
+                font-size: 1rem;
+                padding: 1rem 1.25rem;
+                border-radius: 0;
+                transition: background 0.3s ease, color 0.3s ease;
             }
 
+            .faq-section .accordion-button:not(.collapsed) {
+                background: #838588;
+                color: #fff;
+            }
+
+            /* Accordion Body */
             .faq-section .accordion-body {
-                font-size: 0.9rem;
-                padding: 0.8rem 1rem;
+                background: #fff;
+                padding: 1rem 1.25rem 1.5rem 1.25rem;
+                color: #555;
+                font-size: 0.95rem;
+                line-height: 1.6;
             }
-        }
-    </style>
 
-    <div class="container">
-        <h2 class="section-title text-start">FAQs</h2>
+            /* FAQ Image inside Accordion */
+            .faq-section .accordion-body img {
+                width: 100%;
+                max-height: 200px;
+                object-fit: cover;
+                border-radius: 8px;
+                margin-top: 15px;
+                transition: transform 0.3s ease;
+            }
 
-        <div class="accordion" id="faqAccordion">
-            @foreach($faqs as $key => $faq)
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="heading{{ $key }}">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ $key }}" aria-expanded="false" aria-controls="collapse{{ $key }}">
-                            {{ $faq->question }}
-                        </button>
-                    </h2>
-                    <div id="collapse{{ $key }}" class="accordion-collapse collapse" aria-labelledby="heading{{ $key }}" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">
-                            <p>{{ $faq->answer }}</p>
+            .faq-section .accordion-body img:hover {
+                transform: scale(1.05);
+            }
+
+            /* Mobile Responsive */
+            @media (max-width: 575px) {
+                .faq-section .section-title {
+                    font-size: 1.6rem;
+                    text-align: center;
+                }
+
+                .faq-section .accordion-button {
+                    font-size: 0.95rem;
+                    padding: 0.8rem 1rem;
+                }
+
+                .faq-section .accordion-body {
+                    font-size: 0.9rem;
+                    padding: 0.8rem 1rem;
+                }
+            }
+        </style>
+
+        <div class="container">
+            <h2 class="section-title text-start">FAQs</h2>
+
+            <div class="accordion" id="faqAccordion">
+                @foreach($faqs as $key => $faq)
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading{{ $key }}">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse{{ $key }}" aria-expanded="false" aria-controls="collapse{{ $key }}">
+                                {{ $faq->question }}
+                            </button>
+                        </h2>
+                        <div id="collapse{{ $key }}" class="accordion-collapse collapse" aria-labelledby="heading{{ $key }}"
+                            data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                <p>{{ $faq->answer }}</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-            @endforeach
+                @endforeach
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
 
 

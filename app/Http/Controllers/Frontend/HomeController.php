@@ -9,43 +9,7 @@ use App\Models\Faq;
 
 class HomeController extends Controller
 {
-    public function index()
-    {
-        // Hero slider blogs (featured)
-        $data['heroBlogs'] = BlogPost::where('status', 1)
-            ->with('category')
-            ->latest()
-            ->take(5)
-            ->get();
-
-        // Single featured blog (fallback / other section)
-        $data['featured'] = BlogPost::where('status', 1)
-            ->with('category')
-            ->latest()
-            ->first();
-
-        // Trending blogs
-        $data['trending'] = BlogPost::where('status', 1)
-            ->when($data['featured'], fn ($q) => $q->where('id', '!=', $data['featured']->id))
-            ->latest()
-            ->take(3)
-            ->get();
-
-        // Latest blogs (6 only)
-        $data['blogs'] = BlogPost::where('status', 1)
-            ->latest()
-            ->take(6)
-            ->get();
-
-        // Categories
-        $data['categories'] = Category::where('status', 1)->get();
-
-        // **Fetch FAQs**
-        $data['faqs'] = Faq::where('status', 1)
-            ->latest()
-            ->take(6) // Limit to 6 for homepage
-            ->get();
-
-        return view('frontend.home', $data );
-    }
+    // public function index()
+    
+    // }
 }
