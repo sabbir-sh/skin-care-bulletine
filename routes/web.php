@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Backend\AuthorController;
 use App\Http\Controllers\Backend\BlogPostController;
+use App\Http\Controllers\Backend\BloodGroupController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\ContactMessageController;
 use App\Http\Controllers\Backend\DashboardController;
@@ -40,7 +41,7 @@ Route::post('/contact-us', [ContactController::class, 'submit'])->name('contact.
 // Backend
 
 // Blog Post 
-Route::prefix('blog-post')->name('blog.')->group(function () {
+Route::prefix('admin/blog-post')->name('blog.')->group(function () {
     Route::get('/', [BlogPostController::class, 'index'])->name('list');
     Route::get('/data', [BlogPostController::class, 'getDataTable'])
     ->name('data');
@@ -51,8 +52,8 @@ Route::prefix('blog-post')->name('blog.')->group(function () {
     Route::delete('delete/{id}', [BlogPostController::class, 'destroy'])->name('destroy');
 });
 
-
-Route::prefix('category')->name('category.')->group(function () {
+// Category
+Route::prefix('admin/category')->name('category.')->group(function () {
     Route::get('/', [CategoryController::class, 'index'])->name('list');
     Route::get('create', [CategoryController::class, 'create'])->name('create');
     Route::post('store', [CategoryController::class, 'store'])->name('store');
@@ -61,12 +62,14 @@ Route::prefix('category')->name('category.')->group(function () {
     Route::delete('delete/{id}', [CategoryController::class, 'destroy'])->name('destroy');
 });
 
-Route::prefix('contact')->name('contact.')->group(function () {
+// contact messages
+Route::prefix('admin/contact')->name('contact.')->group(function () {
     Route::get('/', [ContactMessageController::class, 'index'])->name('list');
     Route::get('show/{id}', [ContactMessageController::class, 'show'])->name('show');
     Route::delete('delete/{id}', [ContactMessageController::class, 'destroy'])->name('destroy');
 });
 
+// faq
 Route::prefix('admin/faq')->name('faq.')->group(function () {
     Route::get('/', [FaqController::class, 'index'])->name('list');
     Route::get('datatable', [FaqController::class, 'getDataTable'])->name('datatable');
@@ -77,20 +80,33 @@ Route::prefix('admin/faq')->name('faq.')->group(function () {
     Route::delete('delete/{id}', [FaqController::class, 'destroy'])->name('delete');
 });
 
-
-Route::prefix('author')->name('author.')->group(function () {
+// author
+Route::prefix('admin/author')->name('author.')->group(function () {
     Route::get('/', [AuthorController::class, 'index'])->name('list');
     Route::get('create', [AuthorController::class, 'create'])->name('create');
     Route::post('store', [AuthorController::class, 'store'])->name('store');
     Route::get('edit/{id}', [AuthorController::class, 'edit'])->name('edit');
     Route::patch('update/{id}', [AuthorController::class, 'update'])->name('update');
     Route::delete('delete/{id}', [AuthorController::class, 'destroy'])->name('destroy');
-  });  
-Route::prefix('setting')->name('setting.')->group(function () {
+  }); 
+  
+// setting
+Route::prefix('admin/setting')->name('setting.')->group(function () {
     Route::get('/', [SettingController::class, 'index'])->name('list');
     Route::get('edit', [SettingController::class, 'index'])->name('edit');
     Route::patch('update', [SettingController::class, 'update'])->name('update');
 });
+
+// blood-group
+Route::prefix('admin/blood-group')->name('blood-group.')->group(function () {
+    Route::get('/', [BloodGroupController::class, 'index'])->name('list');
+    Route::post('store', [BloodGroupController::class, 'store'])->name('store');
+    Route::get('edit/{id}', [BloodGroupController::class, 'edit'])->name('edit');
+    Route::patch('update/{id}', [BloodGroupController::class, 'update'])->name('update');
+    Route::delete('delete/{id}', [BloodGroupController::class, 'destroy'])->name('destroy');
+});
+
+
 
 
 Route::get('/dashboard', [DashboardController::class, 'index'])

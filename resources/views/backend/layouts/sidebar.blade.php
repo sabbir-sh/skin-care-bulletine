@@ -7,6 +7,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 
     <style>
         body {
@@ -124,6 +125,14 @@
                 <i class="bi bi-house-door me-3 fs-5"></i>Dashboard
             </a>
         </li>
+
+        <li class="nav-item mb-1">
+            <a href="{{ route('blood-group.list') }}"
+               class="nav-link d-flex align-items-center {{ request()->routeIs('blood-group.*') ? 'active' : 'text-white' }}">
+                <i class="fa-solid fa-droplet"></i></i>Blood Groups
+            </a>
+        </li>
+
 
         <li class="nav-item mb-1">
             <a href="{{ route('contact.list') }}"
