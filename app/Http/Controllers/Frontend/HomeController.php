@@ -17,7 +17,7 @@ class HomeController extends Controller
                 ->withCount(['donors' => function ($q) {
                     $q->where('status', 1);
                 }])->get(),
-            'faqs' => Faq::where('status', 1)->take(5)->get(),
+            'faqs' => Faq::where('status', 1)->take(10)->get(),
         ];
     }
 
