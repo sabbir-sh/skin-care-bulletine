@@ -18,9 +18,15 @@
         /* Sidebar */
         #sidebar {
             width: 260px;
-            background-color: #ffffff;
+            background-color: #141414;
             border-right: 1px solid #dee2e6;
             padding: 1rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
             z-index: 1040;
         }
 
@@ -54,11 +60,11 @@
         }
 
         .nav-link:hover {
-            background-color: #f1f4ff;
+            background-color: #344274;
         }
 
         .nav-link.active {
-            background-color: #0d6efd !important;
+            background-color: #344274 !important;
             color: #ffffff !important;
         }
 
@@ -67,6 +73,15 @@
             top: 15px;
             left: 15px;
             z-index: 1050;
+        }
+
+        /* Mobile view */
+        @media (max-width: 767px) {
+            #sidebar {
+                width: 100%;
+                max-width: 260px;
+                overflow-y: auto;
+            }
         }
     </style>
 </head>
@@ -79,7 +94,7 @@
 </button>
 
 <!-- Sidebar -->
-<div id="sidebar" class="d-flex flex-column position-fixed vh-100 shadow-sm">
+<div id="sidebar" class="shadow-sm">
 
     <!-- Logo -->
     <div class="mb-3 text-center">
@@ -101,54 +116,54 @@
     </div>
 
     <!-- Menu -->
-    <ul class="nav nav-pills flex-column mb-auto" id="menuList">
+    <ul class="nav nav-pills flex-column" id="menuList">
 
         <li class="nav-item mb-1">
             <a href="{{ route('dashboard') }}"
-               class="nav-link d-flex align-items-center {{ request()->routeIs('dashboard') ? 'active' : 'text-dark' }}">
-                <i class="bi bi-house-door me-3 fs-5"></i> <b>Dashboard</b>
+               class="nav-link d-flex align-items-center {{ request()->routeIs('dashboard') ? 'active' : 'text-white' }}">
+                <i class="bi bi-house-door me-3 fs-5"></i>Dashboard
             </a>
         </li>
 
         <li class="nav-item mb-1">
             <a href="{{ route('contact.list') }}"
-               class="nav-link d-flex align-items-center {{ request()->routeIs('contact.*') ? 'active' : 'text-dark' }}">
-                <i class="bi bi-chat-left-text me-3 fs-5"></i> <b>Contact Messages</b>
+               class="nav-link d-flex align-items-center {{ request()->routeIs('contact.*') ? 'active' : 'text-white' }}">
+                <i class="bi bi-chat-left-text me-3 fs-5"></i>Contact Messages
             </a>
         </li>
 
         <li class="nav-item mb-1">
             <a href="{{ route('blog.list') }}"
-               class="nav-link d-flex align-items-center {{ request()->routeIs('blog.*') ? 'active' : 'text-dark' }}">
-                <i class="bi bi-journal-text me-3 fs-5"></i> <b>Blog Posts</b>
+               class="nav-link d-flex align-items-center {{ request()->routeIs('blog.*') ? 'active' : 'text-white' }}">
+                <i class="bi bi-journal-text me-3 fs-5"></i>Blog Posts
             </a>
         </li>
 
         <li class="nav-item mb-1">
             <a href="{{ route('category.list') }}"
-               class="nav-link d-flex align-items-center {{ request()->routeIs('category.*') ? 'active' : 'text-dark' }}">
-                <i class="bi bi-tags me-3 fs-5"></i><b>Categories</b>
+               class="nav-link d-flex align-items-center {{ request()->routeIs('category.*') ? 'active' : 'text-white' }}">
+                <i class="bi bi-tags me-3 fs-5"></i>Categories
             </a>
         </li>
 
         <li class="nav-item mb-1">
             <a href="{{ route('faq.list') }}"
-               class="nav-link d-flex align-items-center {{ request()->routeIs('faq.*') ? 'active' : 'text-dark' }}">
-                <i class="bi bi-question-circle me-3 fs-5"></i><b>FAQ</b>
+               class="nav-link d-flex align-items-center {{ request()->routeIs('faq.*') ? 'active' : 'text-white' }}">
+                <i class="bi bi-question-circle me-3 fs-5"></i>FAQ
             </a>
         </li>
 
         <li class="nav-item mb-1">
             <a href="{{ route('author.list') }}"
-               class="nav-link d-flex align-items-center {{ request()->routeIs('author.*') ? 'active' : 'text-dark' }}">
-                <i class="bi bi-person-lines-fill me-3 fs-5"></i> <b>Author List</b>
+               class="nav-link d-flex align-items-center {{ request()->routeIs('author.*') ? 'active' : 'text-white' }}">
+                <i class="bi bi-person-lines-fill me-3 fs-5"></i>Author List
             </a>
         </li>
 
         <li class="nav-item mb-1">
             <a href="{{ route('setting.list') }}"
-               class="nav-link d-flex align-items-center {{ request()->routeIs('setting.*') ? 'active' : 'text-dark' }}">
-                <i class="bi bi-gear me-3 fs-5"></i> <b>Site Setting</b>
+               class="nav-link d-flex align-items-center {{ request()->routeIs('setting.*') ? 'active' : 'text-white' }}">
+                <i class="bi bi-gear me-3 fs-5"></i>Site Setting
             </a>
         </li>
 
@@ -167,9 +182,11 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    // Sidebar responsive
     const sidebar = document.getElementById('sidebar');
-    if (window.innerWidth < 768) sidebar.classList.add('d-none');
+
+    if (window.innerWidth < 768) {
+        sidebar.classList.add('d-none');
+    }
 
     window.addEventListener('resize', () => {
         window.innerWidth >= 768

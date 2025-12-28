@@ -1,10 +1,11 @@
-<!-- Bootstrap Icons -->
+<!-- Bootstrap CSS + Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
 <style>
     .admin-navbar {
         height: 56px;
-        background: linear-gradient(135deg, #0a0a0a, #0a0a0a);
+        background: #ffffff;
         padding: 0 1rem;
         z-index: 1030;
     }
@@ -12,91 +13,127 @@
     .admin-brand {
         color: #fff;
         font-weight: 600;
-        font-size: 1rem;
-        padding: 6px 12px;
+        font-size: 0.95rem;
+        padding: 6px 10px;
         border-radius: 6px;
-        background: rgba(255, 255, 255, 0.06);
-        transition: all 0.3s ease;
+        background: rgba(255,255,255,0.06);
+        transition: 0.3s;
         text-decoration: none;
-    }
-
-    .admin-brand:hover {
-        background: rgba(255, 255, 255, 0.12);
-        color: #fff;
+        white-space: nowrap;
     }
 
     .admin-brand i {
         color: #0d6efd;
-        font-size: 1.1rem;
     }
 
     .admin-user {
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         opacity: 0.85;
     }
 
     .admin-btn {
-        display: flex;
-        align-items: center;
-        gap: 6px;
         padding: 6px 14px;
         border-radius: 6px;
+        background: rgba(255,255,255,0.08);
         border: none;
-        background: rgba(255, 255, 255, 0.06);
         color: #fff;
         font-size: 14px;
-        transition: all 0.3s ease;
+        transition: 0.3s;
     }
 
     .admin-btn:hover {
         background: #dc3545;
-        color: #fff;
     }
 
-    .mobile-toggle {
-        border-radius: 6px;
-        padding: 4px 10px;
+    /* ===== MOBILE FIX ===== */
+    @media (max-width: 767px) {
+
+        .admin-user {
+            display: none;
+        }
+
+        .admin-brand span {
+            display: none;
+        }
+
+        /* Collapse menu full width & top aligned */
+        #adminMenu {
+            position: absolute;
+            top: 56px;
+            left: 0;
+            width: 100%;
+            background: #0a0a0a;
+            padding: 10px 15px;
+        }
+
+        #adminMenu .navbar-nav {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 10px;
+        }
+
+        .dropdown-menu {
+            position: static !important;
+            width: 100%;
+        }
     }
 </style>
 
-<nav class="navbar sticky-top shadow-sm admin-navbar d-flex align-items-center justify-content-between">
+<nav class="navbar navbar-dark sticky-top shadow-sm admin-navbar">
 
-    <!-- Logo / Brand -->
-    <a href="{{ route('dashboard') }}" class="admin-brand d-flex align-items-center">
-        <i class="bi bi-speedometer2 me-2"></i>
-        SkinCare Bulletin
-        @if(Auth::check())
-            <span class="ms-2 admin-user">({{ Auth::user()->name }})</span>
-        @endif
-    </a>
+    <!-- LEFT -->
+    <div class="d-flex align-items-center gap-2">
 
-    <!-- Mobile Toggle -->
-    <button class="btn btn-outline-light d-md-none mobile-toggle"
-        onclick="document.getElementById('navbar-right').classList.toggle('d-none')">
-        <i class="bi bi-list"></i>
-    </button>
+        <!-- Mobile toggle -->
+        <button class="btn btn-outline-light d-md-none"
+                data-bs-toggle="collapse"
+                data-bs-target="#adminMenu">
+            <i class="bi bi-list"></i>
+        </button>
 
-    <!-- Right Menu -->
-    <ul id="navbar-right" class="navbar-nav d-flex align-items-center mb-0 d-none d-md-flex"
-        style="list-style:none;">
-        <li class="nav-item">
-            <form action="{{ route('logout') }}" method="POST">
-                @csrf
-                <button type="submit" class="admin-btn">
-                    <i class="bi bi-box-arrow-right"></i>
-                    Logout
-                </button>
-            </form>
-        </li>
-    </ul>
+        <a href="{{ route('dashboard') }}" class="admin-brand d-flex align-items-center">
+            <i class="bi bi-speedometer2 me-2"></i>
+            <span>SkinCare Bulletin</span>
+
+            @if(Auth::check())
+                <span class="ms-2 admin-user">({{ Auth::user()->name }})</span>
+            @endif
+        </a>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="collapse d-md-block" id="adminMenu">
+        <ul class="navbar-nav ms-md-auto flex-row align-items-center gap-2">
+
+            <li class="nav-item dropdown w-100 w-md-auto">
+                <a class="btn admin-btn dropdown-toggle w-100 w-md-auto text-start"
+                   href="#"
+                   role="button"
+                   data-bs-toggle="dropdown">
+                    <i class="bi bi-person-circle me-1"></i> Account
+                </a>
+
+                <ul class="dropdown-menu dropdown-menu-end shadow">
+                    <li class="dropdown-item text-muted small">
+                        {{ Auth::user()->name ?? 'Admin' }}
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <form action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="dropdown-item text-danger">
+                                <i class="bi bi-box-arrow-right me-1"></i> Logout
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+
+            </li>
+
+        </ul>
+    </div>
+
 </nav>
 
-<script>
-    if (window.innerWidth < 768) {
-        document.getElementById('navbar-right').classList.add('d-none');
-    }
-    window.addEventListener('resize', function () {
-        const nav = document.getElementById('navbar-right');
-        window.innerWidth >= 768 ? nav.classList.remove('d-none') : nav.classList.add('d-none');
-    });
-</script>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
