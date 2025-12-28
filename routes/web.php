@@ -6,6 +6,7 @@ use App\Http\Controllers\Backend\BloodGroupController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\ContactMessageController;
 use App\Http\Controllers\Backend\DashboardController;
+use App\Http\Controllers\Backend\DonorController;
 use App\Http\Controllers\Backend\FaqController;
 use App\Http\Controllers\Frontend\AboutUsController;
 use App\Http\Controllers\Frontend\CategoryListController;
@@ -104,6 +105,16 @@ Route::prefix('admin/blood-group')->name('blood-group.')->group(function () {
     Route::get('edit/{id}', [BloodGroupController::class, 'edit'])->name('edit');
     Route::patch('update/{id}', [BloodGroupController::class, 'update'])->name('update');
     Route::delete('delete/{id}', [BloodGroupController::class, 'destroy'])->name('destroy');
+});
+
+Route::prefix('admin/donor')->name('donor.')->group(function () {
+    Route::get('/', [DonorController::class, 'index'])->name('list');
+    Route::get('create', [DonorController::class, 'create'])->name('create'); // <-- fix
+    Route::get('datatable', [DonorController::class, 'getDataTable'])->name('datatable');
+    Route::post('store', [DonorController::class, 'store'])->name('store');
+    Route::get('edit/{id}', [DonorController::class, 'edit'])->name('edit');
+    Route::patch('update/{id}', [DonorController::class, 'update'])->name('update');
+    Route::delete('delete/{id}', [DonorController::class, 'destroy'])->name('destroy');
 });
 
 

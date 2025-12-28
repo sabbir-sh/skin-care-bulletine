@@ -16,13 +16,15 @@ return new class extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('phone');
-            $table->unsignedBigInteger('user_id'); // User table
+            $table->string('image')->nullable();
             $table->unsignedBigInteger('blood_group_id'); // Blood group
-            $table->date('date_of_birth');
+            $table->date('date_of_birth')->nullable();
             $table->string('gender')->nullable();
             $table->date('last_donation_date')->nullable();
             $table->string('district');
             $table->string('upazila');
+            $table->string('union');
+            $table->string('village')->nullable();
             $table->tinyInteger('is_available')->default(1);
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
