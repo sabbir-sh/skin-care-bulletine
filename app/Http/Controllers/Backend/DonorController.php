@@ -24,17 +24,23 @@ class DonorController extends Controller
     {
         return DataTables::of($this->service->query())
             ->addIndexColumn()
-            ->addColumn('blood_group', fn ($d) => $d->bloodGroup->name ?? '')
-            ->addColumn('status', fn ($d) =>
+            ->addColumn('image', function ($d) {
+                $url = $d->image ? asset('storage/' . $d->image) : 'https://ui-avatars.com/api/?name=' . urlencode($d->name);
+                return '<img src="' . $url . '" class="rounded-circle" width="40" height="40" style="object-fit: cover; border: 1px solid #ddd;">';
+            })
+            ->addColumn('blood_group', fn($d) => $d->bloodGroup->name ?? '')
+            ->addColumn(
+                'status',
+                fn($d) =>
                 $d->status
                     ? '<span class="badge bg-success">Approved</span>'
                     : '<span class="badge bg-warning">Pending</span>'
             )
-            ->addColumn('actions', fn ($d) => action_buttons([
+            ->addColumn('actions', fn($d) => action_buttons([
                 edit_column(route('donor.edit', $d->id)),
                 delete_column(route('donor.destroy', $d->id)),
             ]))
-            ->rawColumns(['status', 'actions'])
+            ->rawColumns(['image', 'status', 'actions']) // image এখানে যোগ করা হয়েছে
             ->make(true);
     }
 
