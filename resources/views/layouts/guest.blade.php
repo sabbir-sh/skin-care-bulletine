@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Blood Fighter') }}</title>
+        <title>{{ config('app.name', 'Blood Fighters') }}</title>
 
         <link rel="icon" type="image/png" href="{{ asset('storage/favicon.png') }}">
 
@@ -15,7 +15,6 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
         <style>
-            /* লগইন/রেজিস্ট্রেশন পেজের ব্যাকগ্রাউন্ডে হালকা ব্লাড-রেড আভা */
             .bg-blood-light {
                 background: linear-gradient(135deg, #fdf2f2 0%, #fff 100%);
             }

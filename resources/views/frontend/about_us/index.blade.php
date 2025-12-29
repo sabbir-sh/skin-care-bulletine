@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'About Us - Blood Fighter')
+@section('title', 'About Us - Blood Fighters')
 
 @section('content')
 
@@ -101,9 +101,9 @@
 
     <div class="container text-center">
         <div class="fighter-badge">Estd. 2025</div>
-        <h1 class="about-title">Blood <span class="brand-name">Fighter</span></h1>
+        <h1 class="about-title">Blood <span class="brand-name">Fighters</span></h1>
         <p class="about-subtitle">
-            আমরা কোনো সাধারণ প্ল্যাটফর্ম নই, আমরা একটি যোদ্ধাদের দল। আমাদের লক্ষ্য—রক্তের অভাবে কোনো প্রাণ যেন ঝরে না যায়। প্রতিটি রক্তদাতা আমাদের কাছে এক একজন <strong>"Blood Fighter"</strong>।
+            আমরা কোনো সাধারণ প্ল্যাটফর্ম নই, আমরা একটি যোদ্ধাদের দল। আমাদের লক্ষ্য—রক্তের অভাবে কোনো প্রাণ যেন ঝরে না যায়। প্রতিটি রক্তদাতা আমাদের কাছে এক একজন <strong>"Blood Fighters"</strong>।
         </p>
     </div>
 </section>

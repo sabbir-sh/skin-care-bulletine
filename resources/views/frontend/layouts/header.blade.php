@@ -5,7 +5,7 @@
                 <img src="{{ $setting->logo_url }}" alt="Logo" height="50" class="d-inline-block">
             @else
                 <div class="brand-container">
-                    <span class="brand-main">BLOOD</span><span class="brand-sub">FIGHTER</span>
+                    <span class="brand-main">BLOOD</span><span class="brand-sub">FIGHTERS</span>
                 </div>
             @endif
         </a>

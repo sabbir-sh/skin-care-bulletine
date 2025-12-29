@@ -24,7 +24,17 @@ class HomeController extends Controller
     public function index()
     {
         $data = $this->getCommonData();
-        $data['recentDonors'] = Donor::where('status', 1)->latest()->take(6)->get();
+
+        $data['recentDonors'] = Donor::with('bloodGroup')
+            ->where('status', 1)
+            ->latest()
+            ->take(6)
+            ->get();
+
+        $data['total_donors'] = Donor::where('status', 1)->count();
+        $data['available_donors'] = Donor::where('status', 1)->where('is_available', 1)->count();
+        $data['total_groups'] = BloodGroup::where('status', 1)->count();
+
         $data['activeGroup'] = null;
         $data['title'] = "আমাদের বীর রক্তদাতারা";
 
