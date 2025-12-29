@@ -24,6 +24,8 @@ class DonorRequest extends FormRequest
             'last_donation_date' => 'nullable|date',
             'district' => 'required|string|max:255',
             'upazila' => 'required|string|max:255',
+            'union' => 'required|string|max:255',
+            'village' => 'required|string|max:255',
             'is_available' => 'required|boolean',
             'status' => 'required|boolean',
         ];

@@ -12,110 +12,85 @@ use Yajra\DataTables\DataTables;
 
 class DonorController extends Controller
 {
-    protected $service;
+    public function __construct(protected DonorService $service) {}
 
-    public function __construct(DonorService $service)
-    {
-        $this->service = $service;
-    }
-
-    // ================= CREATE PAGE =================
-    public function create()
-    {
-        $bloodGroups = BloodGroup::where('status', 1)->get();
-
-        $districtsJson = json_decode(Storage::disk('public')->get('bangladesh_districts.json'), true);
-        $districts = $districtsJson['districts'] ?? [];
-
-        $upazilasJson = json_decode(Storage::disk('public')->get('bd-upazilas.json'), true);
-        $upazilas = $upazilasJson['upazilas'] ?? [];
-
-        $dhakaCityJson = json_decode(Storage::disk('public')->get('dhaka-city.json'), true);
-        $dhakaCityAreas = $dhakaCityJson['areas'] ?? [];
-
-        return view('backend.donor.create', compact('bloodGroups', 'districts', 'upazilas', 'dhakaCityAreas'));
-    }
-
-    // ================= INDEX WITH DATATABLE =================
+    // ========= INDEX =========
     public function index()
     {
-        return view('backend.donor.index'); // Datatable page, form not included
+        return view('backend.donor.index');
     }
 
-    public function getDataTable(Request $request)
+    public function getDataTable()
     {
-        return DataTables::of($this->service->getAllQuery())
+        return DataTables::of($this->service->query())
             ->addIndexColumn()
-            ->addColumn('blood_group', fn($item) => $item->bloodGroup->name ?? '')
-            ->addColumn('status', function ($item) {
-                return $item->status
+            ->addColumn('blood_group', fn ($d) => $d->bloodGroup->name ?? '')
+            ->addColumn('status', fn ($d) =>
+                $d->status
                     ? '<span class="badge bg-success">Approved</span>'
-                    : '<span class="badge bg-danger">Pending</span>';
-            })
-            ->addColumn('actions', fn($item) => action_buttons([
-                edit_column(route('donor.edit', $item->id)),
-                delete_column(route('donor.destroy', $item->id)),
+                    : '<span class="badge bg-warning">Pending</span>'
+            )
+            ->addColumn('actions', fn ($d) => action_buttons([
+                edit_column(route('donor.edit', $d->id)),
+                delete_column(route('donor.destroy', $d->id)),
             ]))
-
             ->rawColumns(['status', 'actions'])
             ->make(true);
     }
 
-    // ================= STORE =================
-    public function store(DonorRequest $request)
+    // ========= CREATE =========
+    public function create()
     {
-        $data = $request->validated();
-
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('donors', 'public');
-        }
-
-        if (empty($data['date_of_birth'])) $data['date_of_birth'] = null;
-
-        $this->service->create($data);
-
-        return redirect()->route('donor.list')->with('success', 'Donor added successfully');
+        return $this->form();
     }
 
-    // ================= EDIT =================
+    // ========= EDIT =========
     public function edit($id)
     {
-        $editItem = $this->service->find($id);
+        return $this->form($id);
+    }
+
+    private function form($id = null)
+    {
+        $editItem = $id ? $this->service->find($id) : null;
 
         $bloodGroups = BloodGroup::where('status', 1)->get();
+        $districts = json_decode(Storage::disk('public')->get('bangladesh_districts.json'), true)['districts'] ?? [];
+        $upazilas  = json_decode(Storage::disk('public')->get('bd-upazilas.json'), true)['upazilas'] ?? [];
 
-        $districtsJson = json_decode(Storage::disk('public')->get('bangladesh_districts.json'), true);
-        $districts = $districtsJson['districts'] ?? [];
-
-        $upazilasJson = json_decode(Storage::disk('public')->get('bd-upazilas.json'), true);
-        $upazilas = $upazilasJson['upazilas'] ?? [];
-
-        $dhakaCityJson = json_decode(Storage::disk('public')->get('dhaka-city.json'), true);
-        $dhakaCityAreas = $dhakaCityJson['areas'] ?? [];
-
-        return view('backend.donor.create', compact('editItem', 'bloodGroups', 'districts', 'upazilas', 'dhakaCityAreas'));
+        return view('backend.donor.create', compact(
+            'editItem',
+            'bloodGroups',
+            'districts',
+            'upazilas'
+        ));
     }
 
-    // ================= UPDATE =================
+    // ========= STORE =========
+    public function store(DonorRequest $request)
+    {
+        $this->service->store($request);
+
+        return redirect()
+            ->route('donor.list')
+            ->with('success', 'Donor added successfully');
+    }
+
+    // ========= UPDATE =========
     public function update(DonorRequest $request, $id)
     {
-        $data = $request->validated();
+        $this->service->update($id, $request);
 
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('donors', 'public');
-        }
-
-        if (empty($data['date_of_birth'])) $data['date_of_birth'] = null;
-
-        $this->service->update($id, $data);
-
-        return redirect()->route('donor.list')->with('success', 'Donor updated successfully');
+        return redirect()
+            ->route('donor.list')
+            ->with('success', 'Donor updated successfully');
     }
 
-    // ================= DELETE =================
+    // ========= DELETE =========
     public function destroy($id)
     {
         $this->service->delete($id);
-        return redirect()->back()->with('success', 'Donor deleted successfully');
+
+        return back()->with('success', 'Donor deleted successfully');
     }
 }
