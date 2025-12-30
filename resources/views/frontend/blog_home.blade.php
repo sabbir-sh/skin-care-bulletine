@@ -35,13 +35,12 @@
                                 </div>
 
                                 <div class="col-lg-6 order-1 order-lg-2">
-                                    <a href="{{ route('blog.show', $blog->slug) }}" style="text-decoration: none;">
+                                    <a href="{{ route('blog.show', $blog->slug) }}" class="hero-img-link" style="text-decoration: none;">
                                         <div
                                             style="border-radius: 24px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
-                                            <img src="{{ asset($blog->featured_image) }}" alt="{{ $blog->title }}"
-                                                style="width: 100%; height: clamp(260px, 40vw, 450px); object-fit: cover; transition: 0.5s;"
-                                                onmouseover="this.style.transform='scale(1.05)'"
-                                                onmouseout="this.style.transform='scale(1)'">
+                                            {{-- FIX: featured_image_url Accessor --}}
+                                            <img src="{{ $blog->featured_image_url }}" alt="{{ $blog->title }}"
+                                                style="width: 100%; height: clamp(260px, 40vw, 450px); object-fit: cover; transition: 0.5s;">
                                         </div>
                                     </a>
                                 </div>
@@ -65,9 +64,12 @@
                 @foreach($trending as $blog)
                     <div class="col-12 col-md-4">
                         <a href="{{ route('blog.show', $blog->slug) }}"
-                            style="position: relative; border-radius: 16px; overflow: hidden; display: block; height: 280px; text-decoration: none; group">
-                            <img src="{{ asset($blog->featured_image) }}"
-                                style="width: 100%; height: 100%; object-fit: cover; transition: 0.6s;">
+                            style="position: relative; border-radius: 16px; overflow: hidden; display: block; height: 280px; text-decoration: none;">
+                            {{-- FIX: featured_image_url Accessor --}}
+                            <img src="{{ $blog->featured_image_url }}"
+                                style="width: 100%; height: 100%; object-fit: cover; transition: 0.6s;" 
+                                onmouseover="this.style.transform='scale(1.1)'"
+                                onmouseout="this.style.transform='scale(1)'">
                             <div
                                 style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent); padding: 20px; display: flex; flex-direction: column; justify-content: flex-end; color: #fff;">
                                 <span
@@ -97,7 +99,8 @@
                                     onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 35px rgba(0,0,0,0.1)'"
                                     onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.05)'">
 
-                                    <img src="{{ asset($blog->featured_image) }}"
+                                    {{-- FIX: featured_image_url Accessor --}}
+                                    <img src="{{ $blog->featured_image_url }}"
                                         style="width: 100%; height: 200px; object-fit: cover;">
 
                                     <div style="padding: 20px;">
@@ -173,40 +176,8 @@
         </div>
     </section>
 
-    {{-- ================= FAQs ================= --}}
-    <section style="padding: 80px 0; background: #f8f9fa;">
-        <div class="container" style="max-width: 800px;">
-            <div class="text-center mb-5">
-                <h2 style="font-weight: 800; color: #212529;">Frequently Asked Questions</h2>
-                <p class="text-muted">রক্তদান সম্পর্কে সাধারণ কিছু জিজ্ঞাসার উত্তর</p>
-            </div>
-
-            <div class="accordion accordion-flush" id="faqAccordion"
-                style="border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
-                @foreach($faqs as $key => $faq)
-                    <div class="accordion-item" style="border-bottom: 1px solid #eee;">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapse{{ $key }}"
-                                style="padding: 20px; font-weight: 600; font-size: 1rem; color: #212529;">
-                                {{ $faq->question }}
-                            </button>
-                        </h2>
-                        <div id="collapse{{ $key }}" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                            <div class="accordion-body"
-                                style="padding: 20px; color: #6c757d; line-height: 1.7; background: #fff;">
-                                {{ $faq->answer }}
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
     {{-- ================= JS ================= --}}
     <script>
-        // Hero Image Hover logic handle via JS since hover on parent is needed
         document.querySelectorAll('.carousel-item').forEach(item => {
             const img = item.querySelector('img');
             const link = item.querySelector('.hero-img-link');
@@ -218,30 +189,14 @@
     </script>
 
     <style>
-        /* Custom Scrollbar for better UI */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #dc3545; border-radius: 10px; }
 
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #dc3545;
-            border-radius: 10px;
-        }
-
-        /* Accordion Customization */
         .accordion-button:not(.collapsed) {
             background-color: #fff5f5 !important;
             color: #dc3545 !important;
             box-shadow: none !important;
         }
-
-        .accordion-button::after {
-            background-size: 15px;
-        }
     </style>
-
 @endsection
