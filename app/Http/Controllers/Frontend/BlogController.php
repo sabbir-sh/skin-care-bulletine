@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 
 class BlogController extends Controller
 {
-    // Home page list
     public function index()
     {
         // Hero slider blogs (featured)
@@ -28,7 +27,7 @@ class BlogController extends Controller
 
         // Trending blogs
         $data['trending'] = BlogPost::where('status', 1)
-            ->when($data['featured'], fn ($q) => $q->where('id', '!=', $data['featured']->id))
+            ->when($data['featured'], fn($q) => $q->where('id', '!=', $data['featured']->id))
             ->latest()
             ->take(3)
             ->get();
@@ -41,6 +40,12 @@ class BlogController extends Controller
 
         // Categories
         $data['categories'] = Category::where('status', 1)->get();
+        // Categories with blog count
+        $data['categories'] = Category::where('status', 1)
+            ->withCount(['blogs' => function ($query) {
+                $query->where('status', 1);
+            }])
+            ->get();
 
         // **Fetch FAQs**
         $data['faqs'] = Faq::where('status', 1)
@@ -49,11 +54,11 @@ class BlogController extends Controller
             ->get();
 
         $data['allBlogs'] = BlogPost::where('status', 1)
-        ->with('category')
-        ->latest()
-        ->get();
+            ->with('category')
+            ->latest()
+            ->get();
 
-        return view('frontend.blog_home', $data );
+        return view('frontend.blog_home', $data);
     }
     // public function index()
     // {
@@ -102,5 +107,4 @@ class BlogController extends Controller
 
         return view('frontend.blog.search_results', $data);
     }
-
 }
