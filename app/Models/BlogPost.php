@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class BlogPost extends Model
 {
@@ -15,17 +16,13 @@ class BlogPost extends Model
         'status',
         'meta_title',
         'meta_description',
-        'author_id',
-        'meta_keywords'
+        'author_id'
     ];
 
-    /* ===============================
-     | Featured Image URL Accessor
-     ===============================*/
     public function getFeaturedImageUrlAttribute()
     {
-        if ($this->featured_image && file_exists(public_path($this->featured_image))) {
-            return asset($this->featured_image);
+        if ($this->featured_image) {
+            return asset('storage/' . $this->featured_image);
         }
 
         return asset('images/default-blog.jpg');
@@ -35,7 +32,6 @@ class BlogPost extends Model
     {
         return $this->belongsTo(Category::class);
     }
-
     public function author()
     {
         return $this->belongsTo(Author::class, 'author_id');

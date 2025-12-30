@@ -3,40 +3,63 @@
 @section('title', 'Blog List')
 
 @section('content')
-    <div class="container-fluid py-4">
+    {{-- Main Wrapper --}}
+    <div class="container-fluid" style="padding: 25px 40px; background-color: #f9f9f9; min-height: 100vh;">
 
-        {{-- Header --}}
-        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
-            <div>
-                <h3 class="fw-bold mb-0">Blog List</h3>
+        {{-- 1. Header Section --}}
+        <div class="row align-items-center" style="margin-bottom: 30px;">
+            <div class="col-md-7">
+                <h2 style="font-weight: 800; color: #111; letter-spacing: -1px; margin-bottom: 8px; font-size: 32px;">
+                    Blog Directory
+                </h2>
+                <p style="color: #666; font-size: 15px; margin-bottom: 0; font-weight: 400;">
+                    Manage, edit and monitor all your blog posts from one central dashboard.
+                </p>
             </div>
-
-            <a href="{{ route('blog.create') }}" class="btn btn-success rounded-pill px-4">
-                <i class="bi bi-plus-circle me-1"></i> Add Blog
-            </a>
+            <div class="col-md-5 text-md-end">
+                <a href="{{ route('blog.create') }}" class="btn btn-success shadow-sm" 
+                   style="border-radius: 12px; padding: 12px 30px; font-weight: 600; font-size: 15px; border: none; transition: 0.3s; background-color: #198754;">
+                    <i class="fas fa-plus-circle me-2"></i> Create New Post
+                </a>
+            </div>
         </div>
 
-        {{-- Card --}}
-        <div class="card border-0 shadow-sm rounded-4">
-            <div class="card-body p-3">
+        {{-- 2. Content Card Section --}}
+        <div class="card border-0 shadow-sm" style="border-radius: 20px; overflow: hidden; border: 1px solid #eee !important; background: #fff;">
+            
+            {{-- Card Header --}}
+            <div class="card-header bg-white border-0" style="padding: 24px; border-bottom: 1px solid #f0f0f0 !important;">
+                <div class="d-flex align-items-center">
+                    <div style="background: #e8f5e9; padding: 12px; border-radius: 14px; margin-right: 18px;">
+                        <i class="fas fa-file-alt" style="color: #2e7d32; font-size: 22px;"></i>
+                    </div>
+                    <div>
+                        <h5 style="margin-bottom: 0; font-weight: 700; color: #333; font-size: 18px;">All Articles</h5>
+                        <small class="text-muted">Total posts listed in the database</small>
+                    </div>
+                </div>
+            </div>
 
+            {{-- 3. Table Section --}}
+            <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table id="faqTable" class="table table-hover align-middle table-striped table-bordered mb-0 w-100">
-                        <thead class="table-light">
-                            <tr>
-                                <th width="60">SL</th>
-                                <th>Image</th>
-                                <th>Title</th>
-                                <th width="100">Category</th>
-                                <th width="90">Status</th>
-                                <th width="90">Created At</th>
-                                <th class="text-center" width="160">Actions</th>
+                    <table id="faqTable" class="table table-hover align-middle w-100" style="margin: 0; border-collapse: separate;">
+                        <thead style="background-color: #fcfcfc;">
+                            <tr style="border-bottom: 2px solid #f0f0f0;">
+                                <th class="ps-4" style="color: #999; font-size: 12px; text-uppercase; font-weight: 700; letter-spacing: 1px; padding: 15px 10px;">SL</th>
+                                <th style="color: #999; font-size: 12px; text-uppercase; font-weight: 700; letter-spacing: 1px; padding: 15px 10px;">Thumbnail</th>
+                                <th style="color: #999; font-size: 12px; text-uppercase; font-weight: 700; letter-spacing: 1px; padding: 15px 10px;">Article Details</th>
+                                <th style="color: #999; font-size: 12px; text-uppercase; font-weight: 700; letter-spacing: 1px; padding: 15px 10px;" width="150">Category</th>
+                                <th style="color: #999; font-size: 12px; text-uppercase; font-weight: 700; letter-spacing: 1px; padding: 15px 10px;" width="100">Status</th>
+                                <th style="color: #999; font-size: 12px; text-uppercase; font-weight: 700; letter-spacing: 1px; padding: 15px 10px;" width="130">Created</th>
+                                <th class="pe-4 text-center" style="color: #999; font-size: 12px; text-uppercase; font-weight: 700; letter-spacing: 1px; padding: 15px 10px;" width="160">Actions</th>
                             </tr>
                         </thead>
-                        <tbody></tbody>
+                        <tbody style="border-top: none;">
+                            {{-- AJAX Content --}}
+                        </tbody>
                     </table>
                 </div>
-
             </div>
         </div>
     </div>
@@ -49,31 +72,61 @@
 
     <script>
         $(function () {
-            $('#faqTable').DataTable({
+            var table = $('#faqTable').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: '{{ route("blog.data") }}',
                 columns: [
-                    { data: 'DT_RowIndex', orderable: false, searchable: false },
+                    { data: 'DT_RowIndex', orderable: false, searchable: false, className: 'ps-4 fw-bold text-muted' },
                     { data: 'featured_image', orderable: false, searchable: false },
-                    { data: 'title', name: 'title' },
+                    { data: 'title', name: 'title', className: 'fw-bold text-dark' },
                     { data: 'category', orderable: false, searchable: false },
                     { data: 'status', name: 'status' },
                     { data: 'created_at', name: 'created_at' },
-                    { data: 'actions', orderable: false, searchable: false, className: 'text-center' },
+                    { data: 'actions', orderable: false, searchable: false, className: 'text-center pe-4' },
                 ],
                 responsive: true,
                 autoWidth: false,
                 lengthMenu: [10, 25, 50, 100],
                 pageLength: 10,
                 language: {
-                    processing: '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>'
+                    search: "",
+                    searchPlaceholder: "Search posts...",
+                    processing: '<div class="spinner-border text-success" role="status"></div>',
                 },
-                drawCallback: function () {
-                    // Enable Bootstrap tooltip after table redraw
+                "drawCallback": function(settings) {
+                    $('#faqTable tbody tr td').css({
+                        'padding-top': '24px',
+                        'padding-bottom': '24px',
+                        'border-bottom': '1px solid #f8f8f8',
+                        'font-size': '15px'
+                    });
+                    
+                    // Pagination Styling
+                    $('.pagination').css('padding', '25px');
+                    $('.page-link').css({
+                        'border': 'none',
+                        'margin': '0 4px',
+                        'border-radius': '8px',
+                        'font-weight': '600'
+                    });
+                    
                     $('[data-bs-toggle="tooltip"]').tooltip();
                 }
             });
+
+            // Search Box Inline Style
+            $('.dataTables_filter input').css({
+                'border': '1px solid #ddd',
+                'border-radius': '10px',
+                'padding': '8px 15px',
+                'width': '300px',
+                'background': '#fdfdfd',
+                'outline': 'none'
+            });
+
+            // Length select spacing
+            $('.dataTables_length, .dataTables_filter').css('padding', '25px');
         });
     </script>
 @endpush

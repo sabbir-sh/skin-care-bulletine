@@ -3,21 +3,21 @@
 namespace App\Http\Services\Blog;
 
 use App\Models\BlogPost;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class BlogPostService
 {
     public function getAllQuery()
     {
-        return BlogPost::with(['category','author'])->latest();
+        return BlogPost::with(['category', 'author'])->latest();
     }
 
     public function create(array $data)
     {
         $this->prepareSlug($data);
 
-        if (!empty($data['featured_image'])) {
+        if (isset($data['featured_image'])) {
             $data['featured_image'] = $this->uploadImage($data['featured_image']);
         }
 
@@ -28,15 +28,11 @@ class BlogPostService
     {
         $this->prepareSlug($data);
 
-        if (!empty($data['featured_image'])) {
-
-            if ($blog->featured_image && File::exists(public_path($blog->featured_image))) {
-                File::delete(public_path($blog->featured_image));
+        if (isset($data['featured_image'])) {
+            if ($blog->featured_image) {
+                Storage::disk('public')->delete($blog->featured_image);
             }
-
             $data['featured_image'] = $this->uploadImage($data['featured_image']);
-        } else {
-            unset($data['featured_image']);
         }
 
         $blog->update($data);
@@ -45,10 +41,9 @@ class BlogPostService
 
     public function delete(BlogPost $blog)
     {
-        if ($blog->featured_image && File::exists(public_path($blog->featured_image))) {
-            File::delete(public_path($blog->featured_image));
+        if ($blog->featured_image) {
+            Storage::disk('public')->delete($blog->featured_image);
         }
-
         return $blog->delete();
     }
 
@@ -61,15 +56,6 @@ class BlogPostService
 
     protected function uploadImage($image): string
     {
-        $path = public_path('uploads/blog');
-
-        if (!File::exists($path)) {
-            File::makeDirectory($path, 0755, true);
-        }
-
-        $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-        $image->move($path, $filename);
-
-        return 'uploads/blog/' . $filename;
+        return $image->store('uploads/blog', 'public');
     }
 }
