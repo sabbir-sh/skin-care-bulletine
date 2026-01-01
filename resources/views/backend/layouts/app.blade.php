@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'রক্তদানই জীবনের সেরা উপহার')</title>
 
+    <link rel="icon" href="{{ asset('favicon.png') }}" type="image/x-icon">
+    
     {{-- Bootstrap CSS --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     {{-- Toastr CSS --}}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
 
-    {{-- ✅ Toastr Color Override --}}
+    {{--  Toastr Color Override --}}
     <style>
         /* SUCCESS (Green) */
         .toast-success {

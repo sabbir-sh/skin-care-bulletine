@@ -1,21 +1,29 @@
 @extends('backend.layouts.app')
 
 @section('content')
-<div class="container-fluid" style="padding: 30px 45px; background-color: #f4f7f6; min-height: 100vh;">
+<div class="container-fluid" style="padding: 35px; background-color: #f8fafc; min-height: 100vh; font-family: 'Inter', sans-serif;">
     
     {{-- Page Header --}}
-    <div style="margin-bottom: 30px; background: white; padding: 25px; border-radius: 16px; border: 1px solid #eef2f1; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
-        <h3 style="font-weight: 800; color: #1a202c; margin-bottom: 5px; letter-spacing: -0.5px;">Category Management</h3>
-        <p style="color: #718096; font-size: 14px; margin-bottom: 0;">Organize your products or posts by managing categories effectively.</p>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px;">
+        <div>
+            <h3 style="font-weight: 800; color: #1e293b; margin: 0; font-size: 24px; letter-spacing: -0.5px;">Category Hub</h3>
+            <p style="color: #64748b; font-size: 14px; margin-top: 5px;">Manage and organize your product architecture.</p>
+        </div>
+        <div>
+            <span style="background: white; padding: 10px 20px; border-radius: 12px; border: 1px solid #e2e8f0; font-weight: 600; color: #475569; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                Total Categories: <span style="color: #2563eb;">{{ $categories->count() }}</span>
+            </span>
+        </div>
     </div>
 
     <div class="row g-4">
-        {{-- LEFT SIDE: Category Form --}}
+        {{-- LEFT SIDE: Form --}}
         <div class="col-lg-4">
-            <div style="background: white; border-radius: 16px; border: 1px solid #eef2f1; box-shadow: 0 4px 20px rgba(0,0,0,0.04); overflow: hidden; position: sticky; top: 30px;">
-                <div style="padding: 20px 25px; border-bottom: 1px solid #f7fafc; background: #fafcfe;">
-                    <h6 style="margin: 0; font-weight: 700; color: #2d3748;">
-                        {{ isset($category) ? 'Edit Category' : 'Create New Category' }}
+            <div style="background: white; border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); overflow: hidden; position: sticky; top: 20px;">
+                <div style="padding: 25px; border-bottom: 1px solid #f1f5f9; background: linear-gradient(to right, #ffffff, #f8fafc);">
+                    <h6 style="margin: 0; font-weight: 700; color: #334155; display: flex; align-items: center;">
+                        <i class="fas fa-plus-circle me-2" style="color: #2563eb;"></i>
+                        {{ isset($category) ? 'Update Category' : 'Add New Category' }}
                     </h6>
                 </div>
                 
@@ -25,149 +33,145 @@
                         @csrf
                         @if(isset($category)) @method('PATCH') @endif
 
-                        {{-- Name --}}
-                        <div style="margin-bottom: 20px;">
-                            <label style="display: block; font-weight: 700; color: #4a5568; margin-bottom: 8px; font-size: 13px;">Category Name <span style="color: #e53e3e;">*</span></label>
+                        <div style="margin-bottom: 18px;">
+                            <label style="font-weight: 600; color: #475569; margin-bottom: 8px; font-size: 13px; display: block;">Name</label>
                             <input type="text" name="name" id="cat_name"
-                                   style="width: 100%; padding: 10px 15px; border-radius: 10px; border: 2px solid #edf2f7; outline: none; transition: 0.3s;"
-                                   onfocus="this.style.borderColor='#48bb78'" onblur="this.style.borderColor='#edf2f7'"
-                                   value="{{ old('name', $category->name ?? '') }}" required placeholder="e.g. Electronics">
-                            @error('name') <small style="color: #e53e3e; font-size: 12px;">{{ $message }}</small> @enderror
+                                   style="width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid #cbd5e1; font-size: 14px; transition: all 0.2s;"
+                                   onfocus="this.style.borderColor='#2563eb'; this.style.boxShadow='0 0 0 4px rgba(37, 99, 235, 0.1)';" 
+                                   onblur="this.style.borderColor='#cbd5e1'; this.style.boxShadow='none';"
+                                   value="{{ old('name', $category->name ?? '') }}" required placeholder="e.g. জীবন বাঁচানোর গল্প">
                         </div>
 
-                        {{-- Slug --}}
-                        <div style="margin-bottom: 20px;">
-                            <label style="display: block; font-weight: 700; color: #4a5568; margin-bottom: 8px; font-size: 13px;">Slug (URL)</label>
-                            <input type="text" name="slug" id="cat_slug"
-                                   style="width: 100%; padding: 10px 15px; border-radius: 10px; border: 2px solid #edf2f7; outline: none; background: #f8fafc; color: #718096;"
-                                   value="{{ old('slug', $category->slug ?? '') }}" placeholder="electronics-gadgets">
+                        <div style="margin-bottom: 18px;">
+                            <label style="font-weight: 600; color: #475569; margin-bottom: 8px; font-size: 13px; display: block;">Slug</label>
+                            <input type="text" name="slug" id="cat_slug" readonly
+                                   style="width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid #e2e8f0; background: #f1f5f9; color: #64748b; font-size: 14px;">
                         </div>
 
-                        {{-- Status --}}
-                        <div style="margin-bottom: 20px;">
-                            <label style="display: block; font-weight: 700; color: #4a5568; margin-bottom: 8px; font-size: 13px;">Visibility Status</label>
-                            <select name="status" style="width: 100%; padding: 10px; border-radius: 10px; border: 2px solid #edf2f7; outline: none; background: white;">
-                                <option value="1" {{ (old('status', $category->status ?? 1) == 1) ? 'selected' : '' }}>Active</option>
-                                <option value="0" {{ (old('status', $category->status ?? 1) == 0) ? 'selected' : '' }}>Inactive</option>
-                            </select>
-                        </div>
-
-                        {{-- Banner & Icon (Two columns) --}}
-                        <div class="row g-3">
-                            <div class="col-6">
-                                <label style="display: block; font-weight: 700; color: #4a5568; margin-bottom: 8px; font-size: 13px;">Banner</label>
-                                <div style="border: 2px dashed #edf2f7; border-radius: 12px; padding: 10px; text-align: center; margin-bottom: 10px;">
-                                    <img id="bannerPreview" 
-                                         src="{{ isset($category) && $category->banner ? asset('storage/'.$category->banner) : asset('images/no-image.png') }}" 
-                                         style="width: 100%; height: 60px; object-fit: cover; border-radius: 6px;">
-                                </div>
-                                <input type="file" name="banner" onchange="previewImage(event, 'bannerPreview')" style="font-size: 11px; width: 100%;">
-                            </div>
-                            <div class="col-6">
-                                <label style="display: block; font-weight: 700; color: #4a5568; margin-bottom: 8px; font-size: 13px;">Icon</label>
-                                <div style="border: 2px dashed #edf2f7; border-radius: 12px; padding: 10px; text-align: center; margin-bottom: 10px;">
-                                    <img id="iconPreview" 
-                                         src="{{ isset($category) && $category->icon ? asset('storage/'.$category->icon) : asset('images/no-image.png') }}" 
-                                         style="height: 60px; width: 60px; object-fit: contain; border-radius: 6px;">
-                                </div>
-                                <input type="file" name="icon" onchange="previewImage(event, 'iconPreview')" style="font-size: 11px; width: 100%;">
+                        <div style="margin-bottom: 25px;">
+                            <label style="font-weight: 600; color: #475569; margin-bottom: 8px; font-size: 13px; display: block;">Display Status</label>
+                            <div style="display: flex; gap: 10px;">
+                                <select name="status" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; background: white; font-size: 14px;">
+                                    <option value="1" {{ (old('status', $category->status ?? 1) == 1) ? 'selected' : '' }}>Public / Active</option>
+                                    <option value="0" {{ (old('status', $category->status ?? 1) == 0) ? 'selected' : '' }}>Hidden / Inactive</option>
+                                </select>
                             </div>
                         </div>
 
-                        <div style="margin-top: 30px;">
-                            <button type="submit" class="btn btn-success w-100" 
-                                    style="border-radius: 12px; padding: 12px; font-weight: 700; background: #2f855a; border: none; box-shadow: 0 4px 12px rgba(47, 133, 90, 0.2);">
-                                <i class="fas fa-check-circle me-2"></i> {{ isset($category) ? 'Update Category' : 'Save Category' }}
-                            </button>
-                            @if(isset($category))
-                                <a href="{{ route('category.index') }}" class="btn btn-light w-100 mt-2" style="border-radius: 12px; padding: 10px; font-weight: 600; color: #718096; border: 1px solid #e2e8f0;">Cancel Edit</a>
-                            @endif
+                        <div class="row g-3" style="margin-bottom: 25px;">
+                            <div class="col-6">
+                                <p style="font-weight: 600; color: #475569; font-size: 12px; margin-bottom: 10px;">Banner Image</p>
+                                <label style="cursor: pointer; width: 100%;">
+                                    <div style="border: 2px dashed #e2e8f0; border-radius: 12px; padding: 10px; text-align: center; transition: 0.3s;" onmouseover="this.style.borderColor='#2563eb'" onmouseout="this.style.borderColor='#e2e8f0'">
+                                        <img id="bannerPreview" src="{{ isset($category) && $category->banner ? asset('storage/'.$category->banner) : asset('images/no-image.png') }}" style="width: 100%; height: 50px; object-fit: cover; border-radius: 8px;">
+                                        <input type="file" name="banner" onchange="previewImage(event, 'bannerPreview')" hidden>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <p style="font-weight: 600; color: #475569; font-size: 12px; margin-bottom: 10px;">Category Icon</p>
+                                <label style="cursor: pointer; width: 100%;">
+                                    <div style="border: 2px dashed #e2e8f0; border-radius: 12px; padding: 10px; text-align: center; transition: 0.3s;" onmouseover="this.style.borderColor='#2563eb'" onmouseout="this.style.borderColor='#e2e8f0'">
+                                        <img id="iconPreview" src="{{ isset($category) && $category->icon ? asset('storage/'.$category->icon) : asset('images/no-image.png') }}" style="width: 35px; height: 35px; object-fit: contain;">
+                                        <input type="file" name="icon" onchange="previewImage(event, 'iconPreview')" hidden>
+                                    </div>
+                                </label>
+                            </div>
                         </div>
+
+                        <button type="submit" class="btn w-100" 
+                                style="background: #2563eb; color: white; border-radius: 12px; padding: 14px; font-weight: 700; border: none; transition: 0.3s; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);"
+                                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 15px -3px rgba(37, 99, 235, 0.3)';" 
+                                onmouseout="this.style.transform='translateY(0)';" >
+                            {{ isset($category) ? 'Save Changes' : 'Create Category' }}
+                        </button>
                     </form>
                 </div>
             </div>
         </div>
 
-        {{-- RIGHT SIDE: Category List Table --}}
+        {{-- RIGHT SIDE: Table --}}
         <div class="col-lg-8">
-            <div style="background: white; border-radius: 16px; border: 1px solid #eef2f1; box-shadow: 0 4px 20px rgba(0,0,0,0.04); overflow: hidden;">
-                <div style="padding: 20px 25px; border-bottom: 1px solid #f7fafc; background: #fafcfe; display: flex; justify-content: space-between; align-items: center;">
-                    <h6 style="margin: 0; font-weight: 700; color: #2d3748;">All Categories</h6>
-                    <span style="background: #ebf8ff; color: #3182ce; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;">Total: {{ $categories->count() }}</span>
-                </div>
-                
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0" style="border-collapse: separate; border-spacing: 0 10px;">
-                        <thead style="background: #f8fafc;">
-                            <tr>
-                                <th style="padding: 15px 25px; border: none; font-size: 12px; text-transform: uppercase; color: #718096; letter-spacing: 0.5px;">Name</th>
-                                <th style="padding: 15px; border: none; font-size: 12px; text-transform: uppercase; color: #718096;">Visuals</th>
-                                <th style="padding: 15px; border: none; font-size: 12px; text-transform: uppercase; color: #718096;">Status</th>
-                                <th style="padding: 15px 25px; border: none; font-size: 12px; text-transform: uppercase; color: #718096; text-align: right;">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody style="background: white;">
-                            @forelse($categories as $item)
-                                <tr style="transition: 0.2s;">
-                                    <td style="padding: 15px 25px;">
-                                        <div style="font-weight: 700; color: #2d3748; font-size: 15px;">{{ $item->name }}</div>
-                                        <div style="font-size: 12px; color: #a0aec0;">slug: /{{ $item->slug }}</div>
-                                    </td>
-                                    <td style="padding: 15px;">
-                                        <div style="display: flex; gap: 10px; align-items: center;">
-                                            <div title="Banner" style="width: 50px; height: 30px; border-radius: 4px; overflow: hidden; border: 1px solid #edf2f7;">
-                                                <img src="{{ $item->banner ? asset('storage/'.$item->banner) : asset('images/no-image.png') }}" style="width: 100%; height: 100%; object-fit: cover;">
-                                            </div>
-                                            <div title="Icon" style="width: 30px; height: 30px; border-radius: 4px; overflow: hidden; background: #f8fafc; padding: 4px;">
-                                                <img src="{{ $item->icon ? asset('storage/'.$item->icon) : asset('images/no-image.png') }}" style="width: 100%; height: 100%; object-fit: contain;">
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td style="padding: 15px;">
-                                        @if($item->status)
-                                            <span style="padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; background: #f0fff4; color: #2f855a; border: 1px solid #c6f6d5;">Active</span>
-                                        @else
-                                            <span style="padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; background: #fff5f5; color: #c53030; border: 1px solid #fed7d7;">Inactive</span>
-                                        @endif
-                                    </td>
-                                    <td style="padding: 15px 25px; text-align: right;">
-                                        <div style="display: flex; gap: 8px; justify-content: flex-end;">
-                                            <a href="{{ route('category.edit', $item->id) }}" 
-                                               style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: #ebf8ff; color: #3182ce; transition: 0.3s; text-decoration: none;">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <form action="{{ route('category.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Delete this category?')">
-                                                @csrf @method('DELETE')
-                                                <button type="submit" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: #fff5f5; color: #e53e3e; border: none; transition: 0.3s;">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="4" style="padding: 40px; text-align: center; color: #a0aec0; font-style: italic;">No categories available yet.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+            <div style="background: white; border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); overflow: hidden;">
+                <table class="table mb-0" style="border-collapse: separate; border-spacing: 0;">
+                    <thead>
+                        <tr style="background: #f8fafc;">
+                            <th style="padding: 20px 25px; border-bottom: 1px solid #e2e8f0; color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase;">Details</th>
+                            <th style="padding: 20px; border-bottom: 1px solid #e2e8f0; color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase;">Media</th>
+                            <th style="padding: 20px; border-bottom: 1px solid #e2e8f0; color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase;">Status</th>
+                            <th style="padding: 20px 25px; border-bottom: 1px solid #e2e8f0; color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase; text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($categories as $item)
+                        <tr style="transition: background 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='transparent'">
+                            <td style="padding: 20px 25px; border-bottom: 1px solid #f1f5f9;">
+                                <div style="font-weight: 700; color: #1e293b; font-size: 15px;">{{ $item->name }}</div>
+                                <div style="font-size: 12px; color: #94a3b8; font-family: monospace;">slug: {{ $item->slug }}</div>
+                            </td>
+                            <td style="padding: 20px; border-bottom: 1px solid #f1f5f9;">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <img src="{{ $item->banner ? asset('storage/'.$item->banner) : asset('images/no-image.png') }}" style="width: 50px; height: 30px; object-fit: cover; border-radius: 6px; border: 1px solid #e2e8f0;">
+                                    <div style="width: 32px; height: 32px; background: #f8fafc; border-radius: 6px; display: flex; align-items: center; justify-content: center; border: 1px solid #e2e8f0;">
+                                        <img src="{{ $item->icon ? asset('storage/'.$item->icon) : asset('images/no-image.png') }}" style="width: 18px; height: 18px; object-fit: contain;">
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="padding: 20px; border-bottom: 1px solid #f1f5f9;">
+                                @if($item->status)
+                                    <span style="background: #dcfce7; color: #166534; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center;">
+                                        <span style="width: 6px; height: 6px; background: #22c55e; border-radius: 50%; margin-right: 6px;"></span> Active
+                                    </span>
+                                @else
+                                    <span style="background: #fee2e2; color: #991b1b; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center;">
+                                        <span style="width: 6px; height: 6px; background: #ef4444; border-radius: 50%; margin-right: 6px;"></span> Inactive
+                                    </span>
+                                @endif
+                            </td>
+                            <td style="padding: 20px 25px; border-bottom: 1px solid #f1f5f9; text-align: right;">
+                                <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                                    {{-- Edit --}}
+                                    <a href="{{ route('category.edit', $item->id) }}" 
+                                       style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 10px; background: #eff6ff; color: #2563eb; text-decoration: none; transition: 0.2s;"
+                                       onmouseover="this.style.background='#2563eb'; this.style.color='white';" 
+                                       onmouseout="this.style.background='#eff6ff'; this.style.color='#2563eb';">
+                                        <i class="btn btn-sm btn-primary me-1 mb-1"></i>
+                                    </a>
+                                    {{-- Delete --}}
+                                    <form action="{{ route('category.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Remove this category?')">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" 
+                                                style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 10px; background: #fef2f2; color: #dc2626; border: none; transition: 0.2s;"
+                                                onmouseover="this.style.background='#dc2626'; this.style.color='white';" 
+                                                onmouseout="this.style.background='#fef2f2'; this.style.color='#dc2626';">
+                                            <i class="btn btn-sm btn-danger mb-1"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="4" style="padding: 50px; text-align: center; color: #94a3b8; font-style: italic;">
+                                <img src="{{ asset('images/empty-box.png') }}" style="width: 60px; opacity: 0.5; margin-bottom: 15px; display: block; margin-left: auto; margin-right: auto;">
+                                No categories found. Start by adding one!
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
 
-{{-- Scripts --}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    // Automatic Slug Generation
     $('#cat_name').on('input', function() {
         let slug = $(this).val().toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
         $('#cat_slug').val(slug);
     });
 
-    // Image Preview Function
     function previewImage(event, previewId) {
         const reader = new FileReader();
         reader.onload = function(){
