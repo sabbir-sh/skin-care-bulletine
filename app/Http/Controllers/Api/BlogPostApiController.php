@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Services\Blog\BlogPostService;
+use App\Http\Requests\BlogPostRequest;
 use App\Models\BlogPost;
-use Illuminate\Http\Request;
 use Exception;
 
 class BlogPostApiController extends Controller
@@ -17,22 +17,30 @@ class BlogPostApiController extends Controller
         $this->blogService = $blogService;
     }
 
+    /**
+     * Blog list with pagination
+     */
     public function index()
     {
-        $blogs = $this->blogService->getAll();
+        $blogs = $this->blogService
+            ->getAllQuery()
+            ->paginate(10);
 
         return response()->json([
             'status' => true,
             'total' => $blogs->total(),
             'current_page' => $blogs->currentPage(),
             'per_page' => $blogs->perPage(),
-            'data' => $blogs->items()
+            'data' => $blogs->items(),
         ]);
     }
 
+    /**
+     * Single blog details
+     */
     public function show($id)
     {
-        $blog = BlogPost::with('category')->findOrFail($id);
+        $blog = BlogPost::with(['category', 'author'])->findOrFail($id);
 
         return response()->json([
             'status' => true,
@@ -40,17 +48,19 @@ class BlogPostApiController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    /**
+     * Store new blog
+     */
+    public function store(BlogPostRequest $request)
     {
         try {
-            $data = $request->all();
-            $blog = $this->blogService->create($data);
+            $blog = $this->blogService->create($request->validated());
 
             return response()->json([
                 'status' => true,
                 'message' => 'Blog created successfully!',
                 'data' => $blog
-            ]);
+            ], 201);
 
         } catch (Exception $e) {
             return response()->json([
@@ -60,16 +70,19 @@ class BlogPostApiController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    /**
+     * Update blog
+     */
+    public function update(BlogPostRequest $request, $id)
     {
         try {
             $blog = BlogPost::findOrFail($id);
-            $updated = $this->blogService->update($blog, $request->all());
+            $updatedBlog = $this->blogService->update($blog, $request->validated());
 
             return response()->json([
                 'status' => true,
                 'message' => 'Blog updated successfully!',
-                'data' => $updated
+                'data' => $updatedBlog
             ]);
 
         } catch (Exception $e) {
@@ -80,6 +93,9 @@ class BlogPostApiController extends Controller
         }
     }
 
+    /**
+     * Delete blog
+     */
     public function destroy($id)
     {
         $blog = BlogPost::findOrFail($id);
