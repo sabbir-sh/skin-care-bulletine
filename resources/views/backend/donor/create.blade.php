@@ -55,10 +55,10 @@
 
                             {{-- Email --}}
                             <div class="col-md-6">
-                                <label style="display: block; font-weight: 700; color: #4a5568; margin-bottom: 10px; font-size: 14px;">Email Address <span style="color: #e53e3e;">*</span></label>
+                                <label style="display: block; font-weight: 700; color: #4a5568; margin-bottom: 10px; font-size: 14px;">Email Address </label>
                                 <input type="email" name="email" value="{{ old('email', $editItem->email ?? '') }}" 
                                        style="width: 100%; padding: 12px 15px; border-radius: 10px; border: 2px solid #edf2f7; outline: none; font-size: 15px;" 
-                                       placeholder="example@mail.com" required>
+                                       placeholder="example@mail.com" >
                             </div>
 
                             {{-- Phone --}}

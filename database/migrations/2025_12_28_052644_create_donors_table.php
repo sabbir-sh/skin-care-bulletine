@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('donors', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email');
+            $table->string('email')->nullable();
             $table->string('phone');
             $table->string('image')->nullable();
             $table->unsignedBigInteger('blood_group_id'); // Blood group

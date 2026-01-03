@@ -16,9 +16,7 @@ use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\SettingController;
-
-
-
+use App\Http\Controllers\Frontend\DonorRegistationController;
 
 // Frontend
 
@@ -38,6 +36,12 @@ Route::get('/category/{slug}', [CategoryListController::class, 'show'])->name('c
 Route::get('/about-us', [AboutUsController::class, 'aboutUs'])->name('aboutUs');
 Route::get('/contact-us', [ContactController::class, 'contact'])->name('contactUs');
 Route::post('/contact-us', [ContactController::class, 'submit'])->name('contact.submit');
+
+Route::get('/be-a-fighter-register', [DonorRegistationController::class, 'index'])
+    ->name('donor.frontend.index');
+
+Route::post('/be-a-fighter-register', [DonorRegistationController::class, 'submit'])
+    ->name('donor.frontend.submit');
 
 
 
@@ -116,6 +120,7 @@ Route::prefix('admin/donor')->name('donor.')->group(function () {
     Route::post('store', [DonorController::class, 'store'])->name('store');
     Route::get('edit/{id}', [DonorController::class, 'edit'])->name('edit');
     Route::patch('update/{id}', [DonorController::class, 'update'])->name('update');
+    Route::patch('approve/{id}', [DonorController::class, 'approve'])->name('approve');
     Route::delete('delete/{id}', [DonorController::class, 'destroy'])->name('destroy');
 });
 

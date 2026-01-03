@@ -50,84 +50,148 @@
                 </div>
             </div>
 
+            {{-- সার্চ সেকশন --}}
+            <div class="container mb-5">
+                <div class="card border-0 shadow-sm" style="border-radius: 30px; background: #ffffff; overflow: hidden;">
+                    <div class="card-body p-4 p-lg-5">
+                        <form action="{{ route('frontend.home') }}" method="GET">
+                            <div class="row g-3">
+                                <div class="col-lg-3 col-md-6">
+                                    <div class="input-group flex-nowrap">
+                                        <span class="input-group-text bg-light border-0" style="border-radius: 15px 0 0 15px;">
+                                            <i class="fas fa-map-marker-alt text-danger"></i>
+                                        </span>
+                                        <input type="text" name="district" value="{{ request('district') }}" 
+                                            class="form-control bg-light border-0 shadow-none" placeholder="জেলা" 
+                                            style="border-radius: 0 15px 15px 0; height: 55px; font-weight: 500;">
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3 col-md-6">
+                                    <div class="input-group flex-nowrap">
+                                        <span class="input-group-text bg-light border-0" style="border-radius: 15px 0 0 15px;">
+                                            <i class="fas fa-city text-danger"></i>
+                                        </span>
+                                        <input type="text" name="upazila" value="{{ request('upazila') }}" 
+                                            class="form-control bg-light border-0 shadow-none" placeholder="উপজেলা" 
+                                            style="border-radius: 0 15px 15px 0; height: 55px; font-weight: 500;">
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-2 col-md-6">
+                                    <input type="text" name="union" value="{{ request('union') }}" 
+                                        class="form-control bg-light border-0 shadow-none" placeholder="ইউনিয়ন" 
+                                        style="border-radius: 15px; height: 55px; font-weight: 500;">
+                                </div>
+
+                                <div class="col-lg-2 col-md-6">
+                                    <input type="text" name="village" value="{{ request('village') }}" 
+                                        class="form-control bg-light border-0 shadow-none" placeholder="গ্রাম" 
+                                        style="border-radius: 15px; height: 55px; font-weight: 500;">
+                                </div>
+
+                                <div class="col-lg-2 col-md-12">
+                                    <button type="submit" class="btn btn-danger w-100 shadow-sm d-flex align-items-center justify-content-center" 
+                                        style="border-radius: 15px; height: 55px; background: linear-gradient(45deg, #dc3545, #ff4d5a); border: none; font-weight: 700; font-size: 1.1rem; transition: 0.3s;">
+                                        <i class="fas fa-search me-2"></i> খুঁজুন
+                                    </button>
+                                </div>
+                            </div>
+
+                            {{-- ফিল্টার ক্লিয়ার বাটন (যদি কোনো ফিল্টার সক্রিয় থাকে) --}}
+                            @if(request()->anyFilled(['district', 'upazila', 'union', 'village']))
+                                <div class="text-center mt-4">
+                                    <a href="{{ route('frontend.home') }}" class="text-decoration-none" style="color: #6c757d; font-weight: 600; font-size: 0.9rem;">
+                                        <i class="fas fa-times-circle me-1"></i> সার্চ ক্লিয়ার করুন
+                                    </a>
+                                </div>
+                            @endif
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            {{-- কার্ড সেকশন --}}
+            <div class="row g-4">
+                @forelse($recentDonors as $donor)
+                    {{-- আপনার আগের কার্ডের কোড এখানে থাকবে --}}
+                @empty
+                    <div class="col-12 text-center py-5">
+                        <h4 class="text-muted">দুঃখিত, এই এলাকায় কোনো রক্তদাতা পাওয়া যায়নি।</h4>
+                    </div>
+                @endforelse
+            </div>
+
             <div class="row g-4">
                 @foreach($recentDonors as $donor)
                     <div class="col-lg-4 col-md-6">
-                        <div class="card h-100"
-                            style="border: none; border-radius: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); transition: all 0.4s ease; overflow: hidden; background: #ffffff;"
-                            onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 20px 40px rgba(220, 53, 69, 0.15)'"
-                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.08)'">
+                        <div class="card h-100 shadow-sm border-0"
+                            style="border-radius: 25px; transition: all 0.3s ease; overflow: hidden; background: #ffffff;"
+                            onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 35px rgba(220, 53, 69, 0.12)'"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.05)'">
 
                             <div class="card-body p-4 text-center d-flex flex-column">
-
-                                {{-- বড় ইমেজ সেকশন (Size increased to 150px) --}}
-                                <div style="position: relative; width: 150px; height: 150px; margin: 10px auto 25px;">
+                                
+                                {{-- প্রোফাইল ইমেজ সেকশন --}}
+                                <div style="position: relative; width: 140px; height: 140px; margin: 0 auto 20px;">
                                     @php
                                         $imageUrl = $donor->image ? asset('storage/' . $donor->image) : 'https://ui-avatars.com/api/?name=' . urlencode($donor->name) . '&background=f8d7da&color=dc3545&size=200';
                                     @endphp
 
-                                    <div
-                                        style="width: 100%; height: 100%; border-radius: 50%; padding: 5px; background: linear-gradient(145deg, #ffffff, #f0f0f0); box-shadow: 10px 10px 20px #bebebe, -10px -10px 20px #ffffff;">
+                                    <div style="width: 100%; height: 100%; border-radius: 50%; padding: 4px; background: linear-gradient(45deg, #dc3545, #ffccd5);">
                                         <img src="{{ $imageUrl }}"
-                                            style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 2px solid #fff;"
+                                            style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 3px solid #fff;"
                                             alt="{{ $donor->name }}">
                                     </div>
 
-                                    {{-- অনলাইন স্ট্যাটাস ইন্ডিকেটর --}}
-                                    <span
-                                        style="position: absolute; bottom: 12px; right: 12px; width: 22px; height: 22px; background: {{ $donor->is_available ? '#198754' : '#6c757d' }}; border: 4px solid #fff; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 2;"></span>
+                                    {{-- অনলাইন স্ট্যাটাস ডট --}}
+                                    <span style="position: absolute; bottom: 8px; right: 8px; width: 20px; height: 20px; background: {{ $donor->is_available ? '#28a745' : '#adb5bd' }}; border: 3px solid #fff; border-radius: 50%; z-index: 2;"></span>
                                 </div>
 
-                                <div style="margin-bottom: 15px;">
-                                    <span
-                                        style="background: #dc3545; color: white; padding: 7px 20px; border-radius: 50px; font-weight: bold; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(220, 53, 69, 0.25);">
-                                        রক্তের গ্রুপ: {{ $donor->bloodGroup->name ?? 'N/A' }}
+                                {{-- ব্লাড গ্রুপ ব্যাজ --}}
+                                <div class="mb-3">
+                                    <span style="background: rgba(220, 53, 69, 0.1); color: #dc3545; padding: 6px 16px; border-radius: 50px; font-weight: 700; font-size: 0.85rem; border: 1px solid rgba(220, 53, 69, 0.2);">
+                                        <i class="fas fa-tint me-1"></i> গ্রুপ: {{ $donor->bloodGroup->name ?? 'N/A' }}
                                     </span>
                                 </div>
 
-                                <h3 class="fw-bold text-dark mb-1" style="font-size: 1.5rem;">{{ $donor->name }}</h3>
+                                <h4 class="fw-bold text-dark mb-1">{{ $donor->name }}</h4>
+                                
+                                <p class="small mb-3" style="font-weight: 600; color: {{ $donor->is_available ? '#28a745' : '#6c757d' }};">
+                                    {{ $donor->is_available ? '● রক্তদানে ইচ্ছুক' : '● আপাতত ব্যস্ত' }}
+                                </p>
 
-                                <div class="mb-3"
-                                    style="font-size: 0.9rem; font-weight: 600; color: {{ $donor->is_available ? '#198754' : '#6c757d' }};">
-                                    {{ $donor->is_available ? '● রক্তদানে প্রস্তুত' : '● এখন ব্যস্ত' }}
-                                </div>
-
-                                <div
-                                    style="background: #fdfdfd; border-radius: 20px; padding: 18px; text-align: left; margin-bottom: 18px; border: 1px solid #f1f1f1; flex-grow: 1;">
-                                    <div
-                                        style="margin-bottom: 10px; font-size: 0.9rem; border-bottom: 1px solid #f8f9fa; padding-bottom: 8px; color: #444;">
-                                        <i class="fas fa-envelope text-danger me-2"></i> {{ $donor->email }}
+                                {{-- কন্টাক্ট ইনফরমেশন বক্স --}}
+                                <div style="background: #f8f9fa; border-radius: 18px; padding: 15px; text-align: left; margin-bottom: 20px; border: 1px solid #eee; flex-grow: 1;">
+                                    
+                                    {{-- Email logic: থাকলে দেখাবে, না থাকলে N/A --}}
+                                    <div style="font-size: 0.85rem; color: #555; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #e9ecef;">
+                                        <i class="fas fa-envelope text-danger me-2" style="width: 15px;"></i> 
+                                        {{ $donor->email ?? 'N/A' }}
                                     </div>
 
-                                    <div class="row g-0 mb-3" style="font-size: 0.9rem; color: #444;">
-                                        <div class="col-6">
-                                            <i class="fas fa-venus-mars text-danger me-2"></i> {{ ucfirst($donor->gender) }}
-                                        </div>
-                                        <div class="col-6 text-end">
-                                            <i class="fas fa-birthday-cake text-danger me-1"></i>
-                                            {{ $donor->date_of_birth ? \Carbon\Carbon::parse($donor->date_of_birth)->age : '??' }}
-                                            বছর
-                                        </div>
+                                    <div class="d-flex justify-content-between mb-2" style="font-size: 0.85rem; color: #555;">
+                                        <span><i class="fas fa-venus-mars text-danger me-2"></i>{{ ucfirst($donor->gender) }}</span>
+                                        <span><i class="fas fa-calendar-alt text-danger me-1"></i> {{ $donor->date_of_birth ? \Carbon\Carbon::parse($donor->date_of_birth)->age : '??' }} বছর</span>
                                     </div>
 
-                                    <div style="font-size: 0.85rem; line-height: 1.6; color: #666; display: flex;">
-                                        <i class="fas fa-map-marker-alt text-danger me-2"
-                                            style="width: 18px; margin-top: 4px;"></i>
-                                        <span>{{ $donor->village }}, {{ $donor->union }}, {{ $donor->upazila }},
-                                            {{ $donor->district }}</span>
+                                    <div style="font-size: 0.82rem; color: #666; line-height: 1.5;">
+                                        <i class="fas fa-map-marker-alt text-danger me-2"></i>
+                                        {{ $donor->village ? $donor->village.', ' : '' }} {{ $donor->upazila }}, {{ $donor->district }}
                                     </div>
                                 </div>
 
-                                <div
-                                    style="background: {{ $donor->is_available ? '#f1f8f1' : '#fff8f0' }}; color: {{ $donor->is_available ? '#1b5e20' : '#e65100' }}; border-radius: 15px; padding: 12px; font-size: 0.9rem; font-weight: bold; margin-bottom: 20px; border: 1px solid rgba(0,0,0,0.02);">
-                                    <i class="far fa-calendar-check me-1"></i> শেষ দান:
-                                    {{ $donor->last_donation_date ?? 'তথ্য নেই' }}
+                                {{-- লাস্ট ডোনেশন স্ট্যাটাস --}}
+                                <div style="font-size: 0.8rem; font-weight: 600; color: #444; margin-bottom: 15px;">
+                                    <i class="far fa-clock me-1 text-primary"></i> শেষ রক্তদান: 
+                                    <span class="text-dark">{{ $donor->last_donation_date ?? 'নতুন ডোনার' }}</span>
                                 </div>
 
+                                {{-- কল বাটন --}}
                                 <div class="mt-auto">
-                                    <a href="tel:{{ $donor->phone }}" class="btn btn-danger btn-lg w-100 rounded-pill"
-                                        style="background: linear-gradient(45deg, #dc3545, #ff4d5a); border: none; font-weight: bold; padding: 14px; transition: 0.4s; box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);">
-                                        <i class="fas fa-phone-alt me-2"></i> এখনই কল দিন
+                                    <a href="tel:{{ $donor->phone }}" class="btn btn-danger w-100 py-2 fw-bold shadow-sm"
+                                        style="border-radius: 12px; background: #dc3545; border: none; transition: 0.3s;">
+                                        <i class="fas fa-phone-alt me-2"></i> কল করুন
                                     </a>
                                 </div>
                             </div>

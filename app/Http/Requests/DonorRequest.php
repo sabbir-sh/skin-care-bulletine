@@ -15,7 +15,7 @@ class DonorRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
+            'email' => 'nullable|email|max:255',
             'phone' => 'required|string|max:20',
             'image' => 'nullable|image|max:2048',
             'blood_group_id' => 'required|exists:blood_groups,id',
@@ -26,8 +26,8 @@ class DonorRequest extends FormRequest
             'upazila' => 'required|string|max:255',
             'union' => 'required|string|max:255',
             'village' => 'required|string|max:255',
-            'is_available' => 'required|boolean',
-            'status' => 'required|boolean',
+            'is_available' => 'nullable|boolean',
+            'status' => 'nullable|boolean',
         ];
     }
 }
