@@ -22,38 +22,38 @@ class HomeController extends Controller
     }
 
     public function index(Request $request)
-{
-    $data = $this->getCommonData();
+    {
+        $data = $this->getCommonData();
 
-    // সার্চ কুয়েরি শুরু
-    $query = Donor::with('bloodGroup')->where('status', 1);
+        // search query start
+        $query = Donor::with('bloodGroup')->where('status', 1);
 
-    // ফিল্টারিং লজিক
-    if ($request->filled('district')) {
-        $query->where('district', 'like', '%' . $request->district . '%');
+        // filter
+        if ($request->filled('district')) {
+            $query->where('district', 'like', '%' . $request->district . '%');
+        }
+        if ($request->filled('upazila')) {
+            $query->where('upazila', 'like', '%' . $request->upazila . '%');
+        }
+        if ($request->filled('union')) {
+            $query->where('union', 'like', '%' . $request->union . '%');
+        }
+        if ($request->filled('village')) {
+            $query->where('village', 'like', '%' . $request->village . '%');
+        }
+
+        // if no search then show oldest 9 donors, otherwise show search results
+        $data['recentDonors'] = $query->oldest()->take(9)->get();
+
+        $data['total_donors'] = Donor::where('status', 1)->count();
+        $data['available_donors'] = Donor::where('status', 1)->where('is_available', 1)->count();
+        $data['total_groups'] = BloodGroup::where('status', 1)->count();
+
+        $data['activeGroup'] = null;
+        $data['title'] = "আমাদের বীর রক্তদাতারা";
+
+        return view('frontend.home', $data);
     }
-    if ($request->filled('upazila')) {
-        $query->where('upazila', 'like', '%' . $request->upazila . '%');
-    }
-    if ($request->filled('union')) {
-        $query->where('union', 'like', '%' . $request->union . '%');
-    }
-    if ($request->filled('village')) {
-        $query->where('village', 'like', '%' . $request->village . '%');
-    }
-
-    // যদি কোনো সার্চ না থাকে তবে লেটেস্ট ৬ জন দেখাবে, নাহলে সার্চ রেজাল্ট
-    $data['recentDonors'] = $query->latest()->take(12)->get();
-
-    $data['total_donors'] = Donor::where('status', 1)->count();
-    $data['available_donors'] = Donor::where('status', 1)->where('is_available', 1)->count();
-    $data['total_groups'] = BloodGroup::where('status', 1)->count();
-
-    $data['activeGroup'] = null;
-    $data['title'] = "আমাদের বীর রক্তদাতারা";
-
-    return view('frontend.home', $data);
-}
 
     public function bloodGroup($slug)
     {
