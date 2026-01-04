@@ -85,10 +85,10 @@
     <div class="container">
         <h2 style="font-weight: 800; margin-bottom: 40px; color: #212529;">আপনি কি আমাদের পরবর্তী ফাইটার?</h2>
         <div class="d-flex flex-wrap justify-content-center gap-4">
-            <a href="{{ url('/') }}" style="background: #dc3545; color: #fff; text-decoration: none; padding: 18px 45px; border-radius: 50px; font-weight: 700; font-size: 1.1rem; box-shadow: 0 10px 25px rgba(220, 53, 69, 0.3); transition: 0.3s;" onmouseover="this.style.transform='scale(1.05)'; this.style.backgroundColor='#bb2d3b'" onmouseout="this.style.transform='scale(1)'; this.style.backgroundColor='#dc3545'">
+            <a href="{{ url('/be-a-fighter-register') }}" style="background: #dc3545; color: #fff; text-decoration: none; padding: 18px 45px; border-radius: 50px; font-weight: 700; font-size: 1.1rem; box-shadow: 0 10px 25px rgba(220, 53, 69, 0.3); transition: 0.3s;" onmouseover="this.style.transform='scale(1.05)'; this.style.backgroundColor='#bb2d3b'" onmouseout="this.style.transform='scale(1)'; this.style.backgroundColor='#dc3545'">
                 <i class="bi bi-droplet-fill me-2"></i>রেজিস্ট্রেশন করুন
             </a>
-            <a href="{{ url('/') }}" style="background: transparent; color: #212529; text-decoration: none; padding: 18px 45px; border-radius: 50px; font-weight: 700; font-size: 1.1rem; border: 2px solid #212529; transition: 0.3s;" onmouseover="this.style.backgroundColor='#212529'; this.style.color='#fff'" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#212529'">
+            <a href="{{ url('/#donors') }}" style="background: transparent; color: #212529; text-decoration: none; padding: 18px 45px; border-radius: 50px; font-weight: 700; font-size: 1.1rem; border: 2px solid #212529; transition: 0.3s;" onmouseover="this.style.backgroundColor='#212529'; this.style.color='#fff'" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#212529'">
                 জরুরি রক্ত প্রয়োজন?
             </a>
         </div>
