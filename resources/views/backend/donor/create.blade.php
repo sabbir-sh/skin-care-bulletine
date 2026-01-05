@@ -3,6 +3,8 @@
 @section('title', isset($editItem) ? 'Edit Donor' : 'Add Donor')
 
 @section('content')
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <div class="container-fluid" style="padding: 30px 45px; background-color: #f4f7f6; min-height: 100vh;">
     <div class="row justify-content-center">
         <div class="col-lg-11">
@@ -135,6 +137,35 @@
                                        placeholder="Enter village name">
                             </div>
 
+                            {{-- Latitude & Longitude Input --}}
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Latitude</label>
+                                    <input type="text"
+                                        class="form-control"
+                                        name="latitude"
+                                        id="latitude"
+                                        value="{{ old('latitude', $editItem->latitude ?? '') }}"
+                                        placeholder="23.8103">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Longitude</label>
+                                    <input type="text"
+                                        class="form-control"
+                                        name="longitude"
+                                        id="longitude"
+                                        value="{{ old('longitude', $editItem->longitude ?? '') }}"
+                                        placeholder="90.4125">
+                                </div>
+                            </div>
+
+                            {{-- Map View --}}
+                            <div class="mb-4">
+                                <div id="map" style="height: 350px; border-radius: 15px;"></div>
+                            </div>
+
+
                             {{-- Image Upload --}}
                             <div class="col-md-6">
                                 <label style="display: block; font-weight: 700; color: #4a5568; margin-bottom: 10px; font-size: 14px;">Donor Image</label>
@@ -185,4 +216,37 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Default (Dhaka)
+    let latInput = document.getElementById('latitude');
+    let lngInput = document.getElementById('longitude');
+
+    let lat = parseFloat(latInput.value) || 23.8103;
+    let lng = parseFloat(lngInput.value) || 90.4125;
+
+    let map = L.map('map').setView([lat, lng], 10);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+
+    let marker = L.marker([lat, lng]).addTo(map);
+
+    function updateMap() {
+        let latVal = parseFloat(latInput.value);
+        let lngVal = parseFloat(lngInput.value);
+
+        if (!isNaN(latVal) && !isNaN(lngVal)) {
+            marker.setLatLng([latVal, lngVal]);
+            map.setView([latVal, lngVal], 13);
+        }
+    }
+
+    latInput.addEventListener('input', updateMap);
+    lngInput.addEventListener('input', updateMap);
+</script>
+
+
+
 @endsection

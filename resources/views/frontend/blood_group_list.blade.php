@@ -1,96 +1,177 @@
 @extends('frontend.layouts.app')
 
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.fullscreen@1.6.0/Control.FullScreen.css" />
+<script src="https://unpkg.com/leaflet.fullscreen@1.6.0/Control.FullScreen.js"></script>
+
 @section('content')
 
-    <section
-        style="background:linear-gradient(135deg,#e63946,#c1121f);padding:60px 0;color:#fff;margin-bottom:50px;border-radius:0 0 50px 50px;text-align:center;">
-        <div class="container">
-            <h1 style="font-size:42px;font-weight:700;">
-                {{ $selectedGroup->name }} গ্রুপের রক্তদাতা
-            </h1>
-            <p style="opacity:.85;font-size:18px;">
-                বর্তমানে এই গ্রুপে মোট {{ $totalDonors }} জন দাতা পাওয়া গেছে
-            </p>
-        </div>
-    </section>
+{{-- HEADER --}}
+<section style="background:linear-gradient(135deg,#e63946,#c1121f);padding:60px 0;color:#fff;margin-bottom:40px;border-radius:0 0 50px 50px;text-align:center;">
+    <div class="container">
+        <h1 style="font-size:42px;font-weight:800;">
+            {{ $selectedGroup->name }} গ্রুপের রক্তদাতা
+        </h1>
+        <p style="opacity:.9;font-size:18px;">
+            বর্তমানে এই গ্রুপে মোট {{ $totalDonors }} জন দাতা পাওয়া গেছে
+        </p>
+    </div>
+</section>
 
-    <div class="container pb-5">
-        <div class="row g-4">
-            @forelse($recentDonors as $donor)
-                <div class="col-lg-4 col-md-6">
-                    <div style="background:#fff; border-radius:30px; margin-top:50px; transition:.4s ease; box-shadow:0 10px 30px rgba(0,0,0,.05); height:100%; border: 1px solid #f0f0f0;">
-                        <div style="padding:30px; text-align:center;">
+<div class="container">
+    <div class="row g-4">
 
-                            {{-- প্রোফাইল ইমেজ ও অনলাইন স্ট্যাটাস --}}
-                            <div style="margin-top:-80px; position:relative; display: inline-block;">
-                                <img src="{{ $donor->image ? asset('storage/' . $donor->image) : 'https://ui-avatars.com/api/?name=' . urlencode($donor->name) . '&background=E63946&color=fff' }}"
-                                    style="width:120px; height:120px; border-radius:50%; border:6px solid #fff; object-fit:cover; box-shadow:0 8px 20px rgba(0,0,0,.12);">
+        {{-- LEFT: DONOR CARDS --}}
+        <div class="col-lg-9">
+            <div class="row g-4">
+
+                @foreach($recentDonors as $donor)
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 shadow-sm border-0"
+                            style="border-radius: 25px; transition: all 0.3s ease; overflow: hidden; background: #ffffff;"
+                            onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 35px rgba(220, 53, 69, 0.12)'"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.05)'">
+
+                            {{-- ১. ম্যাপ সেকশন (সবার উপরে) --}}
+                            @if($donor->latitude && $donor->longitude)
+                                <div style="height: 180px; width: 100%; background: #eee; position: relative; z-index: 1;">
+                                    <div id="map-{{ $donor->id }}" 
+                                        data-lat="{{ $donor->latitude }}"
+                                        data-lng="{{ $donor->longitude }}"
+                                        style="height: 100%; width: 100%;">
+                                    </div>
+                                </div>
+                            @else
+                                {{-- ম্যাপ না থাকলে একটি লালচে ব্যাকগ্রাউন্ড দেখাবে --}}
+                                <div style="height: 120px; width: 100%; background: linear-gradient(45deg, #dc3545, #ffccd5);"></div>
+                            @endif
+
+                            <div class="card-body p-4 text-center d-flex flex-column" style="position: relative; z-index: 2;">
                                 
-                                <span title="{{ $donor->is_available ? 'রক্তদানে প্রস্তুত' : 'এখন ব্যস্ত' }}"
-                                    style="position:absolute; bottom:10px; right:10px; width:20px; height:20px; border-radius:50%; border:3px solid #fff;
-                                    background:{{ $donor->is_available ? '#28a745' : '#6c757d' }}; shadow: 0 2px 4px rgba(0,0,0,0.2);">
-                                </span>
-                            </div>
+                                {{-- ২. প্রোফাইল ইমেজ (ম্যাপের ওপর হালকা নেগেটিভ মার্জিন দিয়ে বসানো) --}}
+                                <div style="position: relative; width: 120px; height: 120px; margin: -70px auto 15px;">
+                                    @php
+                                        $imageUrl = $donor->image ? asset('storage/' . $donor->image) : 'https://ui-avatars.com/api/?name=' . urlencode($donor->name) . '&background=f8d7da&color=dc3545&size=200';
+                                    @endphp
 
-                            {{-- নাম ও রক্তের গ্রুপ --}}
-                            <h4 style="margin-top:15px; font-weight:800; color:#2d3436; margin-bottom: 5px;">
-                                {{ $donor->name }}
-                            </h4>
+                                    <div style="width: 100%; height: 100%; border-radius: 50%; padding: 4px; background: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                                        <div style="width: 100%; height: 100%; border-radius: 50%; overflow: hidden; border: 3px solid #dc3545;">
+                                            <img src="{{ $imageUrl }}"
+                                                style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"
+                                                alt="{{ $donor->name }}">
+                                        </div>
+                                    </div>
 
-                            <div style="background:rgba(230, 57, 70, 0.1); color:#e63946; padding:5px 15px; border-radius:30px; display:inline-block; font-weight:700; font-size:14px; margin-bottom:20px; border: 1px solid rgba(230, 57, 70, 0.2);">
-                                <i class="fas fa-tint me-1"></i> গ্রুপ: {{ $donor->bloodGroup->name ?? 'N/A' }}
-                            </div>
-
-                            {{-- ইনফরমেশন বক্স --}}
-                            <div style="background:#fafafa; border-radius:20px; padding:20px; text-align:left; margin-bottom:20px; font-size:14px; color: #636e72;">
-                                
-                                {{-- Email (Optional Logic) --}}
-                                <div style="margin-bottom:10px; display: flex; align-items: center;">
-                                    <span style="margin-right:10px;">📧</span>
-                                    <span style="word-break: break-all;">{{ $donor->email ?? 'N/A' }}</span>
+                                    {{-- অনলাইন স্ট্যাটাস ডট --}}
+                                    <span style="position: absolute; bottom: 8px; right: 8px; width: 20px; height: 20px; background: {{ $donor->is_available ? '#28a745' : '#adb5bd' }}; border: 3px solid #fff; border-radius: 50%; z-index: 3;"></span>
                                 </div>
 
-                                <div style="display:flex; justify-content:space-between; margin-bottom:10px; padding-bottom: 10px; border-bottom: 1px dashed #dfe6e9;">
-                                    <span>👤 {{ ucfirst($donor->gender) }}</span>
-                                    <span>🎂 {{ $donor->date_of_birth ? \Carbon\Carbon::parse($donor->date_of_birth)->age : '??' }} বছর</span>
-                                </div>
-
-                                {{-- Address with Clean Comma Management --}}
-                                <div style="line-height: 1.6; display: flex;">
-                                    <span style="margin-right:10px;">📍</span>
-                                    <span>
-                                        @php
-                                            $address = array_filter([$donor->village, $donor->union, $donor->upazila, $donor->district]);
-                                            echo implode(', ', $address);
-                                        @endphp
+                                {{-- ৩. ব্লাড গ্রুপ ব্যাজ --}}
+                                <div class="mb-3">
+                                    <span style="background: rgba(220, 53, 69, 0.1); color: #dc3545; padding: 6px 16px; border-radius: 50px; font-weight: 700; font-size: 0.85rem; border: 1px solid rgba(220, 53, 69, 0.2);">
+                                        <i class="fas fa-tint me-1"></i> গ্রুপ: {{ $donor->bloodGroup->name ?? 'N/A' }}
                                     </span>
                                 </div>
+
+                                <h4 class="fw-bold text-dark mb-1">{{ $donor->name }}</h4>
+                                
+                                <p class="small mb-3" style="font-weight: 600; color: {{ $donor->is_available ? '#28a745' : '#6c757d' }};">
+                                    {{ $donor->is_available ? '● রক্তদানে ইচ্ছুক' : '● আপাতত ব্যস্ত' }}
+                                </p>
+
+                                {{-- ৪. কন্টাক্ট ইনফরমেশন বক্স --}}
+                                <div style="background: #f8f9fa; border-radius: 18px; padding: 15px; text-align: left; margin-bottom: 20px; border: 1px solid #eee; flex-grow: 1;">
+                                    
+                                    <div style="font-size: 0.85rem; color: #555; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #e9ecef; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <i class="fas fa-envelope text-danger me-2" style="width: 15px;"></i> 
+                                        {{ $donor->email ?? 'N/A' }}
+                                    </div>
+
+                                    <div class="d-flex justify-content-between mb-2" style="font-size: 0.85rem; color: #555;">
+                                        <span><i class="fas fa-venus-mars text-danger me-2"></i>{{ ucfirst($donor->gender) }}</span>
+                                        <span><i class="fas fa-calendar-alt text-danger me-1"></i> {{ $donor->date_of_birth ? \Carbon\Carbon::parse($donor->date_of_birth)->age : '??' }} বছর</span>
+                                    </div>
+
+                                    <div style="font-size: 0.82rem; color: #666; line-height: 1.5;">
+                                        <i class="fas fa-map-marker-alt text-danger me-2"></i>
+                                        {{ $donor->village ? $donor->village.', ' : '' }} {{ $donor->upazila }}, {{ $donor->district }}
+                                    </div>
+                                </div>
+
+                                {{-- ৫. লাস্ট ডোনেশন স্ট্যাটাস --}}
+                                <div style="font-size: 0.8rem; font-weight: 600; color: #444; margin-bottom: 15px;">
+                                    <i class="far fa-clock me-1 text-primary"></i> শেষ রক্তদান: 
+                                    <span class="text-dark">{{ $donor->last_donation_date ?? 'নতুন ডোনার' }}</span>
+                                </div>
+
+                                {{-- ৬. কল বাটন --}}
+                                <div class="mt-auto">
+                                    <a href="tel:{{ $donor->phone }}" class="btn btn-danger w-100 py-2 fw-bold shadow-sm"
+                                        style="border-radius: 12px; background: #dc3545; border: none; transition: 0.3s;">
+                                        <i class="fas fa-phone-alt me-2"></i> কল করুন
+                                    </a>
+                                </div>
                             </div>
-
-                            {{-- লাস্ট ডোনেশন স্ট্যাটাস --}}
-                            <div style="padding:10px; border-radius:12px; font-size:13px; font-weight:700;
-                                        background:{{ $donor->is_available ? '#f0fff4' : '#fffaf0' }};
-                                        color:{{ $donor->is_available ? '#2f855a' : '#c05621' }}; border: 1px solid {{ $donor->is_available ? '#c6f6d5' : '#feebc8' }};">
-                                <i class="far fa-calendar-check me-1"></i> 
-                                শেষ দান: {{ $donor->last_donation_date ?? 'নতুন যোদ্ধা' }}
-                            </div>
-
-                            {{-- কল বাটন --}}
-                            <a href="tel:{{ $donor->phone }}"
-                            style="margin-top:20px; display:block; background:linear-gradient(45deg, #e63946, #d62828); color:#fff; padding:14px; border-radius:15px; font-weight:700; text-decoration:none; box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3); transition: .3s;">
-                                <i class="fas fa-phone-alt me-2"></i> এখনই কল দিন
-                            </a>
-
                         </div>
                     </div>
-                </div>
-            @empty
-                <div class="col-12 text-center py-5">
-                    <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" style="width: 100px; opacity: 0.2;" class="mb-3">
-                    <h4 style="color: #b2bec3;">দুঃখিত, কোনো ডোনার পাওয়া যায়নি</h4>
-                </div>
-            @endforelse
+                @endforeach
+
+            </div>
         </div>
+
+        {{-- RIGHT: SIDEBAR --}}
+        <div class="col-lg-3">
+            <div class="card border-0 shadow-sm"
+                 style="border-radius:20px;position:sticky;top:90px;">
+                <div class="card-body">
+                    <h5 style="font-weight:800;color:#dc3545;margin-bottom:16px;">
+                        <i class="fas fa-tint"></i> সক্রিয় ব্লাড গ্রুপ
+                    </h5>
+
+                    @foreach($bloodGroups as $group)
+                        <a href="{{ route('blood.group',$group->slug) }}"
+                           style="
+                           display:flex;
+                           justify-content:space-between;
+                           align-items:center;
+                           padding:10px 14px;
+                           border-radius:12px;
+                           margin-bottom:8px;
+                           font-weight:700;
+                           text-decoration:none;
+                           background:{{ $activeGroup==$group->slug?'#dc3545':'#f8f9fa' }};
+                           color:{{ $activeGroup==$group->slug?'#fff':'#333' }};
+                           ">
+                            <span>{{ $group->name }}</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+
     </div>
+</div>
+
+{{-- MAP SCRIPT --}}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll('[id^="map-"]').forEach(function (mapDiv) {
+        let lat = parseFloat(mapDiv.dataset.lat);
+        let lng = parseFloat(mapDiv.dataset.lng);
+        if (isNaN(lat) || isNaN(lng)) return;
+
+        let map = L.map(mapDiv.id, {
+            scrollWheelZoom:true,
+            fullscreenControl:true,
+            attributionControl:false
+        }).setView([lat, lng], 14);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(map);
+        L.marker([lat,lng]).addTo(map);
+    });
+});
+</script>
 
 @endsection

@@ -1,6 +1,11 @@
 @extends('frontend.layouts.app')
 
 @section('content')
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.fullscreen@1.6.0/Control.FullScreen.css" />
+    <script src="https://unpkg.com/leaflet.fullscreen@1.6.0/Control.FullScreen.js"></script>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -130,25 +135,41 @@
                             onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 35px rgba(220, 53, 69, 0.12)'"
                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.05)'">
 
-                            <div class="card-body p-4 text-center d-flex flex-column">
+                            {{-- ১. ম্যাপ সেকশন (সবার উপরে) --}}
+                            @if($donor->latitude && $donor->longitude)
+                                <div style="height: 180px; width: 100%; background: #eee; position: relative; z-index: 1;">
+                                    <div id="map-{{ $donor->id }}" 
+                                        data-lat="{{ $donor->latitude }}"
+                                        data-lng="{{ $donor->longitude }}"
+                                        style="height: 100%; width: 100%;">
+                                    </div>
+                                </div>
+                            @else
+                                {{-- ম্যাপ না থাকলে একটি লালচে ব্যাকগ্রাউন্ড দেখাবে --}}
+                                <div style="height: 120px; width: 100%; background: linear-gradient(45deg, #dc3545, #ffccd5);"></div>
+                            @endif
+
+                            <div class="card-body p-4 text-center d-flex flex-column" style="position: relative; z-index: 2;">
                                 
-                                {{-- প্রোফাইল ইমেজ সেকশন --}}
-                                <div style="position: relative; width: 140px; height: 140px; margin: 0 auto 20px;">
+                                {{-- ২. প্রোফাইল ইমেজ (ম্যাপের ওপর হালকা নেগেটিভ মার্জিন দিয়ে বসানো) --}}
+                                <div style="position: relative; width: 120px; height: 120px; margin: -70px auto 15px;">
                                     @php
                                         $imageUrl = $donor->image ? asset('storage/' . $donor->image) : 'https://ui-avatars.com/api/?name=' . urlencode($donor->name) . '&background=f8d7da&color=dc3545&size=200';
                                     @endphp
 
-                                    <div style="width: 100%; height: 100%; border-radius: 50%; padding: 4px; background: linear-gradient(45deg, #dc3545, #ffccd5);">
-                                        <img src="{{ $imageUrl }}"
-                                            style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 3px solid #fff;"
-                                            alt="{{ $donor->name }}">
+                                    <div style="width: 100%; height: 100%; border-radius: 50%; padding: 4px; background: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                                        <div style="width: 100%; height: 100%; border-radius: 50%; overflow: hidden; border: 3px solid #dc3545;">
+                                            <img src="{{ $imageUrl }}"
+                                                style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"
+                                                alt="{{ $donor->name }}">
+                                        </div>
                                     </div>
 
                                     {{-- অনলাইন স্ট্যাটাস ডট --}}
-                                    <span style="position: absolute; bottom: 8px; right: 8px; width: 20px; height: 20px; background: {{ $donor->is_available ? '#28a745' : '#adb5bd' }}; border: 3px solid #fff; border-radius: 50%; z-index: 2;"></span>
+                                    <span style="position: absolute; bottom: 8px; right: 8px; width: 20px; height: 20px; background: {{ $donor->is_available ? '#28a745' : '#adb5bd' }}; border: 3px solid #fff; border-radius: 50%; z-index: 3;"></span>
                                 </div>
 
-                                {{-- ব্লাড গ্রুপ ব্যাজ --}}
+                                {{-- ৩. ব্লাড গ্রুপ ব্যাজ --}}
                                 <div class="mb-3">
                                     <span style="background: rgba(220, 53, 69, 0.1); color: #dc3545; padding: 6px 16px; border-radius: 50px; font-weight: 700; font-size: 0.85rem; border: 1px solid rgba(220, 53, 69, 0.2);">
                                         <i class="fas fa-tint me-1"></i> গ্রুপ: {{ $donor->bloodGroup->name ?? 'N/A' }}
@@ -161,11 +182,10 @@
                                     {{ $donor->is_available ? '● রক্তদানে ইচ্ছুক' : '● আপাতত ব্যস্ত' }}
                                 </p>
 
-                                {{-- কন্টাক্ট ইনফরমেশন বক্স --}}
+                                {{-- ৪. কন্টাক্ট ইনফরমেশন বক্স --}}
                                 <div style="background: #f8f9fa; border-radius: 18px; padding: 15px; text-align: left; margin-bottom: 20px; border: 1px solid #eee; flex-grow: 1;">
                                     
-                                    {{-- Email logic: থাকলে দেখাবে, না থাকলে N/A --}}
-                                    <div style="font-size: 0.85rem; color: #555; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #e9ecef;">
+                                    <div style="font-size: 0.85rem; color: #555; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #e9ecef; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                         <i class="fas fa-envelope text-danger me-2" style="width: 15px;"></i> 
                                         {{ $donor->email ?? 'N/A' }}
                                     </div>
@@ -181,13 +201,13 @@
                                     </div>
                                 </div>
 
-                                {{-- লাস্ট ডোনেশন স্ট্যাটাস --}}
+                                {{-- ৫. লাস্ট ডোনেশন স্ট্যাটাস --}}
                                 <div style="font-size: 0.8rem; font-weight: 600; color: #444; margin-bottom: 15px;">
                                     <i class="far fa-clock me-1 text-primary"></i> শেষ রক্তদান: 
                                     <span class="text-dark">{{ $donor->last_donation_date ?? 'নতুন ডোনার' }}</span>
                                 </div>
 
-                                {{-- কল বাটন --}}
+                                {{-- ৬. কল বাটন --}}
                                 <div class="mt-auto">
                                     <a href="tel:{{ $donor->phone }}" class="btn btn-danger w-100 py-2 fw-bold shadow-sm"
                                         style="border-radius: 12px; background: #dc3545; border: none; transition: 0.3s;">
@@ -454,5 +474,38 @@
 
             counters.forEach(counter => observer.observe(counter));
         });
+
+        // map
+document.addEventListener("DOMContentLoaded", function () {
+
+    document.querySelectorAll('[id^="map-"]').forEach(function (mapDiv) {
+
+        let lat = parseFloat(mapDiv.dataset.lat);
+        let lng = parseFloat(mapDiv.dataset.lng);
+
+        if (isNaN(lat) || isNaN(lng)) return;
+
+        let map = L.map(mapDiv.id, {
+            zoomControl: true,
+            scrollWheelZoom: true,
+            doubleClickZoom: true,
+            touchZoom: true,
+            dragging: true,
+            attributionControl: false,
+            fullscreenControl: true,              // ✅ Enable Fullscreen
+            fullscreenControlOptions: {
+                position: 'topleft'               // button position
+            }
+        }).setView([lat, lng], 14);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19
+        }).addTo(map);
+
+        L.marker([lat, lng]).addTo(map);
+    });
+
+});
+
     </script>
 @endsection

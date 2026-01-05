@@ -28,6 +28,8 @@ class DonorRequest extends FormRequest
             'village' => 'required|string|max:255',
             'is_available' => 'nullable|boolean',
             'status' => 'nullable|boolean',
+            'latitude'        => 'nullable|numeric',
+            'longitude'       => 'nullable|numeric',
         ];
     }
 }

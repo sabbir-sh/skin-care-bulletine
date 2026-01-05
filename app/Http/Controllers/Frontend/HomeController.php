@@ -73,6 +73,7 @@ class HomeController extends Controller
         $data['title']         = $bloodGroup->name . " গ্রুপের রক্তদাতা";
 
         $data['totalDonors']   = $data['recentDonors']->count();
+        $data['bloodGroups'] = BloodGroup::where('status', 1)->get();
 
         return view('frontend.blood_group_list', $data);
     }
