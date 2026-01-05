@@ -12,35 +12,20 @@ class SettingRequest extends FormRequest
     }
 
     public function rules(): array
-{
-    return [
-        'site_name'        => 'nullable|string|max:255',
-
-        'logo'             => 'nullable|image',
-        'favicon'          => 'nullable|image',
-
-        'logo_remove'      => 'nullable|boolean',
-        'favicon_remove'   => 'nullable|boolean',
-
-        'meta_title'       => 'nullable|string|max:255',
-        'meta_description' => 'nullable|string|max:500',
-
-        'facebook'         => 'nullable|url',
-        'twitter'          => 'nullable|url',
-        'youtube'          => 'nullable|url',
-
-        'homepage_layout'  => 'required|in:default,blog',
-    ];
-}
-
-
-    public function messages(): array
     {
-        return [
-            'site_name.required' => 'Site name is required',
-            'logo.image'         => 'Logo must be an image file',
-            'favicon.image'      => 'Favicon must be an image file',
-            'facebook.url'       => 'Facebook link must be a valid URL',
+       return [
+            'site_name'        => 'nullable|string|max:255',
+            'logo'             => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
+            'favicon'          => 'nullable|image|mimes:ico,png,jpg|max:1024',
+            'logo_remove'      => 'nullable|string', // Hidden field for JS
+            'favicon_remove'   => 'nullable|string', // Hidden field for JS
+            'meta_title'       => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string|max:500',
+            'facebook'         => 'nullable|url',
+            'twitter'          => 'nullable|url',
+            'youtube'          => 'nullable|url',
+            'homepage_layout'  => 'required|in:default,blog',
         ];
     }
+
 }

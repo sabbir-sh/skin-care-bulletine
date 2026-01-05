@@ -77,4 +77,36 @@ class HomeController extends Controller
 
         return view('frontend.blood_group_list', $data);
     }
+
+    public function allDonors(Request $request)
+    {
+        $data = $this->getCommonData();
+
+        $query = Donor::with('bloodGroup')
+            ->where('status', 1);
+
+        // 🔍 same filters (NO CHANGE)
+        if ($request->filled('district')) {
+            $query->where('district', 'like', '%' . $request->district . '%');
+        }
+        if ($request->filled('upazila')) {
+            $query->where('upazila', 'like', '%' . $request->upazila . '%');
+        }
+        if ($request->filled('union')) {
+            $query->where('union', 'like', '%' . $request->union . '%');
+        }
+        if ($request->filled('village')) {
+            $query->where('village', 'like', '%' . $request->village . '%');
+        }
+
+        // 🔥 difference only here
+        $data['recentDonors'] = $query->latest()->paginate(12);
+
+        $data['title'] = "সকল রক্তদাতার তালিকা";
+        $data['activeGroup'] = null;
+
+        return view('frontend.donor.list', $data);
+    }
+
+
 }

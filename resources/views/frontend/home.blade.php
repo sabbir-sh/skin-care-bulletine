@@ -5,7 +5,7 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet.fullscreen@1.6.0/Control.FullScreen.css" />
     <script src="https://unpkg.com/leaflet.fullscreen@1.6.0/Control.FullScreen.js"></script>
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -24,7 +24,7 @@
                     আপনার এক ব্যাগ রক্তে বেঁচে যেতে পারে একটি হাসি। আপনিও হতে পারেন একজন জীবন রক্ষাকারী নায়ক।
                 </p>
                 <div class="mt-5 animate__animated animate__zoomIn animate__delay-2s">
-                    <a href="#donors" class="btn btn-danger shadow-lg"
+                    <a href={{url('/donors')}} class="btn btn-danger shadow-lg"
                         style="padding: 15px 40px; font-size: 1.2rem; font-weight: 700; border-radius: 50px; text-transform: uppercase; letter-spacing: 1px;">
                         রক্তদাতার তালিকা দেখুন
                     </a>
@@ -440,6 +440,10 @@
         </div>
     </div>
 
+    {{-- the popup blade --}}
+    @include('frontend.popup')
+ 
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -476,36 +480,37 @@
         });
 
         // map
-document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function () {
 
-    document.querySelectorAll('[id^="map-"]').forEach(function (mapDiv) {
+            document.querySelectorAll('[id^="map-"]').forEach(function (mapDiv) {
 
-        let lat = parseFloat(mapDiv.dataset.lat);
-        let lng = parseFloat(mapDiv.dataset.lng);
+                let lat = parseFloat(mapDiv.dataset.lat);
+                let lng = parseFloat(mapDiv.dataset.lng);
 
-        if (isNaN(lat) || isNaN(lng)) return;
+                if (isNaN(lat) || isNaN(lng)) return;
 
-        let map = L.map(mapDiv.id, {
-            zoomControl: true,
-            scrollWheelZoom: true,
-            doubleClickZoom: true,
-            touchZoom: true,
-            dragging: true,
-            attributionControl: false,
-            fullscreenControl: true,              // ✅ Enable Fullscreen
-            fullscreenControlOptions: {
-                position: 'topleft'               // button position
-            }
-        }).setView([lat, lng], 14);
+                let map = L.map(mapDiv.id, {
+                    zoomControl: true,
+                    scrollWheelZoom: true,
+                    doubleClickZoom: true,
+                    touchZoom: true,
+                    dragging: true,
+                    attributionControl: false,
+                    fullscreenControl: true,              // ✅ Enable Fullscreen
+                    fullscreenControlOptions: {
+                        position: 'topleft'               // button position
+                    }
+                }).setView([lat, lng], 14);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19
-        }).addTo(map);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19
+                }).addTo(map);
 
-        L.marker([lat, lng]).addTo(map);
-    });
+                L.marker([lat, lng]).addTo(map);
+            });
 
-});
+        });
+
 
     </script>
 @endsection

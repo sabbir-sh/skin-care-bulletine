@@ -21,6 +21,7 @@ use App\Http\Controllers\Frontend\DonorRegistationController;
 // Frontend
 
 Route::get('/', [HomeController::class, 'index'])->name('frontend.home');
+Route::get('/donors', [HomeController::class, 'allDonors'])->name('frontend.donors');
 Route::get('/blood/{slug}', [HomeController::class, 'bloodGroup'])
     ->name('blood.group');
 
