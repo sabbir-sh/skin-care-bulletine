@@ -5,7 +5,14 @@
                 <img src="{{ $setting->logo_url }}" alt="Logo" height="50" class="d-inline-block">
             @else
                 <div class="brand-container">
-                    <span class="brand-main">BLOOD</span><span class="brand-sub">FIGHTERS</span>
+                   <span style="font-family: 'Poppins', sans-serif; font-weight: 800; letter-spacing: 1px; display: flex; align-items: center; justify-content: center;">
+                        @if(isset($setting->site_name))
+                            {{ $setting->site_name }}
+                        @else
+                            <span style="color: #ffffff;">BLOOD</span><span style="color: #ffd1d1; font-weight: 400; margin-left: 5px; opacity: 0.9;">FIGHTERS Foundation</span>
+                        @endif
+                    </span>
+                    {{-- <span class="brand-main">BLOOD</span><span class="brand-sub">FIGHTERS Foundation</span> --}}
                 </div>
             @endif
         </a>

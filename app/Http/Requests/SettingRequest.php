@@ -14,7 +14,7 @@ class SettingRequest extends FormRequest
     public function rules(): array
 {
     return [
-        'site_name'        => 'required|string|max:255',
+        'site_name'        => 'nullable|string|max:255',
 
         'logo'             => 'nullable|image',
         'favicon'          => 'nullable|image',

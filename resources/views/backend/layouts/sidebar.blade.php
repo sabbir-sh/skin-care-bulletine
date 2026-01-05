@@ -208,11 +208,12 @@
     <div class="sidebar-header text-center">
         <a href="{{ route('dashboard') }}" class="logo-text">
             @if($setting?->logo)
-                <img src="{{ $setting->logo_url }}" alt="Logo" height="42">
+            {{ $setting->site_name ?? 'BLOODFIGHTERS ' }}
+                {{-- <img src="{{ $setting->logo_url }}" alt="Logo" height="42"> --}}
             @else
                 <h4 class="fw-bold mb-0" style="color: white;">
                     <i class="bi bi-shield-lock-fill text-primary me-2"></i>
-                    {{ $setting->site_name ?? 'MyAdmin' }}
+                    {{ $setting->site_name ?? 'BLOODFIGHTERS ' }}
                 </h4>
             @endif
         </a>
