@@ -9,7 +9,7 @@
                         @if(isset($setting->site_name))
                             {{ $setting->site_name }}
                         @else
-                            <span style="color: #ffffff;">BLOOD</span><span style="color: #ffd1d1; font-weight: 400; margin-left: 5px; opacity: 0.9;">FIGHTERS Foundation</span>
+                            <span class="brand-main">BLOOD</span><span class="brand-sub">FIGHTERS Foundation</span>
                         @endif
                     </span>
                     {{-- <span class="brand-main">BLOOD</span><span class="brand-sub">FIGHTERS Foundation</span> --}}
