@@ -303,6 +303,14 @@
                     <i class="bi bi-sliders2-vertical"></i> Global Settings
                 </a>
             </li>
+
+            <div class="menu-label">Payment</div>
+            <li class="nav-item">
+                <a href="{{ route('payment.list') }}" class="nav-link {{ request()->routeIs('payment.*') ? 'active' : '' }}">
+                    <i class="bi bi-currency-dollar"></i> Payments
+                </a>
+            </li>
+
         </ul>
     </div>
 

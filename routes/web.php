@@ -8,6 +8,8 @@ use App\Http\Controllers\Backend\ContactMessageController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\DonorController;
 use App\Http\Controllers\Backend\FaqController;
+use App\Http\Controllers\Backend\PaymentController;
+use App\Http\Controllers\Frontend\PaymentsController;
 use App\Http\Controllers\Frontend\AboutUsController;
 use App\Http\Controllers\Frontend\CategoryListController;
 use App\Http\Controllers\Frontend\BlogController;
@@ -43,6 +45,9 @@ Route::get('/be-a-fighter-register', [DonorRegistationController::class, 'index'
 
 Route::post('/be-a-fighter-register', [DonorRegistationController::class, 'submit'])
     ->name('donor.frontend.submit');
+
+    Route::get('/help-for-donate', [PaymentsController::class, 'index'])->name('donor.donation.index');
+    Route::post('/help-for-donate/store', [PaymentsController::class, 'store'])->name('donor.donation.store');
 
 
 
@@ -114,6 +119,7 @@ Route::prefix('admin/blood-group')->name('blood-group.')->group(function () {
     Route::delete('delete/{id}', [BloodGroupController::class, 'destroy'])->name('destroy');
 });
 
+// Doneor Management
 Route::prefix('admin/donor')->name('donor.')->group(function () {
     Route::get('/', [DonorController::class, 'index'])->name('list');
     Route::get('create', [DonorController::class, 'create'])->name('create'); // <-- fix
@@ -124,6 +130,15 @@ Route::prefix('admin/donor')->name('donor.')->group(function () {
     Route::patch('approve/{id}', [DonorController::class, 'approve'])->name('approve');
     Route::delete('delete/{id}', [DonorController::class, 'destroy'])->name('destroy');
 });
+
+// Payment Management
+Route::prefix('admin/payment')->name('payment.')->group(function () {
+    Route::get('/', [PaymentController::class, 'index'])->name('list');
+    Route::post('store', [PaymentController::class, 'store'])->name('store');
+    Route::patch('approve/{id}', [PaymentController::class, 'approve'])->name('approve');
+    Route::delete('delete/{id}', [PaymentController::class, 'destroy'])->name('destroy');
+});
+
 
 
 
