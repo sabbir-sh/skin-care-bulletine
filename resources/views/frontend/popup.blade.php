@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", function () {
             setTimeout(() => {
                 popup.hide();
             }, 500); // এনিমেশন শেষ হওয়ার পর হাইড
-        }, 10000); // ১০,০০০ মিলিসেকেন্ড = ১০ সেকেন্ড
+        }, 5000); // ৫,০০০ মিলিসেকেন্ড = ৫ সেকেন্ড
     }
 });
 </script>

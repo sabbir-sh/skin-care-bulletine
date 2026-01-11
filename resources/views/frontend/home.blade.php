@@ -442,6 +442,7 @@
 
     {{-- the popup blade --}}
     @include('frontend.popup')
+    {{-- @include('frontend.help-for-donate') --}}
  
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
