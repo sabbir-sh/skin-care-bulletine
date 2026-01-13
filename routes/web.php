@@ -46,8 +46,8 @@ Route::get('/be-a-fighter-register', [DonorRegistationController::class, 'index'
 Route::post('/be-a-fighter-register', [DonorRegistationController::class, 'submit'])
     ->name('donor.frontend.submit');
 
-    Route::get('/help-for-donate', [PaymentsController::class, 'index'])->name('donor.donation.index');
-    Route::post('/help-for-donate/store', [PaymentsController::class, 'store'])->name('donor.donation.store');
+Route::get('/help-for-donate', [PaymentsController::class, 'index'])->name('donor.donation.index');
+Route::post('/help-for-donate/store', [PaymentsController::class, 'store'])->name('donor.donation.store');
 
 
 
@@ -134,7 +134,7 @@ Route::prefix('admin/donor')->name('donor.')->group(function () {
 // Payment Management
 Route::prefix('admin/payment')->name('payment.')->group(function () {
     Route::get('/', [PaymentController::class, 'index'])->name('list');
-    Route::post('store', [PaymentController::class, 'store'])->name('store');
+    Route::get('/datatable', [PaymentController::class, 'datatable'])->name('datatable');
     Route::patch('approve/{id}', [PaymentController::class, 'approve'])->name('approve');
     Route::delete('delete/{id}', [PaymentController::class, 'destroy'])->name('destroy');
 });
