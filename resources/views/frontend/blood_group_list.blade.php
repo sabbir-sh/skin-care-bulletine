@@ -51,17 +51,51 @@
                                 
                                 {{-- ২. প্রোফাইল ইমেজ (ম্যাপের ওপর হালকা নেগেটিভ মার্জিন দিয়ে বসানো) --}}
                                 <div style="position: relative; width: 120px; height: 120px; margin: -70px auto 15px;">
-                                    @php
-                                        $imageUrl = $donor->image ? asset('storage/' . $donor->image) : 'https://ui-avatars.com/api/?name=' . urlencode($donor->name) . '&background=f8d7da&color=dc3545&size=200';
-                                    @endphp
+                                   @php
+                                    $hasImage = !empty($donor->image);
 
-                                    <div style="width: 100%; height: 100%; border-radius: 50%; padding: 4px; background: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-                                        <div style="width: 100%; height: 100%; border-radius: 50%; overflow: hidden; border: 3px solid #dc3545;">
-                                            <img src="{{ $imageUrl }}"
-                                                style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"
-                                                alt="{{ $donor->name }}">
+                                    // নামের প্রথম word
+                                    $firstWord = trim(explode(' ', $donor->name)[0]);
+
+                                    // প্রথম 2টা অক্ষর (Bangla/English safe)
+                                    $initials = mb_substr($firstWord, 0, 2);
+                                @endphp
+
+                                <div style="
+                                    width: 100%;
+                                    height: 100%;
+                                    border-radius: 50%;
+                                    padding: 3px;
+                                    background: #fff;
+                                    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                ">
+
+                                    @if($hasImage)
+                                        <img src="{{ asset('storage/'.$donor->image) }}"
+                                            style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 2px solid #dc3545;"
+                                            alt="{{ $donor->name }}">
+                                    @else
+                                        <div style="
+                                            width: 100%;
+                                            height: 100%;
+                                            border-radius: 50%;
+                                            background: #f8d7da;
+                                            color: #dc3545;
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: center;
+                                            font-weight: 700;
+                                            font-size: 22px;
+                                            border: 2px solid #dc3545;
+                                            text-transform: uppercase;
+                                        ">
+                                            {{ $initials }}
                                         </div>
-                                    </div>
+                                    @endif
+                                </div>
 
                                     {{-- অনলাইন স্ট্যাটাস ডট --}}
                                     <span style="position: absolute; bottom: 8px; right: 8px; width: 20px; height: 20px; background: {{ $donor->is_available ? '#28a745' : '#adb5bd' }}; border: 3px solid #fff; border-radius: 50%; z-index: 3;"></span>

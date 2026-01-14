@@ -63,14 +63,67 @@
                         <div class="card-body p-2 p-md-3 text-center d-flex flex-column" style="position: relative;">
                             {{-- প্রোফাইল ইমেজ ভেসে থাকবে --}}
                             <div style="position: absolute; top: -35px; left: 50%; transform: translateX(-50%); width: 70px; height: 70px; z-index: 10;">
+
                                 @php
-                                    $imageUrl = $donor->image ? asset('storage/' . $donor->image) : 'https://ui-avatars.com/api/?name=' . urlencode($donor->name) . '&background=f8d7da&color=dc3545&size=100';
+                                    $hasImage = !empty($donor->image);
+
+                                    // নামের প্রথম word
+                                    $firstWord = trim(explode(' ', $donor->name)[0]);
+
+                                    // প্রথম 2টা অক্ষর (Bangla/English safe)
+                                    $initials = mb_substr($firstWord, 0, 2);
                                 @endphp
-                                <div style="width: 100%; height: 100%; border-radius: 50%; padding: 3px; background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
-                                    <img src="{{ $imageUrl }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 2px solid #dc3545;" alt="{{ $donor->name }}">
+
+                                <div style="
+                                    width: 100%;
+                                    height: 100%;
+                                    border-radius: 50%;
+                                    padding: 3px;
+                                    background: #fff;
+                                    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                ">
+
+                                    @if($hasImage)
+                                        <img src="{{ asset('storage/'.$donor->image) }}"
+                                            style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 2px solid #dc3545;"
+                                            alt="{{ $donor->name }}">
+                                    @else
+                                        <div style="
+                                            width: 100%;
+                                            height: 100%;
+                                            border-radius: 50%;
+                                            background: #f8d7da;
+                                            color: #dc3545;
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: center;
+                                            font-weight: 700;
+                                            font-size: 22px;
+                                            border: 2px solid #dc3545;
+                                            text-transform: uppercase;
+                                        ">
+                                            {{ $initials }}
+                                        </div>
+                                    @endif
                                 </div>
-                                <span style="position: absolute; bottom: 2px; right: 2px; width: 12px; height: 12px; background: {{ $donor->is_available ? '#28a745' : '#adb5bd' }}; border: 2px solid #fff; border-radius: 50%;"></span>
+
+                                {{-- Availability Status --}}
+                                <span style="
+                                    position: absolute;
+                                    bottom: 2px;
+                                    right: 2px;
+                                    width: 12px;
+                                    height: 12px;
+                                    background: {{ $donor->is_available ? '#28a745' : '#adb5bd' }};
+                                    border: 2px solid #fff;
+                                    border-radius: 50%;
+                                "></span>
+
                             </div>
+
 
                             {{-- নাম, ব্লাড গ্রুপ ও লোকেশন overlay --}}
                             <div style="margin-top: 40px;">
